@@ -5,3 +5,31 @@
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
+
+<MudButton Variant="Variant.Filled" 
+           Style="background-color: #C998ED;"
+           @onclick = "@TestMedBlazorButton">
+    Test MudBlazor
+</MudButton>
+
+<br />
+<br />
+<br />
+
+@if (showMessage)
+{
+    <p>Instalarea MudBlazor si adaugarea referintelor in proiect au fost efectuate cu succes!</p>
+}
+else
+{
+    <p>Instalarea MudBlazor si adaugarea referintelor in proiect NU functioneaza!</p>
+}
+
+@code{
+    private bool showMessage = false; 
+
+    private void TestMedBlazorButton()
+    {
+        showMessage = true; 
+    }
+}
