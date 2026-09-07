@@ -99,6 +99,9 @@
         if (response.IsSuccessStatusCode)
         {
             _newUser = new CreateUserDTO();
+
+            _repetedPassword = string.Empty;
+            _passwordMatchError = false; 
         }
         else
         {
