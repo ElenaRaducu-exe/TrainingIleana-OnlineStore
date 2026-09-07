@@ -8,7 +8,8 @@
     <MudTextField @bind-value="_newUser.Username"
                   Label="Username" 
                   Required="true" 
-                  RequiredError="Username is required!" />
+                  RequiredError="Username is required!" 
+                  Error ="@_usernameExistingError"/>
 
     <MudTextField @bind-value="_newUser.Email"
                   Label="Email" 
@@ -54,6 +55,11 @@
     </MudButton>
 </MudForm>
 
+@if (!string.IsNullOrEmpty(_apiResponse))
+{
+    <MudText>@_apiResponse</MudText>
+}
+
 @code {
     [Inject]
     private HttpClient _httpClient{ get; set; }
@@ -65,7 +71,9 @@
     private NavigationManager _navigation { get; set; }
 
     private CreateUserDTO _newUser = new();
-    private string _repetedPassword = string.Empty; 
+    private string _repetedPassword = string.Empty;
+    private string _apiResponse = string.Empty;
+    private bool _usernameExistingError = false; 
 
     private string PasswordMatch(string password, string repetedPassword)
     {
@@ -73,20 +81,28 @@
         {
             return "Passwords don't match!"; 
         }
-        return null; 
+        return "Passwords match!";
     }
 
     private async Task CreateUser()
     {
+        _usernameExistingError = false; 
+
         var httpClient = _httpClientFactory.CreateClient();
         httpClient.BaseAddress = new Uri(_navigation.BaseUri); 
 
         //var response = await _httpClient.PostAsJsonAsync("api/users", _newUser);
         var response = await httpClient.PostAsJsonAsync("api/users", _newUser);
 
+        _apiResponse = await response.Content.ReadAsStringAsync(); 
+
         if (response.IsSuccessStatusCode)
         {
-            _newUser = new CreateUserDTO(); 
+            _newUser = new CreateUserDTO();
+        }
+        else
+        {
+            _usernameExistingError = true; 
         }
     }
 }
