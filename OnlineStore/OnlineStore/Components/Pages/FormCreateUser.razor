@@ -1,0 +1,92 @@
+﻿@page "/user/form"
+
+@using OnlineStore.Models; 
+
+<h3>FormCreateUser</h3>
+
+<MudForm>
+    <MudTextField @bind-value="_newUser.Username"
+                  Label="Username" 
+                  Required="true" 
+                  RequiredError="Username is required!" />
+
+    <MudTextField @bind-value="_newUser.Email"
+                  Label="Email" 
+                  InputType="InputType.Email"
+                  Required="true" 
+                  RequiredError="Email is required!" />
+
+    <MudTextField @bind-value="_newUser.Password"
+                  Label="Password" 
+                  HelperText="Choose a strong password"
+                  InputType="InputType.Password"
+                  Required="true" 
+                  RequiredError="Password is required!" />
+
+    <MudTextField T="string"
+                  @bind-value="_repetedPassword"
+                  Label="Password" 
+                  HelperText="Repeat the password"
+                  InputType="InputType.Password"
+                  Validation="@(() => PasswordMatch(_newUser.Password, _repetedPassword))"
+                  Required="true" 
+                  RequiredError="Password is required!" />
+
+    <MudSelect T="UserRoleEnum"
+               @bind-value="_newUser.Role"
+               Label="Role" 
+               Required="true" 
+               RequiredError="Role is required!" >
+
+                   <MudSelectItem Value="@UserRoleEnum.Customer">
+                        Customer
+                   </MudSelectItem>
+
+                   <MudSelectItem Value="@UserRoleEnum.Admin">
+                        Admin
+                   </MudSelectItem>
+    </MudSelect>
+
+    <MudButton Variant="Variant.Filled"
+               Style="background-color: #C998ED;"
+               OnClick="@CreateUser">
+        Sign Up
+    </MudButton>
+</MudForm>
+
+@code {
+    [Inject]
+    private HttpClient _httpClient{ get; set; }
+
+    [Inject]
+    private IHttpClientFactory _httpClientFactory { get; set; }
+
+    [Inject]
+    private NavigationManager _navigation { get; set; }
+
+    private CreateUserDTO _newUser = new();
+    private string _repetedPassword = string.Empty; 
+
+    private string PasswordMatch(string password, string repetedPassword)
+    {
+        if (password != repetedPassword)
+        {
+            return "Passwords don't match!"; 
+        }
+        return null; 
+    }
+
+    private async Task CreateUser()
+    {
+        var httpClient = _httpClientFactory.CreateClient();
+        httpClient.BaseAddress = new Uri(_navigation.BaseUri); 
+
+        //var response = await _httpClient.PostAsJsonAsync("api/users", _newUser);
+        var response = await httpClient.PostAsJsonAsync("api/users", _newUser);
+
+        if (response.IsSuccessStatusCode)
+        {
+            _newUser = new CreateUserDTO(); 
+        }
+    }
+}
