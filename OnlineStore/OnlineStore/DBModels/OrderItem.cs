@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OnlineStore.Models;
+namespace OnlineStore.DBModels;
 
 public partial class OrderItem
 {

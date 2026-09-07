@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using OnlineStore.Models;
+using OnlineStore.DBModels;
 
 namespace OnlineStore.Data;
 
