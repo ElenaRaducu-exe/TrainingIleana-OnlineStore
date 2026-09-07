@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.Authorization;
 using OnlineStore.Services.Contracts; 
 using OnlineStore.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -28,6 +28,13 @@ namespace OnlineStore.Controllers
             }
 
             return Ok("User created successfully!"); 
+        }
+
+        [Authorize]
+        [HttpGet("test-auth")]
+        public IActionResult TestAuthentication()
+        {
+            return Ok("You are authenticated!"); 
         }
     }
 }

@@ -8,6 +8,10 @@ using OnlineStore.JWTAuthentication.Services.Contracts;
 using OnlineStore.JWTAuthentication.Services;
 using OnlineStore.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using OnlineStore.JWTAuthentication.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,12 +28,45 @@ builder.Services.AddDbContext<OnlineStoreContext>(options =>
 // MudBlazor
 builder.Services.AddMudServices();
 
+// JWT Authentication
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IJWTService, JWTService>();
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    }).AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+
+                ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                ValidAudience = builder.Configuration["Jwt:Audience"],
+
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)
+                )
+            };
+        });
+builder.Services.AddAuthorization(); 
+builder.Services.AddAuthorization();
+
+/*builder.Services.AddScoped<JWTAuthorizationHandler>();
+builder.Services.AddHttpClient("AuthenticatedClient",
+    client =>
+    {
+        client.BaseAddress = new Uri("https://localhost:7141/");
+    }).AddHttpMessageHandler<JWTAuthorizationHandler>(); */
+
 //Controllers
 builder.Services.AddControllers(); 
 
 // Services
 builder.Services.AddScoped<ICreateUserService, CreateUserService>();
-builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 var app = builder.Build();
@@ -43,6 +80,9 @@ if (!app.Environment.IsDevelopment())
 }
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization(); 
 
 app.UseAntiforgery();
 

@@ -1,0 +1,88 @@
+﻿@page "/login" 
+
+@using MudBlazor
+
+@using OnlineStore.JWTAuthentication.Models.DTOs
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage 
+
+<h3>Login</h3>
+
+<MudForm>
+    <MudTextField @bind-value="_loginRequest.Username"
+                  Label="Username" 
+                  Required="true" 
+                  RequiredError="Username is required!" />
+
+    <MudTextField @bind-value="_loginRequest.Password"
+                  Label="Password" 
+                  InputType="InputType.Password"
+                  Required="true" 
+                  RequiredError="Password is required!" />
+
+    <MudButton Variant="Variant.Filled" 
+               Style="background-color: #C998ED;"
+               OnClick = "@HandleLogin">
+        Login
+    </MudButton>
+</MudForm>
+
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <MudText Color="Color.Error">
+        @_errorMessage
+    </MudText>
+}
+
+@if (!string.IsNullOrEmpty(_successMessage))
+{
+    <MudText Color="Color.Success">
+        @_successMessage
+    </MudText>
+}
+
+@code {
+    [Inject]
+    private IHttpClientFactory _httpClientFactory { get; set; }
+
+    [Inject]
+    private NavigationManager _navigation { get; set; }
+
+    [Inject]
+    private ProtectedSessionStorage _sessionStorage { get; set; }
+
+    private LoginRequestDTO _loginRequest { get; set; } = new();
+    private string _errorMessage = string.Empty; 
+    private string _successMessage = string.Empty; 
+
+    private async Task HandleLogin()
+    {
+        _errorMessage = string.Empty; 
+
+        var httpClient = _httpClientFactory.CreateClient();
+        httpClient.BaseAddress = new Uri(_navigation.BaseUri);
+
+        var response = await httpClient.PostAsJsonAsync("api/auth/login", _loginRequest);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            //_errorMessage = "Invalid credentials!";
+            var error = await response.Content.ReadAsStringAsync(); 
+            _errorMessage = $"Status: {(int)response.StatusCode} - {error}"; 
+            return; 
+        }
+
+        var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponseDTO>();
+
+        if(loginResponse == null)
+        {
+            _errorMessage = "Login failed!";
+            return;
+        }
+        else
+        {
+            _successMessage = "Login Succed!";
+        }
+
+        await _sessionStorage.SetAsync("authToken", loginResponse.TokenJWT); 
+    }
+}
