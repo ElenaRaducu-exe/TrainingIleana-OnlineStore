@@ -46,15 +46,17 @@ namespace OnlineStore.Controllers
         [Route("update/active/{id:int}")]
         public async Task<IActionResult> UpdateUserActiveMode([FromRoute] int id)
         {
-            var user = await _usersService.GetUserByIdAsync(id); 
-            var userUpdated = await _usersService.UpdateUserActiveMode(id);
+            var user = await _usersService.GetUserByIdAsync(id);
 
-            if (user.IsActive == userUpdated.IsActive)
+            bool isActiveInitial = user.IsActive; 
+            var userUpdated = await _usersService.UpdateUserActiveMode(user);
+
+            if (isActiveInitial == userUpdated.IsActive)
             {
                 return BadRequest();
             }
 
-            return Ok(user);
+            return Ok(userUpdated);
         }
     }
 }

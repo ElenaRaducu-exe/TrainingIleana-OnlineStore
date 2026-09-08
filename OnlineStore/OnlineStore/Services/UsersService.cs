@@ -24,10 +24,8 @@ namespace OnlineStore.Services
             return await _dbConext.Users.FirstOrDefaultAsync(u => u.Id == id);
         }
 
-        public async Task<User> UpdateUserActiveMode(int id)
+        public async Task<User> UpdateUserActiveMode(User user)
         {
-            var user = await GetUserByIdAsync(id); 
-
             if (user == null)
             {
                 return null;

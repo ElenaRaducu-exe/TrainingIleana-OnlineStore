@@ -64,8 +64,25 @@
 
         var user = await httpClient.GetFromJsonAsync<User>($"api/users/dashboard/{id}");
 
-        var userUpdated = await httpClient.PutAsJsonAsync($"api/users/dashboard/update/active/{id}", user);
+        var response = await httpClient.PutAsJsonAsync($"api/users/dashboard/update/active/{id}", user);
 
-        StateHasChanged(); 
+        if (response.IsSuccessStatusCode)
+        {
+            StateHasChanged();
+
+            var updatedUser = await response.Content.ReadFromJsonAsync<User>(); 
+
+            if(updatedUser != null)
+            {
+                var userList = UsersList.FirstOrDefault(u => u.Id == id);
+
+                if(userList != null)
+                {
+                    userList.IsActive = updatedUser.IsActive; 
+                }
+
+                StateHasChanged(); 
+            }
+        }
     }
 }
