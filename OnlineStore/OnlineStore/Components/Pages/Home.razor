@@ -14,17 +14,6 @@ Welcome to your new app.
     Test MudBlazor
 </MudButton>
 
-<MudButton @onclick="TestAutehntication">
-    Test Authentication
-</MudButton>
-
-@if (!string.IsNullOrEmpty(_apiResponse))
-{
-    <MudAlert>
-        @_apiResponse
-    </MudAlert>
-}
-
 <br />
 <br />
 <br />
@@ -37,6 +26,20 @@ else
 {
     <p>Instalarea MudBlazor si adaugarea referintelor in proiect NU functioneaza!</p>
 }
+
+<MudButton Variant="Variant.Filled"
+           Style="background-color: #C998ED;" 
+           @onclick="TestAutehntication">
+    Test Authentication
+</MudButton>
+
+@if (!string.IsNullOrEmpty(_apiResponse))
+{
+    <MudAlert>
+        @_apiResponse
+    </MudAlert>
+}
+
 
 @code{
     [Inject]
