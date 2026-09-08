@@ -1,4 +1,5 @@
-﻿<MudNavMenu>
+﻿@using Microsoft.AspNetCore.Components.Authorization
+<MudNavMenu>
     <MudNavLink Href="/" Match="NavLinkMatch.All">
         Home
     </MudNavLink>
@@ -15,5 +16,9 @@
 
     <MudNavLink Href="/login">
         Log in
+    </MudNavLink>
+
+    <MudNavLink Href="/logout">
+        Log out
     </MudNavLink>
 </MudNavMenu>

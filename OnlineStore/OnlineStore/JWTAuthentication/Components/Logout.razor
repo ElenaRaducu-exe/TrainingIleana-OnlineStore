@@ -1,0 +1,26 @@
+﻿@page "/logout" 
+
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage; 
+@using MudBlazor
+
+<h3>Logout</h3>
+
+<MudButton Variant="Variant.Filled" 
+               Style="background-color: #C998ED;"
+               OnClick = "@HandleLogout">
+        Logout 
+</MudButton>
+
+@code {
+    [Inject]
+    private ProtectedSessionStorage _sessionStorage { get; set; }
+
+    [Inject]
+    private NavigationManager _navigation { get; set; }
+
+    private async Task HandleLogout()
+    {
+        await _sessionStorage.DeleteAsync("authToken");
+        _navigation.NavigateTo("/login");
+    }
+}
