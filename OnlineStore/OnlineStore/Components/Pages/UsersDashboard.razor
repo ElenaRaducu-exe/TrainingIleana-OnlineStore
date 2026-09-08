@@ -42,6 +42,6 @@
         var httpClient = _httpClientFactory.CreateClient();
         httpClient.BaseAddress = new Uri(_navigation.BaseUri);
 
-        UsersList = await httpClient.GetFromJsonAsync<List<User>>("https://localhost:7141/api/users/dashboard");
+        UsersList = await httpClient.GetFromJsonAsync<List<User>>("api/users/dashboard");
     }
 }
