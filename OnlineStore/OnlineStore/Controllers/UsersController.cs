@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OnlineStore.DBModels;
 using OnlineStore.Services.Contracts;
 
 namespace OnlineStore.Controllers
@@ -25,6 +26,35 @@ namespace OnlineStore.Controllers
             }
 
             return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("{id:int}")]
+        public async Task<IActionResult> GetUserBtId([FromRoute] int id)
+        {
+            var user = await _usersService.GetUserByIdAsync(id); 
+
+            if(user == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(user); 
+        }
+
+        [HttpPut]
+        [Route("update/active/{id:int}")]
+        public async Task<IActionResult> UpdateUserActiveMode([FromRoute] int id)
+        {
+            var user = await _usersService.GetUserByIdAsync(id); 
+            var userUpdated = await _usersService.UpdateUserActiveMode(id);
+
+            if (user.IsActive == userUpdated.IsActive)
+            {
+                return BadRequest();
+            }
+
+            return Ok(user);
         }
     }
 }

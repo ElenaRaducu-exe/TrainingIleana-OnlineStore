@@ -18,5 +18,26 @@ namespace OnlineStore.Services
         {
             return await _dbConext.Users.ToListAsync();
         }
+
+        public async Task<User?> GetUserByIdAsync(int id)
+        {
+            return await _dbConext.Users.FirstOrDefaultAsync(u => u.Id == id);
+        }
+
+        public async Task<User> UpdateUserActiveMode(int id)
+        {
+            var user = await GetUserByIdAsync(id); 
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            user.IsActive = !user.IsActive;
+
+            _dbConext.SaveChanges();
+
+            return user;
+        }
     }
 }

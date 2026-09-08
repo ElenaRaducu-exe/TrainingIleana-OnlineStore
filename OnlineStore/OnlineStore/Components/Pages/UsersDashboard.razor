@@ -1,6 +1,7 @@
 ﻿@page "/dashboard/users"
 
 @using OnlineStore.DBModels; 
+@using OnlineStore.Services.Contracts;
 
 <h1>UsersDashboard</h1>
 
@@ -16,6 +17,7 @@
         <MudTh>Email</MudTh>
         <MudTh>Role</MudTh>
         <MudTh>Activ</MudTh>
+        <MudTh>Choose active mode</MudTh>
     </HeaderContent>
 
     <RowTemplate>
@@ -24,6 +26,13 @@
         <MudTh>@context.Email</MudTh>
         <MudTh>@(context.RoleId == 1 ? "Customer" : "Admin")</MudTh>
         <MudTh>@(context.IsActive ? "Active" : "Inactive")</MudTh>
+        <MudTh>
+            <MudButton Variant="Variant.Filled"
+                       Style="background-color: #C998ED;"
+                       @onclick="@(() => UpdateActiveMode(context.Id))">
+                Change active mode
+            </MudButton>
+        </MudTh>
     </RowTemplate>
 
 </MudTable>
@@ -35,7 +44,10 @@
     [Inject]
     private NavigationManager _navigation { get; set; }
 
-    public List<User> UsersList = new(); 
+    [Inject]
+    private IUsersService _service { get; set; }
+
+    public List<User> UsersList = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -43,5 +55,17 @@
         httpClient.BaseAddress = new Uri(_navigation.BaseUri);
 
         UsersList = await httpClient.GetFromJsonAsync<List<User>>("api/users/dashboard");
+    }
+
+    private async Task UpdateActiveMode(int id)
+    {
+        var httpClient = _httpClientFactory.CreateClient();
+        httpClient.BaseAddress = new Uri(_navigation.BaseUri);
+
+        var user = await httpClient.GetFromJsonAsync<User>($"api/users/dashboard/{id}");
+
+        var userUpdated = await httpClient.PutAsJsonAsync($"api/users/dashboard/update/active/{id}", user);
+
+        StateHasChanged(); 
     }
 }
