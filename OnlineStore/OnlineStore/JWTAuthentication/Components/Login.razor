@@ -65,9 +65,9 @@
 
         if (!response.IsSuccessStatusCode)
         {
-            //_errorMessage = "Invalid credentials!";
+            _errorMessage = "Invalid credentials!";
             var error = await response.Content.ReadAsStringAsync(); 
-            _errorMessage = $"Status: {(int)response.StatusCode} - {error}"; 
+            _errorMessage += $" Status: {(int)response.StatusCode} - {error}"; 
             return; 
         }
 
