@@ -1,7 +1,47 @@
 ﻿@page "/dashboard/users"
 
+@using OnlineStore.DBModels; 
+
 <h1>UsersDashboard</h1>
 
-@code {
+<MudTable 
+    T="User"
+    Items="@UsersList"
+    Hover="true"
+    Striped="true">
 
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>Username</MudTh>
+        <MudTh>Email</MudTh>
+        <MudTh>Role</MudTh>
+        <MudTh>Activ</MudTh>
+    </HeaderContent>
+
+    <RowTemplate>
+        <MudTh>@context.Id</MudTh>
+        <MudTh>@context.Username</MudTh>
+        <MudTh>@context.Email</MudTh>
+        <MudTh>@(context.RoleId == 1 ? "Customer" : "Admin")</MudTh>
+        <MudTh>@(context.IsActive ? "Active" : "Inactive")</MudTh>
+    </RowTemplate>
+
+</MudTable>
+
+@code {
+    [Inject]
+    private IHttpClientFactory _httpClientFactory { get; set; }
+
+    [Inject]
+    private NavigationManager _navigation { get; set; }
+
+    public List<User> UsersList = new(); 
+
+    protected override async Task OnInitializedAsync()
+    {
+        var httpClient = _httpClientFactory.CreateClient();
+        httpClient.BaseAddress = new Uri(_navigation.BaseUri);
+
+        UsersList = await httpClient.GetFromJsonAsync<List<User>>("https://localhost:7141/api/users/dashboard");
+    }
 }

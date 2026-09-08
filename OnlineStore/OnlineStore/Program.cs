@@ -68,6 +68,7 @@ builder.Services.AddControllers();
 // Services
 builder.Services.AddScoped<ICreateUserService, CreateUserService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddScoped<IUsersService, UsersService>();
 
 var app = builder.Build();
 
