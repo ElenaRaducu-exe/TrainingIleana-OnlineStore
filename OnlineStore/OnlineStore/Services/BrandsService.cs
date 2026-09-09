@@ -30,7 +30,14 @@ namespace OnlineStore.Services
 
         public async Task<int?> GetIdByBrandNameAsync(string BrandName)
         {
-            return _dbConext.Brands.FirstOrDefault(b => b.BrandName == BrandName).Id;
+            Brand brand = _dbConext.Brands.FirstOrDefault(b => b.BrandName == BrandName);
+
+            if(brand == null)
+            {
+                return null; 
+            }
+
+            return brand.Id;
         }
     }
 }

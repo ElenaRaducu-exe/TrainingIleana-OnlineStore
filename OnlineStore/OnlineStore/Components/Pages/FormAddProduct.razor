@@ -1,0 +1,120 @@
+﻿@page "/dashboard/products/add"
+
+@using OnlineStore.Models; 
+@using OnlineStore.DBModels; 
+
+<h3>AddProductFrom</h3>
+
+<MudForm>
+    <MudTextField 
+        @bind-value="_productDTO.Name"          
+        Label="Name"
+        Required="true"
+        RequiredError="Name is required!" />
+
+    <MudTextField 
+        @bind-value="_productDTO.Description"        
+        Label="Description"       
+        Required="true"
+        RequiredError="Description is required!" />
+
+    <MudNumericField 
+        @bind-Value="_productDTO.Price"
+        Label="Price"
+        Required="true"
+        RequiredError="Price is required!" />
+
+    <MudNumericField 
+        @bind-Value="_productDTO.Stock"
+        Label="Stock"
+        Required="true"
+        RequiredError="Stock is required!" />
+
+    <MudTextField 
+        @bind-value="_productDTO.ImageUrl"        
+        Label="ImageURL"       
+        Required="true"
+        RequiredError="ImageURL is required!" />
+
+    <MudSwitch
+        @bind-Value="_productDTO.IsActive"
+        Label="Active Mode">
+        @(_productDTO.IsActive ? "Active" : "Inactive")
+    </MudSwitch>
+
+    <MudSelect T="string"
+               @bind-value="_productDTO.Brand"
+               Label="Brand"
+               Required="true"
+               RequiredError="Brand is required!">
+        @foreach(var brand in _brands)
+        {
+            <MudSelectItem value="@brand.BrandName">
+                @brand.BrandName
+            </MudSelectItem>
+        }
+    </MudSelect>
+
+    <MudSelect T="string"
+               @bind-value="_productDTO.Category"
+               Label="Category"
+               Required="true"
+               RequiredError="Category is required!">
+        @foreach(var category in _categories)
+        {
+            <MudSelectItem value="@category.CategoryName">
+                @category.CategoryName
+            </MudSelectItem>
+        }
+    </MudSelect>
+
+    <MudButton Variant="Variant.Filled"
+               Style="background-color: #C998ED;"
+               OnClick="@AddProduct">
+        Add
+    </MudButton>
+</MudForm>
+
+@code {
+    [Inject]
+    private HttpClient _httpClient { get; set; }
+
+    [Inject]
+    private IHttpClientFactory _httpClientFactory { get; set; }
+
+    [Inject]
+    private NavigationManager _navigation { get; set; }
+
+    private ProductDTO _productDTO = new();
+
+    private List<Brand> _brands = new(); 
+    private List<Category> _categories = new();
+    private string _message = string.Empty; 
+
+    protected override async Task OnInitializedAsync()
+    {
+        var httpClient = _httpClientFactory.CreateClient();
+        httpClient.BaseAddress = new Uri(_navigation.BaseUri);
+
+        _brands = await httpClient.GetFromJsonAsync<List<Brand>>("api/brands");
+        _categories = await httpClient.GetFromJsonAsync<List<Category>>("api/categories");
+    }
+
+    private async Task AddProduct()
+    {
+        var httpClient = _httpClientFactory.CreateClient();
+        httpClient.BaseAddress = new Uri(_navigation.BaseUri);
+
+        var response = await httpClient.PostAsJsonAsync("api/admin/products/add/product", _productDTO);
+
+        if (response.IsSuccessStatusCode)
+        {
+            _productDTO = new ProductDTO();
+            _message = "Product added successfully!"; 
+        }
+        else
+        {
+            _message = "Product added unsuccessfully!";
+        }
+    }
+}

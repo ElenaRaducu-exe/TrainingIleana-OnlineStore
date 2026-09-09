@@ -1,4 +1,5 @@
-﻿using OnlineStore.Data;
+﻿using Microsoft.AspNetCore.Components;
+using OnlineStore.Data;
 using OnlineStore.DBModels;
 using OnlineStore.Models;
 using OnlineStore.Services.Contracts;
@@ -35,13 +36,13 @@ namespace OnlineStore.Services
                 Stock = productDTO.Stock,
                 ImageUrl = productDTO.ImageUrl,
                 IsActive = productDTO.IsActive,
-                CategoryId = _categoriesService.GetIdByCategoryNameAsync(productDTO.Category).Id, 
-                BrandId = _brandsService.GetIdByBrandNameAsync(productDTO.Brand).Id
+                CategoryId = (int)_categoriesService.GetIdByCategoryNameAsync(productDTO.Category).Result, 
+                BrandId = (int)_brandsService.GetIdByBrandNameAsync(productDTO.Brand).Result
             };
 
             _dbConext.Products.Add(newProduct); 
 
-            _dbConext.SaveChanges();
+            await _dbConext.SaveChangesAsync();
 
             return true; 
         }

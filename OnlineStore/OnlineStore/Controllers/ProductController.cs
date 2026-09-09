@@ -6,7 +6,7 @@ using OnlineStore.Services.Contracts;
 namespace OnlineStore.Controllers
 {
     [ApiController]
-    [Route("admin/products")]
+    [Route("api/admin/products")]
     public class ProductController : ControllerBase
     {
         private IProductService _productService; 

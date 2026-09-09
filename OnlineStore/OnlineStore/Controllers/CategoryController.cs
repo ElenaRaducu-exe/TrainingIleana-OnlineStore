@@ -6,7 +6,7 @@ using OnlineStore.Services.Contracts;
 namespace OnlineStore.Controllers
 {
     [ApiController]
-    [Route("categories")]
+    [Route("api/categories")]
     public class CategoryController : ControllerBase
     {
         private ICategoriesService _categoriesService;

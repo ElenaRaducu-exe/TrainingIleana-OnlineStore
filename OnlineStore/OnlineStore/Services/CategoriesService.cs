@@ -30,6 +30,14 @@ namespace OnlineStore.Services
 
         public async Task<int?> GetIdByCategoryNameAsync(string categoryName)
         {
+            /*
+             * Category category = _dbConext.Categories.FirstOrDefault(c => c.CategoryName == categoryName);
+            if(category == null)
+            {
+                return null; 
+            }
+            return category.Id;
+             */
             return _dbConext.Categories.FirstOrDefault(c => c.CategoryName == categoryName).Id;
         }
     }

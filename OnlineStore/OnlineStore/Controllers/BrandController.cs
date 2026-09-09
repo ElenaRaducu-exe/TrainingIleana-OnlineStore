@@ -5,7 +5,7 @@ using OnlineStore.Services.Contracts;
 namespace OnlineStore.Controllers
 {
     [ApiController]
-    [Route("brands")]
+    [Route("api/brands")]
     public class BrandController : ControllerBase
     {
         private IBrandsService _brandsService;
