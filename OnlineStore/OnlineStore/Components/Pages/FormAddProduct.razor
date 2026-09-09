@@ -22,13 +22,15 @@
         @bind-Value="_productDTO.Price"
         Label="Price"
         Required="true"
-        RequiredError="Price is required!" />
+        RequiredError="Price is required!" 
+        Error = "@_priceError" />
 
     <MudNumericField 
         @bind-Value="_productDTO.Stock"
         Label="Stock"
         Required="true"
-        RequiredError="Stock is required!" />
+        RequiredError="Stock is required!" 
+        Error = "@_stockError"/>
 
     <MudTextField 
         @bind-value="_productDTO.ImageUrl"        
@@ -36,7 +38,7 @@
         Required="true"
         RequiredError="ImageURL is required!" />
 
-    <MudSwitch
+    <MudSwitch 
         @bind-Value="_productDTO.IsActive"
         Label="Active Mode">
         @(_productDTO.IsActive ? "Active" : "Inactive")
@@ -75,6 +77,16 @@
     </MudButton>
 </MudForm>
 
+@if (!string.IsNullOrEmpty(_priceErrorMessage))
+{
+    <MudText>@_priceErrorMessage</MudText>
+}
+
+@if (!string.IsNullOrEmpty(_stockErrorMessage))
+{
+    <MudText>@_stockErrorMessage</MudText>
+}
+
 @code {
     [Inject]
     private HttpClient _httpClient { get; set; }
@@ -89,7 +101,12 @@
 
     private List<Brand> _brands = new(); 
     private List<Category> _categories = new();
-    private string _message = string.Empty; 
+    private string _message = string.Empty;
+
+    private bool _priceError = false; 
+    private string _priceErrorMessage = string.Empty; 
+    private bool _stockError = false;
+    private string _stockErrorMessage = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -102,6 +119,18 @@
 
     private async Task AddProduct()
     {
+        if(_productDTO.Stock < 0)
+        {
+            _stockError = true;
+            _stockErrorMessage = "Stock has to be at least 0!"; 
+        }
+
+        if(_productDTO.Price <= 0)
+        {
+            _priceError = true;
+            _priceErrorMessage = "Price can not be 0 or negative!";
+        }
+
         var httpClient = _httpClientFactory.CreateClient();
         httpClient.BaseAddress = new Uri(_navigation.BaseUri);
 
@@ -111,6 +140,11 @@
         {
             _productDTO = new ProductDTO();
             _message = "Product added successfully!"; 
+
+            _stockError = false;
+            _stockErrorMessage = string.Empty;
+            _priceError = false;
+            _priceErrorMessage = string.Empty;
         }
         else
         {
