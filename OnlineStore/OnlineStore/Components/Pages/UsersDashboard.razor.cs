@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Components;
 using OnlineStore.DBModels;
-using OnlineStore.Services.Contracts;
 
 namespace OnlineStore.Components.Pages
 {
