@@ -4,9 +4,9 @@ namespace OnlineStore.Services.Contracts
 {
     public interface IBrandsService
     {
-        Task<List<Brand>> GetBrandByIdAsync();
+        Task<List<Brand>> GetBrandsListAsync();
 
-        Task<Brand?> GetBrandsAsync(int id);
+        Task<Brand?> GetBrandByIdAsync(int id);
 
         Task<string?> GetBrandNameByIdAsync(int id);
 

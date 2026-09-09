@@ -13,12 +13,12 @@ namespace OnlineStore.Services
             _dbConext = dbConext;
         }
 
-        public async Task<List<Brand>> GetBrandByIdAsync()
+        public async Task<List<Brand>> GetBrandsListAsync()
         {
             return _dbConext.Brands.ToList(); 
         }
 
-        public async Task<Brand?> GetBrandsAsync(int id)
+        public async Task<Brand?> GetBrandByIdAsync(int id)
         {
             return _dbConext.Brands.FirstOrDefault(b => b.Id == id);
         }
