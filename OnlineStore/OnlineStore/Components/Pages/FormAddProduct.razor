@@ -3,41 +3,35 @@
 <h3>AddProductFrom</h3>
 
 <MudForm>
-    <MudTextField 
-        @bind-value="_productDTO.Name"          
-        Label="Name"
-        Required="true"
-        RequiredError="Name is required!" />
+    <MudTextField @bind-value="_productDTO.Name"          
+                  Label="Name"
+                  Required="true"
+                  RequiredError="Name is required!" />
 
-    <MudTextField 
-        @bind-value="_productDTO.Description"        
-        Label="Description"       
-        Required="true"
-        RequiredError="Description is required!" />
+    <MudTextField @bind-value="_productDTO.Description"        
+                  Label="Description"
+                  Required="true"
+                  RequiredError="Description is required!" />
 
-    <MudNumericField 
-        @bind-Value="_productDTO.Price"
-        Label="Price"
-        Required="true"
-        RequiredError="Price is required!" 
-        Error = "@_priceError" />
+    <MudNumericField @bind-Value="_productDTO.Price"
+                     Label="Price"
+                     Required="true"
+                     RequiredError="Price is required!"
+                     Error="@_priceError" />
 
-    <MudNumericField 
-        @bind-Value="_productDTO.Stock"
-        Label="Stock"
-        Required="true"
-        RequiredError="Stock is required!" 
-        Error = "@_stockError"/>
+    <MudNumericField @bind-Value="_productDTO.Stock"
+                     Label="Stock"
+                     Required="true"
+                     RequiredError="Stock is required!"
+                     Error="@_stockError" />
 
-    <MudTextField 
-        @bind-value="_productDTO.ImageUrl"        
-        Label="ImageURL"       
-        Required="true"
-        RequiredError="ImageURL is required!" />
+    <MudTextField @bind-value="_productDTO.ImageUrl"        
+                  Label="ImageURL"
+                  Required="true"
+                  RequiredError="ImageURL is required!" />
 
-    <MudSwitch 
-        @bind-Value="_productDTO.IsActive"
-        Label="Active Mode">
+    <MudSwitch @bind-Value="_productDTO.IsActive"
+               Label="Active Mode">
         @(_productDTO.IsActive ? "Active" : "Inactive")
     </MudSwitch>
 
