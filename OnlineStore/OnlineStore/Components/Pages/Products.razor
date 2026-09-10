@@ -4,14 +4,12 @@
 {
     @foreach (var product in ProductsList)
     {
-        <MudCard>
-            <MudCardMedia Image="@product.ImageUrl" Width="200" Height="100" />
-            <MudCardContent>
-                <MudText Typo="Typo.h5">@product.Name</MudText>
-                <MudText Typo="Typo.body1">@product.Description</MudText>
-                <MudText Typo="Typo.body1">Category: @product.Category | Brand: @product.Brand</MudText>
-                <MudText Typo="Typo.body2">Stock: @product.Stock | Price: @product.Price</MudText>
-            </MudCardContent>
-        </MudCard>
+        <ProductCard Name = "@product.Name"
+                     Description = "@product.Description"
+                     Price = "@product.Price"
+                     Stock = "@product.Stock"
+                     ImageUrl="@product.ImageUrl"
+                     Category="@product.Category"
+                     Brand="@product.Brand" />
     }
 }
