@@ -48,15 +48,21 @@ namespace OnlineStore.Controllers
         {
             var user = await _usersService.GetUserByIdAsync(id);
 
-            bool isActiveInitial = user.IsActive; 
-            var userUpdated = await _usersService.UpdateUserActiveMode(user);
-
-            if (isActiveInitial == userUpdated.IsActive)
+            if(user == null)
             {
-                return BadRequest();
+                return BadRequest("User not found!");
             }
+            else { 
+                bool isActiveInitial = user.IsActive; 
+                var userUpdated = await _usersService.UpdateUserActiveMode(user);
+            
+                if (isActiveInitial == userUpdated.IsActive)
+                {
+                    return BadRequest("Change the active mode unsuccessful!");
+                }
 
-            return Ok(userUpdated);
+                return Ok(userUpdated);
+            }
         }
     }
 }
