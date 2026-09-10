@@ -8,14 +8,14 @@ namespace OnlineStore.Services
 {
     public class ProductService : IProductService
     {
-        private OnlineStoreContext _dbConext;
+        private OnlineStoreContext _dbContext;
         private readonly IBrandsService _brandsService;
         private readonly ICategoriesService _categoriesService;
 
         public ProductService(OnlineStoreContext onlineStoreContext, 
                                 IBrandsService brandsService, ICategoriesService categoriesService)
         {
-            _dbConext = onlineStoreContext;
+            _dbContext = onlineStoreContext;
             _brandsService = brandsService;
             _categoriesService = categoriesService;
         }
@@ -40,16 +40,16 @@ namespace OnlineStore.Services
                 BrandId = (int)_brandsService.GetIdByBrandNameAsync(productDTO.Brand).Result
             };
 
-            _dbConext.Products.Add(newProduct); 
+            _dbContext.Products.Add(newProduct); 
 
-            await _dbConext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
             return true; 
         }
 
         public async Task<ProductDTO?> GetProductDTOAsync(int id)
         {
-            var product = _dbConext.Products.FirstOrDefault(p =>  p.Id == id);
+            var product = _dbContext.Products.FirstOrDefault(p =>  p.Id == id);
             string brandName = _brandsService.GetBrandNameByIdAsync(product.BrandId).Result; 
             string categoryName = _categoriesService.GetCategoryNameByIdAsync(product.CategoryId).Result;
 

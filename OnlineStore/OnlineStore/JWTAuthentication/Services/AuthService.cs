@@ -9,7 +9,7 @@ namespace OnlineStore.JWTAuthentication.Services
 {
     public class AuthService : IAuthService
     {
-        private OnlineStoreContext _dbConext;
+        private OnlineStoreContext _dbContext;
         private IPasswordHasher<User> _passwordHasher;
         private IJWTService _jwtService; 
 
@@ -17,14 +17,14 @@ namespace OnlineStore.JWTAuthentication.Services
                            IPasswordHasher<User> passwordHasher,
                            IJWTService jwtService)
         {
-            _dbConext = onlineStoreContext;
+            _dbContext = onlineStoreContext;
             _passwordHasher = passwordHasher;
             _jwtService = jwtService;
         }
 
         public async Task<LoginResponseDTO?> LoginAsync(LoginRequestDTO loginRequest)
         {
-            var currentUser = await _dbConext.Users.FirstOrDefaultAsync(user => user.Username == loginRequest.Username);
+            var currentUser = await _dbContext.Users.FirstOrDefaultAsync(user => user.Username == loginRequest.Username);
 
             if(currentUser == null || !currentUser.IsActive)
             {

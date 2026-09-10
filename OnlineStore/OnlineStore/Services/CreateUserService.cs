@@ -10,18 +10,18 @@ namespace OnlineStore.Services
 {
     public class CreateUserService : ICreateUserService
     {
-        private readonly OnlineStoreContext _dbConext;
+        private readonly OnlineStoreContext _dbContext;
         private readonly IPasswordHasher<User> _passwordHasher; 
 
         public CreateUserService(OnlineStoreContext onlineStoreContext, IPasswordHasher<User> passwordHasher)
         {
-            _dbConext = onlineStoreContext;
+            _dbContext = onlineStoreContext;
             _passwordHasher = passwordHasher;
         }
 
         public async Task<bool> CreateUserAsync(CreateUserDTO newUser)
         {
-            var existingUser = await _dbConext.Users.AnyAsync(user =>
+            var existingUser = await _dbContext.Users.AnyAsync(user =>
                 user.Username == newUser.Username);
 
             if (existingUser)
@@ -39,9 +39,9 @@ namespace OnlineStore.Services
 
             currentUser.PasswordHash = _passwordHasher.HashPassword(currentUser, newUser.Password);
 
-            _dbConext.Users.Add(currentUser);
+            _dbContext.Users.Add(currentUser);
 
-            await _dbConext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
             return true; 
         }

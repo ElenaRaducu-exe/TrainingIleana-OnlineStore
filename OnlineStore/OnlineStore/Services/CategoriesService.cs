@@ -6,39 +6,39 @@ namespace OnlineStore.Services
 {
     public class CategoriesService : ICategoriesService
     {
-        private readonly OnlineStoreContext _dbConext;
+        private readonly OnlineStoreContext _dbContext;
 
         public CategoriesService(OnlineStoreContext onlineStoreContext)
         {
-            _dbConext = onlineStoreContext;
+            _dbContext = onlineStoreContext;
         }
 
         public async Task<Category?> GetCategoryByIdAsync(int id)
         {
-            return _dbConext.Categories.FirstOrDefault(c => c.Id == id); 
+            return _dbContext.Categories.FirstOrDefault(c => c.Id == id); 
         }
 
         public async Task<List<Category>> GetCategoriesAsync()
         {
-            return _dbConext.Categories.ToList();
+            return _dbContext.Categories.ToList();
         }
 
         public async Task<string?> GetCategoryNameByIdAsync(int id)
         {
-            return _dbConext.Categories.FirstOrDefault(c => c.Id == id).CategoryName;
+            return _dbContext.Categories.FirstOrDefault(c => c.Id == id).CategoryName;
         }
 
         public async Task<int?> GetIdByCategoryNameAsync(string categoryName)
         {
             /*
-             * Category category = _dbConext.Categories.FirstOrDefault(c => c.CategoryName == categoryName);
+             * Category category = _dbContext.Categories.FirstOrDefault(c => c.CategoryName == categoryName);
             if(category == null)
             {
                 return null; 
             }
             return category.Id;
              */
-            return _dbConext.Categories.FirstOrDefault(c => c.CategoryName == categoryName).Id;
+            return _dbContext.Categories.FirstOrDefault(c => c.CategoryName == categoryName).Id;
         }
     }
 }

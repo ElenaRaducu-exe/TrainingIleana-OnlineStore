@@ -7,21 +7,21 @@ namespace OnlineStore.Services
 {
     public class UsersService : IUsersService
     {
-        private OnlineStoreContext _dbConext;
+        private OnlineStoreContext _dbContext;
 
-        public UsersService(OnlineStoreContext dbConext)
+        public UsersService(OnlineStoreContext dbContext)
         {
-            _dbConext = dbConext;
+            _dbContext = dbContext;
         }
 
         public async Task<List<User>> GetUsersAsync()
         {
-            return await _dbConext.Users.ToListAsync();
+            return await _dbContext.Users.ToListAsync();
         }
 
         public async Task<User?> GetUserByIdAsync(int id)
         {
-            return await _dbConext.Users.FirstOrDefaultAsync(u => u.Id == id);
+            return await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task<User> UpdateUserActiveMode(User user)
@@ -33,7 +33,7 @@ namespace OnlineStore.Services
 
             user.IsActive = !user.IsActive;
 
-            _dbConext.SaveChanges();
+            _dbContext.SaveChanges();
 
             return user;
         }
