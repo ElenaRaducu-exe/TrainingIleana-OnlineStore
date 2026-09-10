@@ -9,7 +9,7 @@ namespace OnlineStore.Controllers
     [Route("api/categories")]
     public class CategoryController : ControllerBase
     {
-        private ICategoriesService _categoriesService;
+        private readonly ICategoriesService _categoriesService;
 
         public CategoryController(ICategoriesService categoriesService)
         {

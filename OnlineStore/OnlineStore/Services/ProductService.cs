@@ -9,8 +9,8 @@ namespace OnlineStore.Services
     public class ProductService : IProductService
     {
         private OnlineStoreContext _dbConext;
-        private IBrandsService _brandsService;
-        private ICategoriesService _categoriesService;
+        private readonly IBrandsService _brandsService;
+        private readonly ICategoriesService _categoriesService;
 
         public ProductService(OnlineStoreContext onlineStoreContext, 
                                 IBrandsService brandsService, ICategoriesService categoriesService)

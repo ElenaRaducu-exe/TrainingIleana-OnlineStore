@@ -10,7 +10,7 @@ namespace OnlineStore.Controllers
     [Route("api/users")]
     public class UserController : ControllerBase
     {
-        private ICreateUserService _createUserService;
+        private readonly ICreateUserService _createUserService;
 
         public UserController(ICreateUserService createUserService)
         {

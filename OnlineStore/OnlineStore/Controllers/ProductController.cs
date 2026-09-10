@@ -9,7 +9,7 @@ namespace OnlineStore.Controllers
     [Route("api/admin/products")]
     public class ProductController : ControllerBase
     {
-        private IProductService _productService; 
+        private readonly IProductService _productService; 
 
         public ProductController(IProductService productService)
         {

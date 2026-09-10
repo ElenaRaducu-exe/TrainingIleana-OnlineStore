@@ -10,8 +10,8 @@ namespace OnlineStore.Services
 {
     public class CreateUserService : ICreateUserService
     {
-        private OnlineStoreContext _dbConext;
-        private IPasswordHasher<User> _passwordHasher; 
+        private readonly OnlineStoreContext _dbConext;
+        private readonly IPasswordHasher<User> _passwordHasher; 
 
         public CreateUserService(OnlineStoreContext onlineStoreContext, IPasswordHasher<User> passwordHasher)
         {

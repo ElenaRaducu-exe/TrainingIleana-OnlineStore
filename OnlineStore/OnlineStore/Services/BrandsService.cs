@@ -6,7 +6,7 @@ namespace OnlineStore.Services
 {
     public class BrandsService : IBrandsService
     {
-        private OnlineStoreContext _dbConext;
+        private readonly OnlineStoreContext _dbConext;
 
         public BrandsService(OnlineStoreContext dbConext)
         {

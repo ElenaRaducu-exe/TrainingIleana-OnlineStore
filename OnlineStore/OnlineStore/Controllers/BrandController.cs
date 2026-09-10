@@ -8,7 +8,7 @@ namespace OnlineStore.Controllers
     [Route("api/brands")]
     public class BrandController : ControllerBase
     {
-        private IBrandsService _brandsService;
+        private readonly IBrandsService _brandsService;
 
         public BrandController(IBrandsService brandsService)
         {

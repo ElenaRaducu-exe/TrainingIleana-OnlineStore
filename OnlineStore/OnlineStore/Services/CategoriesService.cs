@@ -6,7 +6,7 @@ namespace OnlineStore.Services
 {
     public class CategoriesService : ICategoriesService
     {
-        private OnlineStoreContext _dbConext;
+        private readonly OnlineStoreContext _dbConext;
 
         public CategoriesService(OnlineStoreContext onlineStoreContext)
         {

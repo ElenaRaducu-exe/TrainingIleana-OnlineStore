@@ -8,7 +8,7 @@ namespace OnlineStore.Controllers
     [Route("api/users/dashboard")]
     public class UsersController : ControllerBase
     {
-        private IUsersService _usersService;    
+        private readonly IUsersService _usersService;    
 
         public UsersController(IUsersService usersService)
         {
