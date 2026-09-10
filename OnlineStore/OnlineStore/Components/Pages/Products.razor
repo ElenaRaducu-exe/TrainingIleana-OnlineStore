@@ -1,6 +1,14 @@
 ﻿@page "/dashboard/products"
 
-@if (ProductsList != null)
+<MudText>
+    Using ProductCard
+</MudText>
+
+<MudText>
+    @Res.Lang.Label_Test
+</MudText>
+
+@if (ProductsList != null) 
 {
     @foreach (var product in ProductsList)
     {
