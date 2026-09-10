@@ -28,5 +28,18 @@ namespace OnlineStore.Controllers
 
             return Ok("Product added successfully!");
         }
+
+        [HttpGet("get/product/{id:int}")]
+        public async Task<IActionResult> GetProduct(int id)
+        {
+            var result = await _productService.GetProductDTOAsync(id);
+
+            if (result == null)
+            {
+                return BadRequest($"Product {id} not found!");
+            }
+
+            return Ok(result); 
+        }
     }
 }

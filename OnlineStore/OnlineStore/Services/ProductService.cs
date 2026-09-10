@@ -46,5 +46,27 @@ namespace OnlineStore.Services
 
             return true; 
         }
+
+        public async Task<ProductDTO?> GetProductDTOAsync(int id)
+        {
+            var product = _dbConext.Products.FirstOrDefault(p =>  p.Id == id);
+            string brandName = _brandsService.GetBrandNameByIdAsync(product.BrandId).Result; 
+            string categoryName = _categoriesService.GetCategoryNameByIdAsync(product.CategoryId).Result;
+
+            ProductDTO productDTO = new ProductDTO()
+            {
+                Id = id,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                Stock = product.Stock, 
+                ImageUrl = product.ImageUrl,
+                IsActive = product.IsActive,
+                Category = categoryName, 
+                Brand = brandName
+            }; 
+
+            return productDTO;
+        }
     }
 }
