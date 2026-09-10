@@ -7,5 +7,7 @@ namespace OnlineStore.Services.Contracts
         Task<bool> AddProductAsync(ProductDTO productDTO);
 
         Task<ProductDTO?> GetProductDTOAsync(int id);
+
+        Task<List<ProductDTO>> GetProductDTOsAsync(); 
     }
 }

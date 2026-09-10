@@ -41,5 +41,17 @@ namespace OnlineStore.Controllers
 
             return Ok(result); 
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetProductsDTO()
+        {
+            var result = await _productService.GetProductDTOsAsync();
+
+            if(result == null) {
+                return BadRequest(); 
+            }
+
+            return Ok(result); 
+        }
     }
 }
