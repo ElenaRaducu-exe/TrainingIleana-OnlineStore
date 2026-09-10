@@ -8,7 +8,7 @@ namespace OnlineStore.Services
 {
     public class ProductService : IProductService
     {
-        private OnlineStoreContext _dbContext;
+        private readonly OnlineStoreContext _dbContext;
         private readonly IBrandsService _brandsService;
         private readonly ICategoriesService _categoriesService;
 

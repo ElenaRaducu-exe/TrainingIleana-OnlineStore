@@ -9,9 +9,9 @@ namespace OnlineStore.JWTAuthentication.Services
 {
     public class AuthService : IAuthService
     {
-        private OnlineStoreContext _dbContext;
-        private IPasswordHasher<User> _passwordHasher;
-        private IJWTService _jwtService; 
+        private readonly OnlineStoreContext _dbContext;
+        private readonly IPasswordHasher<User> _passwordHasher;
+        private readonly IJWTService _jwtService; 
 
         public AuthService(OnlineStoreContext onlineStoreContext, 
                            IPasswordHasher<User> passwordHasher,

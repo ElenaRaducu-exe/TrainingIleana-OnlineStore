@@ -7,7 +7,7 @@ namespace OnlineStore.Services
 {
     public class UsersService : IUsersService
     {
-        private OnlineStoreContext _dbContext;
+        private readonly OnlineStoreContext _dbContext;
 
         public UsersService(OnlineStoreContext dbContext)
         {
