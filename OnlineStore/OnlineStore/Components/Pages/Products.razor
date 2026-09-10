@@ -19,5 +19,11 @@
                      ImageUrl="@product.ImageUrl"
                      Category="@product.Category"
                      Brand="@product.Brand" />
+
+        <MudButton Variant="Variant.Filled"
+                   Style="background-color: #C998ED;"
+                   OnClick="@(() => DeleteProduct(product.Id))">
+            Delete
+        </MudButton>
     }
 }

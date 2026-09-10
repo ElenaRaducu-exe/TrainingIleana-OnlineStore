@@ -93,5 +93,23 @@ namespace OnlineStore.Services
 
             return result;
         }
+
+        public async Task<bool> DeleteProduct(int id)
+        {
+            var product = _dbContext.Products.FirstOrDefault(p => p.Id == id);
+
+            if(product == null)
+            {
+                return false;
+            }
+            else
+            {
+                _dbContext.Products.Remove(product);
+
+                _dbContext.SaveChanges();
+
+                return true;
+            }
+        }
     }
 }

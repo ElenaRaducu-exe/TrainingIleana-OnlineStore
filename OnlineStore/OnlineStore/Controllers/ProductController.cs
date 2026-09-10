@@ -53,5 +53,18 @@ namespace OnlineStore.Controllers
 
             return Ok(result); 
         }
+
+        [HttpDelete("delete/product/{id:int}")]
+        public async Task<IActionResult> DeleteProduct(int id)
+        {
+            var result = await _productService.DeleteProduct(id); 
+
+            if(result == false)
+            {
+                return BadRequest();
+            }
+
+            return Ok(); 
+        }
     }
 }

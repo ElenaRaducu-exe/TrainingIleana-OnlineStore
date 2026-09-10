@@ -21,5 +21,23 @@ namespace OnlineStore.Components.Pages
 
             ProductsList = await httpClient.GetFromJsonAsync<List<ProductDTO>>("api/admin/products");
         }
+
+        protected async Task DeleteProduct(int? productId)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
+
+            if (productId != null)
+            {
+                var product = ProductsList.FirstOrDefault(p => p.Id == productId);
+                var response = await httpClient.DeleteAsync($"api/admin/products/delete/product/{productId}");
+
+                if (response.IsSuccessStatusCode && product != null)
+                {
+                    ProductsList.Remove(product);
+                    StateHasChanged(); 
+                }
+            }
+        }
     }
 }

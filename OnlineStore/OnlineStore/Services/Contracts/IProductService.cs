@@ -9,5 +9,7 @@ namespace OnlineStore.Services.Contracts
         Task<ProductDTO?> GetProductDTOAsync(int id);
 
         Task<List<ProductDTO>> GetProductDTOListAsync(); 
+
+        Task<bool> DeleteProduct(int id);
     }
 }

@@ -34,6 +34,6 @@ namespace OnlineStore.Components.Pages
         public string Brand { get; set; }
 
         [Parameter]
-        public RenderFragment ChildContent { get; set; } 
+        public RenderFragment ChildContent { get; set; }
     }
 }
