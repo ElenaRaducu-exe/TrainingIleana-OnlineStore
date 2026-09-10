@@ -3,7 +3,7 @@ using OnlineStore.Models;
 
 namespace OnlineStore.Components.Pages
 {
-    public partial class ProductCard : ComponentBase
+    public partial class ProductDetailsPage : ComponentBase
     {
         [Inject]
         private IHttpClientFactory _httpClientFactory { get; set; }
@@ -20,11 +20,6 @@ namespace OnlineStore.Components.Pages
         {
             var httpClient = _httpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(_navigation.BaseUri);
-
-            if(Id == null)
-            {
-                Id = 7;
-            }
 
             productDTO = await httpClient.GetFromJsonAsync<ProductDTO>($"api/admin/products/get/product/{Id}");
         }
