@@ -45,7 +45,7 @@ namespace OnlineStore.Controllers
         [HttpGet]
         public async Task<IActionResult> GetProductsDTO()
         {
-            var result = await _productService.GetProductDTOsAsync();
+            var result = await _productService.GetProductDTOListAsync();
 
             if(result == null) {
                 return BadRequest(); 

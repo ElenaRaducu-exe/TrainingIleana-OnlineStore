@@ -8,6 +8,6 @@ namespace OnlineStore.Services.Contracts
 
         Task<ProductDTO?> GetProductDTOAsync(int id);
 
-        Task<List<ProductDTO>> GetProductDTOsAsync(); 
+        Task<List<ProductDTO>> GetProductDTOListAsync(); 
     }
 }

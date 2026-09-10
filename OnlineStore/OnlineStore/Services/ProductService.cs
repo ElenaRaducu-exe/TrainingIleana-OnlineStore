@@ -69,7 +69,7 @@ namespace OnlineStore.Services
             return productDTO;
         }
 
-        public async Task<List<ProductDTO>?> GetProductDTOsAsync()
+        public async Task<List<ProductDTO>?> GetProductDTOListAsync()
         {
             List<Product> products = _dbContext.Products.ToList();
             List<ProductDTO> result = new List<ProductDTO>();
