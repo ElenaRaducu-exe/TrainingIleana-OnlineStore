@@ -11,5 +11,7 @@ namespace OnlineStore.Services.Contracts
         Task<string?> GetBrandNameByIdAsync(int id);
 
         Task<int?> GetIdByBrandNameAsync(string BrandName);
+
+        Task<Brand?> GetBrandByName(string brandName);
     }
 }

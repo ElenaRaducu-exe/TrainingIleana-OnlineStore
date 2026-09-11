@@ -39,5 +39,10 @@ namespace OnlineStore.Services
 
             return brand.Id;
         }
+
+        public async Task<Brand?> GetBrandByName(string brandName)
+        {
+            return _dbContext.Brands.FirstOrDefault(b => b.BrandName == brandName);
+        }
     }
 }

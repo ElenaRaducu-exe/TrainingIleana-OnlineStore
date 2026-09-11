@@ -1,4 +1,5 @@
 ﻿@page "/dashboard/products/add"
+@page "/dashboard/products/edit/{productId:int}"
 
 <h3>AddProductFrom</h3>
 
@@ -61,11 +62,23 @@
         }
     </MudSelect>
 
-    <MudButton Variant="Variant.Filled"
-               Style="background-color: #C998ED;"
-               OnClick="@AddProduct">
-        Add
-    </MudButton>
+    @if (productId == null)
+    {
+        <MudButton Variant="Variant.Filled"
+                   Style="background-color: #C998ED;"
+                   OnClick="@AddProduct">
+            Add
+        </MudButton>
+    }
+    else
+    {
+        <MudButton Variant="Variant.Filled"
+                   Style="background-color: #C998ED;"
+                   OnClick="@(() => EditProduct(_productDTO))">
+            Edit
+        </MudButton>
+    }
+
 </MudForm>
 
 @if (!string.IsNullOrEmpty(_priceErrorMessage))

@@ -127,5 +127,42 @@ namespace OnlineStore.Services
 
             return await GetProductDTOAsync(product.Id);
         }
+
+        public async Task<ProductDTO?> UpdateProduct(ProductDTO productDetails)
+        {
+            if (productDetails == null)
+            {
+                return null; 
+            }
+
+            var product = _dbContext.Products.FirstOrDefault(p => p.Id == productDetails.Id);
+            var brand = _brandsService.GetBrandByName(productDetails.Brand);
+            var category = _categoriesService.GetBrandByName(productDetails.Category);
+
+            if (product == null)
+            {
+                return null;
+            }
+
+            product.Name = productDetails.Name;
+            product.Description = productDetails.Description;
+            product.Price = productDetails.Price;
+            product.Stock = productDetails.Stock;
+            product.IsActive = productDetails.IsActive;
+
+            if (brand != null)
+            {
+                product.BrandId = brand.Id;
+            }
+
+            if (category != null)
+            {
+                product.CategoryId = category.Id;
+            }
+
+            _dbContext.SaveChanges(); // !!!!!! nu se salveaza in bd
+
+            return await GetProductDTOAsync(product.Id); 
+        }
     }
 }

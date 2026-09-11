@@ -8,5 +8,6 @@ namespace OnlineStore.Services.Contracts
         Task<Category?> GetCategoryByIdAsync(int id);
         Task<string?> GetCategoryNameByIdAsync(int id);
         Task<int?> GetIdByCategoryNameAsync(string categoryName);
+        Task<Category?> GetBrandByName(string categoryName);
     }
 }

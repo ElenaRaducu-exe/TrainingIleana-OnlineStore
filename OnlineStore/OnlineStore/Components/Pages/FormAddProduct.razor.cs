@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using OnlineStore.DBModels;
 using OnlineStore.Models;
+using OnlineStore.Services.Contracts;
 
 namespace OnlineStore.Components.Pages
 {
@@ -15,6 +16,9 @@ namespace OnlineStore.Components.Pages
         [Inject]
         private NavigationManager _navigation { get; set; }
 
+        [Inject]
+        private IProductService _productService { get; set; }
+
         private ProductDTO _productDTO = new();
 
         private List<Brand> _brands = new();
@@ -26,6 +30,9 @@ namespace OnlineStore.Components.Pages
         private bool _stockError = false;
         private string _stockErrorMessage = string.Empty;
 
+        [Parameter]
+        public int? productId { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             var httpClient = _httpClientFactory.CreateClient();
@@ -33,6 +40,11 @@ namespace OnlineStore.Components.Pages
 
             _brands = await httpClient.GetFromJsonAsync<List<Brand>>("api/brands");
             _categories = await httpClient.GetFromJsonAsync<List<Category>>("api/categories");
+
+            if(productId != null)
+            {
+                _productDTO = await _productService.GetProductDTOAsync(productId.Value); 
+            }
         }
 
         private async Task AddProduct()
@@ -68,6 +80,19 @@ namespace OnlineStore.Components.Pages
             {
                 _message = "Product added unsuccessfully!";
             }
+        }
+
+        protected async Task EditProduct(ProductDTO _productDTO)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
+
+            var response = await httpClient.PutAsJsonAsync($"api/admin/products/update/product/{_productDTO.Id}", _productDTO);
+
+            if (response.IsSuccessStatusCode)
+            {
+                _navigation.NavigateTo("/dashboard/products");
+            } 
         }
     }
 }

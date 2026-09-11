@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Components;
 using OnlineStore.DBModels;
 using OnlineStore.Models;
+using System.Net.NetworkInformation;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace OnlineStore.Components.Pages
 {
@@ -45,7 +47,7 @@ namespace OnlineStore.Components.Pages
             var httpClient = _httpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(_navigation.BaseUri);
 
-            var response = await httpClient.PutAsJsonAsync($"api/admin/products/update/product/{product.Id}", product);
+            var response = await httpClient.PutAsJsonAsync($"api/admin/products/update/product/active-status/{product.Id}", product); 
 
             if (response.IsSuccessStatusCode)
             {
@@ -63,6 +65,11 @@ namespace OnlineStore.Components.Pages
                     StateHasChanged();
                 }
             }
+        }
+
+        protected void RedirectToEditForm(int productId)
+        {
+            _navigation.NavigateTo($"/dashboard/products/edit/{productId}");
         }
     }
 }

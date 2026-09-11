@@ -36,6 +36,14 @@
                                OnClick="@(() => ChangeActiveMode(product))">
                         @(product.IsActive ? "Deactivate" : "Activate")
                     </MudButton>
+
+                    <MudSpacer />
+
+                    <MudButton Variant="Variant.Filled"
+                               Style="background-color: #C998ED; margin-top: 15px;"
+                               OnClick="@(() => RedirectToEditForm(product.Id))">
+                        Edit
+                    </MudButton>
                 </ProductCard>
             </MudItem>
         }
