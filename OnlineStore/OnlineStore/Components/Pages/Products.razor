@@ -10,20 +10,26 @@
 
 @if (ProductsList != null) 
 {
-    @foreach (var product in ProductsList)
-    {
-        <ProductCard Name = "@product.Name"
-                     Description = "@product.Description"
-                     Price = "@product.Price"
-                     Stock = "@product.Stock"
-                     ImageUrl="@product.ImageUrl"
-                     Category="@product.Category"
-                     Brand="@product.Brand" />
+    <MudGrid Spacing="6">
+        @foreach (var product in ProductsList)
+        {
+            <MudItem xs="12" sm="6" md="4" lg="4">
+                <ProductCard Name="@product.Name"
+                             Description="@product.Description"
+                             Price="@product.Price"
+                             Stock="@product.Stock"
+                             ImageUrl="@product.ImageUrl"
+                             Category="@product.Category"
+                             Brand="@product.Brand" >
 
-        <MudButton Variant="Variant.Filled"
-                   Style="background-color: #C998ED;"
-                   OnClick="@(() => DeleteProduct(product.Id))">
-            Delete
-        </MudButton>
-    }
+                    <MudButton Variant="Variant.Filled"
+                               Style="background-color: #C998ED; margin-top: 15px;"
+                               OnClick="@(() => DeleteProduct(product.Id))">
+                        Delete
+                    </MudButton>
+
+                </ProductCard>
+            </MudItem>
+        }
+    </MudGrid>
 }
