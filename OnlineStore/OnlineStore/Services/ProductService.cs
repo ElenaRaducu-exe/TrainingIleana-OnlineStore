@@ -111,5 +111,21 @@ namespace OnlineStore.Services
                 return true;
             }
         }
+
+        public async Task<ProductDTO?> ChangeActiveMode(int id)
+        { 
+            var product = _dbContext.Products.FirstOrDefault(p => p.Id == id);
+
+            if(product == null)
+            {
+                return null; 
+            }
+
+            product.IsActive = !product.IsActive;
+
+            _dbContext.SaveChanges();
+
+            return await GetProductDTOAsync(product.Id);
+        }
     }
 }

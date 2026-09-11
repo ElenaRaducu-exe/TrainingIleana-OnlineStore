@@ -26,9 +26,16 @@
                     <MudButton Variant="Variant.Filled"
                                Style="background-color: #C998ED; margin-top: 15px;"
                                OnClick="@(() => DeleteProduct(product.Id))">
-                        Delete
+                        @Res.Lang.Delete_Button
                     </MudButton>
 
+                    <MudSpacer />
+
+                    <MudButton Variant="Variant.Filled"
+                               Style="background-color: #C998ED; margin-top: 15px;"
+                               OnClick="@(() => ChangeActiveMode(product))">
+                        @(product.IsActive ? "Deactivate" : "Activate")
+                    </MudButton>
                 </ProductCard>
             </MudItem>
         }

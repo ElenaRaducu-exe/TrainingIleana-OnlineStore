@@ -61,6 +61,15 @@ namespace Res {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string Delete_Button {
+            get {
+                return ResourceManager.GetString("Delete_Button", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Test.
         /// </summary>
         public static string Label_Test {

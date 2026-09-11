@@ -66,5 +66,18 @@ namespace OnlineStore.Controllers
 
             return Ok(); 
         }
+
+        [HttpPut("update/product/{id:int}")]
+        public async Task<IActionResult> UpdateProductActiveMode([FromRoute] int id)
+        {
+            var updatedProduct = await _productService.ChangeActiveMode(id); 
+
+            if (updatedProduct == null)
+            {
+                return BadRequest("Product not found!");
+            }
+
+            return Ok(updatedProduct);
+        }
     }
 }

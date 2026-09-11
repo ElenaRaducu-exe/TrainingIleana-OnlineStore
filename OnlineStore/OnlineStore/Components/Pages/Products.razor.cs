@@ -35,7 +35,32 @@ namespace OnlineStore.Components.Pages
                 if (response.IsSuccessStatusCode && product != null)
                 {
                     ProductsList.Remove(product);
-                    StateHasChanged(); 
+                    StateHasChanged();
+                }
+            }
+        }
+
+        protected async Task ChangeActiveMode(ProductDTO product)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
+
+            var response = await httpClient.PutAsJsonAsync($"api/admin/products/update/product/{product.Id}", product);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var updatedProduct = await response.Content.ReadFromJsonAsync<ProductDTO>(); 
+
+                if(updatedProduct != null)
+                {
+                    var productList = ProductsList.FirstOrDefault(p => p.Id == product.Id);
+
+                    if(productList != null)
+                    {
+                        productList.IsActive = updatedProduct.IsActive;
+                    }
+
+                    StateHasChanged();
                 }
             }
         }

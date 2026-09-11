@@ -11,5 +11,7 @@ namespace OnlineStore.Services.Contracts
         Task<List<ProductDTO>> GetProductDTOListAsync(); 
 
         Task<bool> DeleteProduct(int id);
+
+        Task<ProductDTO> ChangeActiveMode(int id);
     }
 }
