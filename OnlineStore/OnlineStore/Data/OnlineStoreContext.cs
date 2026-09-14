@@ -89,7 +89,7 @@ public partial class OnlineStoreContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.BrandName)
-                .HasMaxLength(1)
+                .HasMaxLength(255)
                 .HasColumnName("brandName");
         });
 
@@ -162,7 +162,7 @@ public partial class OnlineStoreContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CategoryName)
-                .HasMaxLength(1)
+                .HasMaxLength(255)
                 .HasColumnName("categoryName");
         });
 
