@@ -30,8 +30,9 @@ namespace OnlineStore.JWTAuthentication.Providers
 
                 return token.Value;
             }
-            catch
+            catch(Exception ex)
             {
+                var message = ex.Message;
                 return null; 
             }
         }

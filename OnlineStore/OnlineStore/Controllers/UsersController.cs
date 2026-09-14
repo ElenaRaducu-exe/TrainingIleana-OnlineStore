@@ -6,7 +6,7 @@ namespace OnlineStore.Controllers
 {
     [ApiController]
     [Route("api/users/dashboard")]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class UsersController : ControllerBase
     {
         private readonly IUsersService _usersService;    
