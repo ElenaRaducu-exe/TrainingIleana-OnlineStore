@@ -14,6 +14,7 @@ using System.Text;
 using OnlineStore.JWTAuthentication.Handlers;
 using OnlineStore.JWTAuthentication.Providers;
 using Microsoft.AspNetCore.Components.Authorization;
+using OnlineStore.JWTAuthentication.Providers.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,12 +61,10 @@ builder.Services.AddScoped<JWTAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(provider =>
             provider.GetRequiredService<JWTAuthenticationStateProvider>());
 
-/*builder.Services.AddScoped<JWTAuthorizationHandler>();
-builder.Services.AddHttpClient("AuthenticatedClient",
-    client =>
-    {
-        client.BaseAddress = new Uri("https://localhost:7141/");
-    }).AddHttpMessageHandler<JWTAuthorizationHandler>(); */
+builder.Services.AddScoped<JWTAuthorizationHandler>();
+builder.Services.AddHttpClient("AuthenticatedUser").AddHttpMessageHandler<JWTAuthorizationHandler>();
+
+builder.Services.AddScoped<ITokenProvider, TokenProvider>();
 
 //Controllers
 builder.Services.AddControllers(); 

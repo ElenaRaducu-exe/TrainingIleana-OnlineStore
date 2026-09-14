@@ -30,7 +30,7 @@ namespace OnlineStore.Controllers
             return Ok("User created successfully!"); 
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet("test-auth")]
         public IActionResult TestAuthentication()
         {

@@ -32,7 +32,7 @@
             <MudButton Variant="Variant.Filled"
                        Style="background-color: #C998ED;"
                        @onclick="@(() => UpdateActiveMode(context.Id))">
-                Change active mode
+                @(context.IsActive ? Res.Lang.Btn_Deactivate : Res.Lang.Btn_Activate)
             </MudButton>
         </MudTh>
     </RowTemplate>

@@ -1,25 +1,27 @@
 ﻿using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using OnlineStore.JWTAuthentication.Providers;
+using OnlineStore.JWTAuthentication.Providers.Contracts;
 using System.Net.Http.Headers; 
 
 namespace OnlineStore.JWTAuthentication.Handlers
 {
     public class JWTAuthorizationHandler : DelegatingHandler
     {
-        private ProtectedSessionStorage _protectedSessionStorage; 
+        private readonly ITokenProvider _tokenProvider;
 
-        public JWTAuthorizationHandler(ProtectedSessionStorage protectedSessionStorage)
+        public JWTAuthorizationHandler(ITokenProvider tokenProvider)
         {
-            _protectedSessionStorage = protectedSessionStorage;
+            _tokenProvider = tokenProvider;
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, 
                         CancellationToken cancellationToken)
         {
-            var tokenResult = await _protectedSessionStorage.GetAsync<string>("authToken");
+            var tokenResult = await _tokenProvider.GetToken(); 
 
-            if(tokenResult.Success && !string.IsNullOrEmpty(tokenResult.Value))
+            if (!string.IsNullOrEmpty(tokenResult))
             {
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tokenResult.Value);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tokenResult);
             }
 
             return await base.SendAsync(request, cancellationToken);

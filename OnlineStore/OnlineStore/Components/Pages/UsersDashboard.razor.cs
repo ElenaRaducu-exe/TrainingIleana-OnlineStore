@@ -15,7 +15,7 @@ namespace OnlineStore.Components.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            var httpClient = _httpClientFactory.CreateClient();
+            var httpClient = _httpClientFactory.CreateClient("AuthenticatedUser");
             httpClient.BaseAddress = new Uri(_navigation.BaseUri);
 
             UsersList = await httpClient.GetFromJsonAsync<List<User>>("api/users/dashboard");
@@ -23,7 +23,7 @@ namespace OnlineStore.Components.Pages
 
         private async Task UpdateActiveMode(int id)
         {
-            var httpClient = _httpClientFactory.CreateClient();
+            var httpClient = _httpClientFactory.CreateClient("AuthenticatedUser");
             httpClient.BaseAddress = new Uri(_navigation.BaseUri);
 
             var user = await httpClient.GetFromJsonAsync<User>($"api/users/dashboard/{id}");
