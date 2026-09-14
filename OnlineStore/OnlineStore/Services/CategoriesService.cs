@@ -41,7 +41,7 @@ namespace OnlineStore.Services
             return _dbContext.Categories.FirstOrDefault(c => c.CategoryName == categoryName).Id;
         }
 
-        public async Task<Category?> GetBrandByName(string categoryName)
+        public async Task<Category?> GetCategoryByName(string categoryName)
         {
             return _dbContext.Categories.FirstOrDefault(c => c.CategoryName == categoryName);
         }

@@ -80,12 +80,20 @@ namespace OnlineStore.Controllers
             return Ok(updatedProduct);
         }
 
+        //"api/admin/products/update/product/{id:int}"
         [HttpPut("update/product/{id:int}")]
-        public async Task<IActionResult> UpdateProduct([FromRoute] int id)
+        public async Task<IActionResult> UpdateProduct([FromRoute] int id, [FromBody] ProductDTO productDetails)
         {
-            var updatedProduct = await _productService.GetProductDTOAsync(id); 
+            var productDTO = await _productService.GetProductDTOAsync(id); 
 
-            if(updatedProduct == null)
+            if(productDTO == null)
+            {
+                return BadRequest("Product not found!");
+            }
+
+            var updatedProduct = await _productService.UpdateProduct(productDetails);
+
+            if (updatedProduct == null)
             {
                 return BadRequest("Product not found!");
             }

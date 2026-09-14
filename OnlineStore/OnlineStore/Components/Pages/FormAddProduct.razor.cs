@@ -82,12 +82,12 @@ namespace OnlineStore.Components.Pages
             }
         }
 
-        protected async Task EditProduct(ProductDTO _productDTO)
+        protected async Task EditProduct(ProductDTO productDTO)
         {
             var httpClient = _httpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(_navigation.BaseUri);
 
-            var response = await httpClient.PutAsJsonAsync($"api/admin/products/update/product/{_productDTO.Id}", _productDTO);
+            var response = await httpClient.PutAsJsonAsync($"api/admin/products/update/product/{productDTO.Id}", productDTO);
 
             if (response.IsSuccessStatusCode)
             {

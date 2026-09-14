@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore;
 using OnlineStore.Data;
 using OnlineStore.DBModels;
 using OnlineStore.Models;
@@ -49,9 +50,9 @@ namespace OnlineStore.Services
 
         public async Task<ProductDTO?> GetProductDTOAsync(int id)
         {
-            var product = _dbContext.Products.FirstOrDefault(p =>  p.Id == id);
-            string brandName = _brandsService.GetBrandNameByIdAsync(product.BrandId).Result; 
-            string categoryName = _categoriesService.GetCategoryNameByIdAsync(product.CategoryId).Result;
+            var product = _dbContext.Products.AsNoTracking().FirstOrDefault(p =>  p.Id == id);
+            string brandName = await _brandsService.GetBrandNameByIdAsync(product.BrandId); 
+            string categoryName = await _categoriesService.GetCategoryNameByIdAsync(product.CategoryId);
 
             ProductDTO productDTO = new ProductDTO()
             {
@@ -135,34 +136,33 @@ namespace OnlineStore.Services
                 return null; 
             }
 
-            var product = _dbContext.Products.FirstOrDefault(p => p.Id == productDetails.Id);
-            var brand = _brandsService.GetBrandByName(productDetails.Brand);
-            var category = _categoriesService.GetBrandByName(productDetails.Category);
+            var productToUpdate = _dbContext.Products.FirstOrDefault(p => p.Id == productDetails.Id);
 
-            if (product == null)
+            if (productToUpdate == null)
             {
                 return null;
             }
 
-            product.Name = productDetails.Name;
-            product.Description = productDetails.Description;
-            product.Price = productDetails.Price;
-            product.Stock = productDetails.Stock;
-            product.IsActive = productDetails.IsActive;
+            var brandId = await _brandsService.GetIdByBrandNameAsync(productDetails.Brand);
+            var categoryId = await _categoriesService.GetIdByCategoryNameAsync(productDetails.Category);
 
-            if (brand != null)
+            if (brandId == null || categoryId == null)
             {
-                product.BrandId = brand.Id;
+                return null; 
             }
 
-            if (category != null)
-            {
-                product.CategoryId = category.Id;
-            }
+            productToUpdate.Name = productDetails.Name;
+            productToUpdate.Description = productDetails.Description;
+            productToUpdate.Price = productDetails.Price;
+            productToUpdate.Stock = productDetails.Stock;
+            productToUpdate.ImageUrl = productDetails.ImageUrl;
+            productToUpdate.IsActive = productDetails.IsActive;
+            productToUpdate.BrandId = brandId.Value; 
+            productToUpdate.CategoryId = categoryId.Value;
 
-            _dbContext.SaveChanges(); // !!!!!! nu se salveaza in bd
+            _dbContext.SaveChanges(); 
 
-            return await GetProductDTOAsync(product.Id); 
+            return await GetProductDTOAsync(productToUpdate.Id); 
         }
     }
 }
