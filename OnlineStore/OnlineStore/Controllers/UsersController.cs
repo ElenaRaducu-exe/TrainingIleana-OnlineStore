@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using OnlineStore.DBModels;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OnlineStore.Services.Contracts;
 
 namespace OnlineStore.Controllers
 {
     [ApiController]
     [Route("api/users/dashboard")]
+    [Authorize(Roles = "Admin")]
     public class UsersController : ControllerBase
     {
         private readonly IUsersService _usersService;    
@@ -30,7 +31,7 @@ namespace OnlineStore.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
-        public async Task<IActionResult> GetUserBtId([FromRoute] int id)
+        public async Task<IActionResult> GetUserById([FromRoute] int id)
         {
             var user = await _usersService.GetUserByIdAsync(id); 
 

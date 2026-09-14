@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using OnlineStore.JWTAuthentication.Handlers;
+using OnlineStore.JWTAuthentication.Providers;
+using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +56,9 @@ builder.Services.AddAuthentication(options =>
         });
 builder.Services.AddAuthorization(); 
 builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddScoped<JWTAuthenticationStateProvider>();
+builder.Services.AddScoped<AuthenticationStateProvider>(provider =>
+            provider.GetRequiredService<JWTAuthenticationStateProvider>());
 
 /*builder.Services.AddScoped<JWTAuthorizationHandler>();
 builder.Services.AddHttpClient("AuthenticatedClient",

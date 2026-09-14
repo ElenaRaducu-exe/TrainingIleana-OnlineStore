@@ -1,6 +1,9 @@
 ﻿@page "/dashboard/users"
 
 @using OnlineStore.DBModels; 
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize(Roles = "Admin")]
 
 <h1>UsersDashboard</h1>
 

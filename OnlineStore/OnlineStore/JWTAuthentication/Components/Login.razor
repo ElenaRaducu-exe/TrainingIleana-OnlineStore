@@ -3,6 +3,7 @@
 @using MudBlazor
 
 @using OnlineStore.JWTAuthentication.Models.DTOs
+@using OnlineStore.JWTAuthentication.Providers
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage 
 
 <h3>Login</h3>
@@ -48,7 +49,7 @@
     private NavigationManager _navigation { get; set; }
 
     [Inject]
-    private ProtectedSessionStorage _sessionStorage { get; set; }
+    private JWTAuthenticationStateProvider _authStateProvider { get; set; }
 
     private LoginRequestDTO _loginRequest { get; set; } = new();
     private string _errorMessage = string.Empty; 
@@ -83,6 +84,6 @@
             _successMessage = "Login Succed!";
         }
 
-        await _sessionStorage.SetAsync("authToken", loginResponse.TokenJWT); 
+        await _authStateProvider.LoginAsync(loginResponse.TokenJWT);
     }
 }

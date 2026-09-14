@@ -1,26 +1,31 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
+
 <MudNavMenu>
     <MudNavLink Href="/" Match="NavLinkMatch.All">
         Home
     </MudNavLink>
 
-    <MudNavGroup Title="Dashboard" Expanded="true">
-        <MudNavLink Href="/dashboard/users">
-            Users
-        </MudNavLink>
+    <MudNavLink Href="/dashboard/products">
+        Products
+    </MudNavLink>
 
-        <MudNavLink Href="/dashboard/products/add">
-            Add Product
+    <AuthorizeView>
+        <MudNavLink Href="/logout">
+            Log out
         </MudNavLink>
+    </AuthorizeView>
 
-        <MudNavLink Href="/dashboard/products/{id}">
-            Read Product
-        </MudNavLink>
+    <AuthorizeView Roles="Admin">
+        <MudNavGroup Title="Dashboard" Expanded="true">
+            <MudNavLink Href="/dashboard/users">
+                Users
+            </MudNavLink>
 
-        <MudNavLink Href="/dashboard/products">
-            Products
-        </MudNavLink>
-    </MudNavGroup>
+            <MudNavLink Href="/dashboard/products/add">
+                Add Product
+            </MudNavLink>
+        </MudNavGroup>
+    </AuthorizeView>
 
     <MudNavLink Href="/user/form">
         Sign Up
@@ -28,9 +33,5 @@
 
     <MudNavLink Href="/login">
         Log in
-    </MudNavLink>
-
-    <MudNavLink Href="/logout">
-        Log out
     </MudNavLink>
 </MudNavMenu>

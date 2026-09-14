@@ -1,5 +1,7 @@
 ﻿@page "/dashboard/products"
 
+@using Microsoft.AspNetCore.Components.Authorization
+
 <MudText>
     Using ProductCard
 </MudText>
@@ -25,27 +27,30 @@
                              IsActive="@product.IsActive"
                              OnSelectedId="@RedirectToProductDetailsPage">
 
-                    <MudButton Variant="Variant.Filled"
-                               Style="background-color: #C998ED; margin-top: 15px;"
-                               OnClick="@(() => DeleteProduct(product.Id))">
-                        @Res.Lang.Delete_Button
-                    </MudButton>
+                    <AuthorizeView Roles="Admin">
+                        <MudButton Variant="Variant.Filled"
+                                   Style="background-color: #C998ED; margin-top: 15px;"
+                                   OnClick="@(() => DeleteProduct(product.Id))">
+                            @Res.Lang.Delete_Button
+                        </MudButton>
 
-                    <MudSpacer />
+                        <MudSpacer />
 
-                    <MudButton Variant="Variant.Filled"
-                               Style="background-color: #C998ED; margin-top: 15px;"
-                               OnClick="@(() => ChangeActiveMode(product))">
-                        @(product.IsActive ? "Deactivate" : "Activate")
-                    </MudButton>
+                        <MudButton Variant="Variant.Filled"
+                                   Style="background-color: #C998ED; margin-top: 15px;"
+                                   OnClick="@(() => ChangeActiveMode(product))">
+                            @(product.IsActive ? "Deactivate" : "Activate")
+                        </MudButton>
 
-                    <MudSpacer />
+                        <MudSpacer />
 
-                    <MudButton Variant="Variant.Filled"
-                               Style="background-color: #C998ED; margin-top: 15px;"
-                               OnClick="@(() => RedirectToEditForm(product.Id))">
-                        Edit
-                    </MudButton>
+                        <MudButton Variant="Variant.Filled"
+                                   Style="background-color: #C998ED; margin-top: 15px;"
+                                   OnClick="@(() => RedirectToEditForm(product.Id))">
+                            Edit
+                        </MudButton>
+                    </AuthorizeView>
+                    
                 </ProductCard>
             </MudItem>
         }

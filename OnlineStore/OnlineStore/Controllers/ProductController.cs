@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using OnlineStore.Models;
 using OnlineStore.Services;
 using OnlineStore.Services.Contracts;
@@ -17,6 +18,7 @@ namespace OnlineStore.Controllers
         }
 
         [HttpPost("add/product")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddProduct(ProductDTO newProduct)
         {
             var result = await _productService.AddProductAsync(newProduct);
@@ -55,6 +57,7 @@ namespace OnlineStore.Controllers
         }
 
         [HttpDelete("delete/product/{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var result = await _productService.DeleteProduct(id); 
@@ -68,6 +71,7 @@ namespace OnlineStore.Controllers
         }
 
         [HttpPut("update/product/active-status/{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateProductActiveMode([FromRoute] int id)
         {
             var updatedProduct = await _productService.ChangeActiveMode(id); 
@@ -82,6 +86,7 @@ namespace OnlineStore.Controllers
 
         //"api/admin/products/update/product/{id:int}"
         [HttpPut("update/product/{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateProduct([FromRoute] int id, [FromBody] ProductDTO productDetails)
         {
             var productDTO = await _productService.GetProductDTOAsync(id); 
