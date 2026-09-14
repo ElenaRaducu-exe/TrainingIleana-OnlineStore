@@ -16,6 +16,8 @@ namespace OnlineStore.Components.Pages
 
         public List<ProductDTO> ProductsList = new(); 
 
+        public int SelectedProductId { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             var httpClient = _httpClientFactory.CreateClient();
@@ -70,6 +72,12 @@ namespace OnlineStore.Components.Pages
         protected void RedirectToEditForm(int productId)
         {
             _navigation.NavigateTo($"/dashboard/products/edit/{productId}");
+        }
+
+        protected void RedirectToProductDetailsPage(int id)
+        {
+            SelectedProductId = id;
+            _navigation.NavigateTo($"/dashboard/products/{SelectedProductId}");
         }
     }
 }

@@ -34,6 +34,14 @@ namespace OnlineStore.Components.Pages
         public string Brand { get; set; }
 
         [Parameter]
+        public EventCallback<int> OnSelectedId { get; set; }
+
+        [Parameter]
         public RenderFragment ChildContent { get; set; }
+
+        private async Task ProductCardClicked()
+        {
+            await OnSelectedId.InvokeAsync(ProductId);
+        }
     }
 }

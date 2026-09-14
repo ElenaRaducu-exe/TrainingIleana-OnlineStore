@@ -14,14 +14,16 @@
         @foreach (var product in ProductsList)
         {
             <MudItem xs="12" sm="6" md="4" lg="4">
-                <ProductCard Name="@product.Name"
+                <ProductCard ProductId="@product.Id"
+                             Name="@product.Name"
                              Description="@product.Description"
                              Price="@product.Price"
                              Stock="@product.Stock"
                              ImageUrl="@product.ImageUrl"
                              Category="@product.Category"
                              Brand="@product.Brand" 
-                             IsActive="@product.IsActive">
+                             IsActive="@product.IsActive"
+                             OnSelectedId="@RedirectToProductDetailsPage">
 
                     <MudButton Variant="Variant.Filled"
                                Style="background-color: #C998ED; margin-top: 15px;"

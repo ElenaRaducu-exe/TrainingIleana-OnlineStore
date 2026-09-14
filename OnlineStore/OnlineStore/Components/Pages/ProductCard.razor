@@ -1,4 +1,5 @@
-﻿<MudCard Style="@($"height: 100%; background-color: {(!IsActive ? "#e0e0e0" : "")}")">
+﻿<MudCard Style="@($"height: 100%; background-color: {(!IsActive ? "#e0e0e0" : "")}")"
+         onclick="@ProductCardClicked">
     <MudCardMedia Image="@ImageUrl" 
                   Height="300" 
                   Style="background-size: contain;
