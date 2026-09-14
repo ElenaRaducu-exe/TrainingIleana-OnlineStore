@@ -2,14 +2,6 @@
 
 @using Microsoft.AspNetCore.Components.Authorization
 
-<MudText>
-    Using ProductCard
-</MudText>
-
-<MudText>
-    @Res.Lang.Label_Test
-</MudText>
-
 @if (ProductsList != null) 
 {
     <MudGrid Spacing="6">
@@ -31,7 +23,7 @@
                         <MudButton Variant="Variant.Filled"
                                    Style="background-color: #C998ED; margin-top: 15px;"
                                    OnClick="@(() => DeleteProduct(product.Id))">
-                            @Res.Lang.Delete_Button
+                            @Res.Lang.Btn_Delete
                         </MudButton>
 
                         <MudSpacer />
@@ -39,7 +31,7 @@
                         <MudButton Variant="Variant.Filled"
                                    Style="background-color: #C998ED; margin-top: 15px;"
                                    OnClick="@(() => ChangeActiveMode(product))">
-                            @(product.IsActive ? "Deactivate" : "Activate")
+                            @(product.IsActive ? Res.Lang.Btn_Deactivate : Res.Lang.Btn_Activate)
                         </MudButton>
 
                         <MudSpacer />
@@ -47,7 +39,7 @@
                         <MudButton Variant="Variant.Filled"
                                    Style="background-color: #C998ED; margin-top: 15px;"
                                    OnClick="@(() => RedirectToEditForm(product.Id))">
-                            Edit
+                            @Res.Lang.Btn_Edit
                         </MudButton>
                     </AuthorizeView>
                     

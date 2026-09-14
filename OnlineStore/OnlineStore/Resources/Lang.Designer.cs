@@ -61,11 +61,38 @@ namespace Res {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Activate.
+        /// </summary>
+        public static string Btn_Activate {
+            get {
+                return ResourceManager.GetString("Btn_Activate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deactivate.
+        /// </summary>
+        public static string Btn_Deactivate {
+            get {
+                return ResourceManager.GetString("Btn_Deactivate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
-        public static string Delete_Button {
+        public static string Btn_Delete {
             get {
-                return ResourceManager.GetString("Delete_Button", resourceCulture);
+                return ResourceManager.GetString("Btn_Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit.
+        /// </summary>
+        public static string Btn_Edit {
+            get {
+                return ResourceManager.GetString("Btn_Edit", resourceCulture);
             }
         }
         
