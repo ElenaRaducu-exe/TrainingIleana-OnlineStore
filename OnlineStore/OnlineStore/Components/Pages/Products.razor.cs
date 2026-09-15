@@ -16,18 +16,9 @@ namespace OnlineStore.Components.Pages
         [Inject]
         private NavigationManager _navigation { get; set; }
 
-        [Inject]
-        private IBrandsService _brandService { get; set; }
-
-        [Inject]
-        private ICategoriesService _categoryService { get; set; }
-
         public List<ProductDTO> ProductsList = new(); 
 
         public int SelectedProductId { get; set; }
-
-        private string _brand {  get; set; }
-        private string _category {  get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -89,11 +80,6 @@ namespace OnlineStore.Components.Pages
         {
             SelectedProductId = id;
             _navigation.NavigateTo($"/dashboard/products/{SelectedProductId}");
-        }
-
-        protected async Task<string> GetBrandName(int id)
-        {
-            return await _brandService.GetBrandNameByIdAsync(id); 
         }
     }
 }

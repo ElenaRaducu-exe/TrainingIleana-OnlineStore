@@ -60,27 +60,10 @@ namespace OnlineStore.Services
 
         public async Task<List<ProductDTO>?> GetProductDTOListAsync()
         {
-            List<Product> products = _dbContext.Products.ToList();
-            List<ProductDTO> result = new List<ProductDTO>();
-            
-            if(products != null)
-            {
-                foreach (var product in products)
-                {
-                    ProductDTO productDTO = await GetProductDTOAsync(product.Id);
+            return await _dbContext.Database.SqlQuery<ProductDTO>($"exec dbo.spGetProducts").ToListAsync();
 
-                    if (productDTO != null)
-                    {
-                        result.Add(productDTO);
-                    }
-                }
-            }
-            else
-            {
-                return null; 
-            }
-
-            return result;
+            //List<Product> productDTOs = _dbContext.Products.ToList();
+            //return _mapper.Map<List<ProductDTO>>(productDTOs);
         }
 
         public async Task<bool> DeleteProduct(int id)
