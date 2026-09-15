@@ -1,7 +1,13 @@
 ﻿@page "/dashboard/products/{Id:int}"
 
+@using Microsoft.AspNetCore.Components.Authorization
+
 <MudCard>
-    <MudCardMedia Image="@productDTO.ImageUrl" Height="200" />
+    <MudCardMedia Image="@productDTO.ImageUrl" 
+                  Height="300"
+                  Style="background-size: contain;
+                         background-repeat: no-repeat;
+                         background-position: center;" />
     <MudCardContent>
         <MudText Align="Align.Center" Typo="Typo.h5">@productDTO.Name</MudText>
         <MudText Align="Align.Center" Typo="Typo.subtitle1">@productDTO.Description</MudText>
@@ -9,19 +15,20 @@
         <MudText Align="Align.Center" Typo="Typo.body2">Stock: @productDTO.Stock | Price: @productDTO.Price</MudText>
     </MudCardContent>
 
-    <MudCardActions>
-        <MudButton 
-            Variant="Variant.Filled"
-            Style="background-color: #C998ED;"
-            OnClick="@DeleteProduct">
-            Delete
-        </MudButton>
+    <AuthorizeView Roles="Admin">
+        <MudCardActions>
+            <MudButton Variant="Variant.Filled"
+                       Style="background-color: #C998ED;"
+                       OnClick="@DeleteProduct">
+                @Res.Lang.Btn_Delete
+            </MudButton>
 
-        <MudButton 
-            Variant="Variant.Filled"
-            Style="background-color: #C998ED;"
-            OnClick="@EditProduct">
-            Edit
-        </MudButton>
-    </MudCardActions>
+            <MudButton Variant="Variant.Filled"
+                       Style="background-color: #C998ED;"
+                       OnClick="@EditProduct">
+                @Res.Lang.Btn_Edit
+            </MudButton>
+        </MudCardActions>
+    </AuthorizeView>
+
 </MudCard>
