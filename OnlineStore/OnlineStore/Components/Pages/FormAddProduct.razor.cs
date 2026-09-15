@@ -81,6 +81,9 @@ namespace OnlineStore.Components.Pages
                 _stockErrorMessage = string.Empty;
                 _priceError = false;
                 _priceErrorMessage = string.Empty;
+
+                await Task.Delay(2000);
+                _navigation.NavigateTo("/dashboard/products");
             }
             else
             {
