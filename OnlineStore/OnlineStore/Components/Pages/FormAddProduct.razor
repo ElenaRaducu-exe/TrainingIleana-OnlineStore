@@ -36,9 +36,8 @@
                   RequiredError="ImageURL is required!" />
 
     <MudSwitch @bind-Value="_productDTO.IsActive"
-               Label="Active Mode">
-        @(_productDTO.IsActive ? "Active" : "Inactive")
-    </MudSwitch>
+               Label="Active Mode"
+               Color="Color.Success"/>
 
     <MudSelect T="int"
                @bind-value="_productDTO.BrandId"
