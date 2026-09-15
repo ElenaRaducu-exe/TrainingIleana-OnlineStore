@@ -1,11 +1,19 @@
 using Microsoft.AspNetCore.Components;
+using OnlineStore.DBModels;
 using OnlineStore.Models;
+using OnlineStore.Services.Contracts;
 using System.ComponentModel.DataAnnotations;
 
 namespace OnlineStore.Components.Pages
 {
     public partial class ProductCard : ComponentBase
     {
+        [Inject]
+        private IBrandsService _brandsService {  get; set; }
+
+        [Inject]
+        private ICategoriesService _categoriesService { get; set; }
+
         [Parameter]
         public int ProductId { get; set; }
 
@@ -28,10 +36,10 @@ namespace OnlineStore.Components.Pages
         public bool IsActive { get; set; }
 
         [Parameter]
-        public string Category { get; set; }
+        public int CategoryId { get; set; }
 
         [Parameter]
-        public string Brand { get; set; }
+        public int BrandId { get; set; }
 
         [Parameter]
         public EventCallback<int> OnSelectedId { get; set; }
@@ -39,9 +47,18 @@ namespace OnlineStore.Components.Pages
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
+        private Brand _brand { get; set; } = new();
+        private Category _category { get; set; } = new(); 
+
         private async Task ProductCardClicked()
         {
             await OnSelectedId.InvokeAsync(ProductId);
+        }
+
+        protected override async Task OnInitializedAsync()
+        {
+            _brand = await _brandsService.GetBrandByIdAsync(BrandId);
+            _category = await _categoriesService.GetCategoryByIdAsync(CategoryId); 
         }
     }
 }
