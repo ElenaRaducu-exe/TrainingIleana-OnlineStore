@@ -1,20 +1,21 @@
+using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using MudBlazor.Services;
 using OnlineStore.Components;
-using OnlineStore.DBModels;
-using OnlineStore.Services.Contracts;
-using OnlineStore.Services;
-using OnlineStore.JWTAuthentication.Services.Contracts;
-using OnlineStore.JWTAuthentication.Services;
 using OnlineStore.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using OnlineStore.DBModels;
 using OnlineStore.JWTAuthentication.Handlers;
 using OnlineStore.JWTAuthentication.Providers;
-using Microsoft.AspNetCore.Components.Authorization;
 using OnlineStore.JWTAuthentication.Providers.Contracts;
+using OnlineStore.JWTAuthentication.Services;
+using OnlineStore.JWTAuthentication.Services.Contracts;
+using OnlineStore.Services;
+using OnlineStore.Services.Contracts;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -76,6 +77,24 @@ builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IBrandsService, BrandsService>();
 builder.Services.AddScoped<ICategoriesService, CategoriesService>();
+
+//AutoMapper
+/*builder.Services.AddScoped<ILoggerFactory, LoggerFactory>();
+builder.Services.AddSingleton<IMapper>(
+    serviceProvider =>
+    {
+        var config = new MapperConfiguration(cfg =>
+        {
+            // Add your profiles or mapping configurations
+            cfg.AddMaps(typeof(Program).Assembly);
+        }, serviceProvider.GetService<ILoggerFactory>());
+
+        return config.CreateMapper();
+    });*/
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.LicenseKey = builder.Configuration["AutoMapper:LicenseKey"]!;
+}, typeof(Program).Assembly);
 
 var app = builder.Build();
 

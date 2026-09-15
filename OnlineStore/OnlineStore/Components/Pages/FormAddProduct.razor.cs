@@ -19,6 +19,12 @@ namespace OnlineStore.Components.Pages
         [Inject]
         private IProductService _productService { get; set; }
 
+        [Inject]
+        private IBrandsService _brandService { get; set; }
+
+        [Inject]
+        private ICategoriesService _categoryService { get; set; }
+
         private ProductDTO _productDTO = new();
 
         private List<Brand> _brands = new();
@@ -43,7 +49,7 @@ namespace OnlineStore.Components.Pages
 
             if(productId != null)
             {
-                _productDTO = await _productService.GetProductDTOAsync(productId.Value); 
+                _productDTO = await _productService.GetProductDTOAsync(productId.Value);
             }
         }
 
@@ -92,7 +98,7 @@ namespace OnlineStore.Components.Pages
             if (response.IsSuccessStatusCode)
             {
                 _navigation.NavigateTo("/dashboard/products");
-            } 
+            }
         }
     }
 }

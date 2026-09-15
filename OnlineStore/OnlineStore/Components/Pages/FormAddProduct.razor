@@ -40,27 +40,27 @@
         @(_productDTO.IsActive ? "Active" : "Inactive")
     </MudSwitch>
 
-    <MudSelect T="string"
-               @bind-value="_productDTO.Brand"
+    <MudSelect T="int"
+               @bind-value="_productDTO.BrandId"
                Label="Brand"
                Required="true"
                RequiredError="Brand is required!">
-        @foreach(var brand in _brands)
+        @foreach (var brand in _brands)
         {
-            <MudSelectItem value="@brand.BrandName">
+            <MudSelectItem value="@brand.Id">
                 @brand.BrandName
             </MudSelectItem>
         }
     </MudSelect>
 
-    <MudSelect T="string"
-               @bind-value="_productDTO.Category"
+    <MudSelect T="int"
+               @bind-value="@_productDTO.CategoryId"
                Label="Category"
                Required="true"
                RequiredError="Category is required!">
-        @foreach(var category in _categories)
+        @foreach (var category in _categories)
         {
-            <MudSelectItem value="@category.CategoryName">
+            <MudSelectItem value="@category.Id">
                 @category.CategoryName
             </MudSelectItem>
         }
@@ -71,7 +71,7 @@
         <MudButton Variant="Variant.Filled"
                    Style="background-color: #C998ED;"
                    OnClick="@AddProduct">
-            Add
+            @Res.Lang.Btn_Add
         </MudButton>
     }
     else
@@ -79,7 +79,7 @@
         <MudButton Variant="Variant.Filled"
                    Style="background-color: #C998ED;"
                    OnClick="@(() => EditProduct(_productDTO))">
-            Edit
+            @Res.Lang.Btn_Edit
         </MudButton>
     }
 

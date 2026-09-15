@@ -1,0 +1,20 @@
+﻿using AutoMapper;
+using OnlineStore.DBModels;
+
+namespace OnlineStore.Models
+{
+    public class ProductMappingProfile : Profile
+    {
+        public ProductMappingProfile() 
+        {
+            // Basic mapping - properties with matching names are mapped automatically
+            CreateMap<Product, ProductDTO>();
+
+            // Reverse mapping for going both directions
+            CreateMap<ProductDTO, Product>();
+
+            // Or use ReverseMap() for bidirectional mapping
+            //CreateMap<Product, ProductDTO>().ReverseMap();
+        }
+    }
+}

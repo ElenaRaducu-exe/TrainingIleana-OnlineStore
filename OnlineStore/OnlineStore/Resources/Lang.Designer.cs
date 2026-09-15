@@ -70,6 +70,15 @@ namespace Res {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        public static string Btn_Add {
+            get {
+                return ResourceManager.GetString("Btn_Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deactivate.
         /// </summary>
         public static string Btn_Deactivate {

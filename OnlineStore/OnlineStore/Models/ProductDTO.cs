@@ -25,9 +25,9 @@ namespace OnlineStore.Models
         public bool IsActive { get; set; }
 
         [Required]
-        public string Category {  get; set; }
+        public int CategoryId {  get; set; }
 
         [Required]
-        public string Brand {  get; set; }
+        public int BrandId {  get; set; }
     }
 }

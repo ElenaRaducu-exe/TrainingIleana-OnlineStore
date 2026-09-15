@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using OnlineStore.Data;
 using OnlineStore.DBModels;
@@ -12,34 +13,27 @@ namespace OnlineStore.Services
         private readonly OnlineStoreContext _dbContext;
         private readonly IBrandsService _brandsService;
         private readonly ICategoriesService _categoriesService;
-
+        private readonly IMapper _mapper;
         public ProductService(OnlineStoreContext onlineStoreContext, 
-                                IBrandsService brandsService, ICategoriesService categoriesService)
+                                IBrandsService brandsService, 
+                                ICategoriesService categoriesService,
+                                IMapper mapper)
         {
             _dbContext = onlineStoreContext;
             _brandsService = brandsService;
             _categoriesService = categoriesService;
+            _mapper = mapper;
         }
 
         public async Task<bool> AddProductAsync(ProductDTO productDTO)
         {
             if(productDTO.Stock < 0 || productDTO.Price <= 0 || productDTO.Name == null 
-                || productDTO.Category == null || productDTO.Brand == null)
+                || productDTO.BrandId == null || productDTO.CategoryId == null)
             {
                 return false; 
             }
 
-            Product newProduct = new Product()
-            {
-                Name = productDTO.Name,
-                Description = productDTO.Description,
-                Price = productDTO.Price,
-                Stock = productDTO.Stock,
-                ImageUrl = productDTO.ImageUrl,
-                IsActive = productDTO.IsActive,
-                CategoryId = (int)_categoriesService.GetIdByCategoryNameAsync(productDTO.Category).Result, 
-                BrandId = (int)_brandsService.GetIdByBrandNameAsync(productDTO.Brand).Result
-            };
+            Product newProduct = _mapper.Map<Product>(productDTO);
 
             _dbContext.Products.Add(newProduct); 
 
@@ -50,22 +44,16 @@ namespace OnlineStore.Services
 
         public async Task<ProductDTO?> GetProductDTOAsync(int id)
         {
-            var product = _dbContext.Products.AsNoTracking().FirstOrDefault(p =>  p.Id == id);
+            var product = _dbContext.Products.FirstOrDefault(p =>  p.Id == id);
             string brandName = await _brandsService.GetBrandNameByIdAsync(product.BrandId); 
             string categoryName = await _categoriesService.GetCategoryNameByIdAsync(product.CategoryId);
 
-            ProductDTO productDTO = new ProductDTO()
+            ProductDTO productDTO = _mapper.Map<ProductDTO>(product);
+
+            if(productDTO == null)
             {
-                Id = id,
-                Name = product.Name,
-                Description = product.Description,
-                Price = product.Price,
-                Stock = product.Stock, 
-                ImageUrl = product.ImageUrl,
-                IsActive = product.IsActive,
-                Category = categoryName, 
-                Brand = brandName
-            }; 
+                return null; 
+            }
 
             return productDTO;
         }
@@ -143,25 +131,18 @@ namespace OnlineStore.Services
                 return null;
             }
 
-            var brandId = await _brandsService.GetIdByBrandNameAsync(productDetails.Brand);
-            var categoryId = await _categoriesService.GetIdByCategoryNameAsync(productDetails.Category);
-
-            if (brandId == null || categoryId == null)
-            {
-                return null; 
-            }
-
             productToUpdate.Name = productDetails.Name;
             productToUpdate.Description = productDetails.Description;
             productToUpdate.Price = productDetails.Price;
             productToUpdate.Stock = productDetails.Stock;
             productToUpdate.ImageUrl = productDetails.ImageUrl;
             productToUpdate.IsActive = productDetails.IsActive;
-            productToUpdate.BrandId = brandId.Value; 
-            productToUpdate.CategoryId = categoryId.Value;
+            productToUpdate.BrandId = productDetails.BrandId;
+            productToUpdate.CategoryId = productDetails.CategoryId;
 
-            _dbContext.SaveChanges(); 
+            await _dbContext.SaveChangesAsync(); 
 
+            // -------
             return await GetProductDTOAsync(productToUpdate.Id); 
         }
     }
