@@ -19,16 +19,25 @@
         <MudCardActions>
             <MudButton Variant="Variant.Filled"
                        Style="background-color: #C998ED;"
-                       OnClick="@DeleteProduct">
+                       OnClick="@(() => DeleteProduct(productDTO.Id))">
                 @Res.Lang.Btn_Delete
             </MudButton>
 
             <MudButton Variant="Variant.Filled"
                        Style="background-color: #C998ED;"
-                       OnClick="@EditProduct">
+                       OnClick="@(() => EditProduct(productDTO.Id))">
                 @Res.Lang.Btn_Edit
             </MudButton>
         </MudCardActions>
+    </AuthorizeView>
+
+    <AuthorizeView Roles="Customer">
+        <MudButton Variant="Variant.Filled"
+                   Style="background-color: #C998ED; margin-top: 15px;"
+                   Disabled="@(productDTO.IsActive ? false : true || productDTO.Stock > 0 ? true : false)"
+                   OnClick="@(() => AddToCart(productDTO))">
+            @Res.Lang.Btn_AddToCart
+        </MudButton>
     </AuthorizeView>
 
 </MudCard>

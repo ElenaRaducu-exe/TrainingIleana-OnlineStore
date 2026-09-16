@@ -42,6 +42,15 @@
                             @Res.Lang.Btn_Edit
                         </MudButton>
                     </AuthorizeView>
+
+                    <AuthorizeView Roles="Customer">
+                        <MudButton Variant="Variant.Filled"
+                                   Style="background-color: #C998ED; margin-top: 15px;"
+                                   Disabled="@(product.IsActive ? false : true || product.Stock > 0 ? true : false)"
+                                   OnClick="@(() => AddToCart(product))">
+                            @Res.Lang.Btn_AddToCart
+                        </MudButton>
+                    </AuthorizeView>
                     
                 </ProductCard>
             </MudItem>

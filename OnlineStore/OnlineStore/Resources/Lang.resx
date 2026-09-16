@@ -123,6 +123,9 @@
   <data name="Btn_Add" xml:space="preserve">
     <value>Add</value>
   </data>
+  <data name="Btn_AddToCart" xml:space="preserve">
+    <value>Add to cart</value>
+  </data>
   <data name="Btn_Deactivate" xml:space="preserve">
     <value>Deactivate</value>
   </data>

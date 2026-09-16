@@ -5,6 +5,7 @@ using OnlineStore.Data;
 using OnlineStore.DBModels;
 using OnlineStore.Models;
 using OnlineStore.Services.Contracts;
+using OnlineStore.JWTAuthentication.Services.Contracts;
 
 namespace OnlineStore.Services
 {
@@ -13,16 +14,19 @@ namespace OnlineStore.Services
         private readonly OnlineStoreContext _dbContext;
         private readonly IBrandsService _brandsService;
         private readonly ICategoriesService _categoriesService;
+        private readonly IUsersService _userService; 
         private readonly IMapper _mapper;
         public ProductService(OnlineStoreContext onlineStoreContext, 
                                 IBrandsService brandsService, 
                                 ICategoriesService categoriesService,
-                                IMapper mapper)
+                                IMapper mapper,
+                                IUsersService userService)
         {
             _dbContext = onlineStoreContext;
             _brandsService = brandsService;
             _categoriesService = categoriesService;
             _mapper = mapper;
+            _userService = userService;
         }
 
         public async Task<bool> AddProductAsync(ProductDTO productDTO)
@@ -58,11 +62,21 @@ namespace OnlineStore.Services
 
         public async Task<List<ProductDTO>?> GetProductDTOListAsync()
         {
+            var user = await _userService.GetUser();
+            if (user != null)
+            {
+                Console.WriteLine(" ----------- " + user.Id);
+            }
+            else
+            {
+                Console.WriteLine(" -----------  NULL" );
+            }
+
             return await _dbContext.Database.SqlQuery<ProductDTO>($"exec dbo.spGetProducts").ToListAsync();
 
             //List<Product> productDTOs = _dbContext.Products.ToList();
             //return _mapper.Map<List<ProductDTO>>(productDTOs);
-        }
+         }
 
         public async Task<bool> DeleteProduct(int id)
         {

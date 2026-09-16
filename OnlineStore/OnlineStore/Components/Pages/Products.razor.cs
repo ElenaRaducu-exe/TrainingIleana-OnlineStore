@@ -81,5 +81,17 @@ namespace OnlineStore.Components.Pages
             SelectedProductId = id;
             _navigation.NavigateTo($"/dashboard/products/{SelectedProductId}");
         }
+
+        protected async Task AddToCart(ProductDTO productDTO)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
+
+            productDTO.Stock--;
+
+            var response = await httpClient.PutAsJsonAsync($"api/admin/products/update/product/{productDTO.Id}", productDTO);
+
+            StateHasChanged(); 
+        }
     }
 }

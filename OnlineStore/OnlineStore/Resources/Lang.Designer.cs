@@ -79,6 +79,15 @@ namespace Res {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add to cart.
+        /// </summary>
+        public static string Btn_AddToCart {
+            get {
+                return ResourceManager.GetString("Btn_AddToCart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deactivate.
         /// </summary>
         public static string Btn_Deactivate {

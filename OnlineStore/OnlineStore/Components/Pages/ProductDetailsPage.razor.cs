@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using OnlineStore.DBModels;
 using OnlineStore.Models;
 using OnlineStore.Services.Contracts;
 
@@ -37,13 +38,39 @@ namespace OnlineStore.Components.Pages
             _category = await _categoryService.GetCategoryNameByIdAsync(productDTO.CategoryId);
         }
 
-        protected void DeleteProduct()
+        protected async Task DeleteProduct(int productId)
         {
-            Console.WriteLine("------------ DeleteProduct");
+            var httpClient = _httpClientFactory.CreateClient();
+            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
+
+            var ProductsList = await httpClient.GetFromJsonAsync<List<ProductDTO>>("api/admin/products");
+
+            var product = ProductsList.FirstOrDefault(p => p.Id == productId);
+            var response = await httpClient.DeleteAsync($"api/admin/products/delete/product/{productId}");
+
+            if (response.IsSuccessStatusCode && product != null)
+            {
+                ProductsList.Remove(product);
+                StateHasChanged();
+                _navigation.NavigateTo("/dashboard/products");
+            }
         }
-        protected void EditProduct()
+
+        protected void EditProduct(int productId)
         {
-            Console.WriteLine("------------ EditProduct");
+            _navigation.NavigateTo($"/dashboard/products/edit/{productId}");
+        }
+
+        protected async Task AddToCart(ProductDTO productDTO)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
+
+            productDTO.Stock--;
+
+            var response = await httpClient.PutAsJsonAsync($"api/admin/products/update/product/{productDTO.Id}", productDTO);
+
+            StateHasChanged();
         }
     }
 }
