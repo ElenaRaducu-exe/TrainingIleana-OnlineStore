@@ -44,9 +44,7 @@ namespace OnlineStore.Services
 
         public async Task<ProductDTO?> GetProductDTOAsync(int id)
         {
-            var product = _dbContext.Products.FirstOrDefault(p =>  p.Id == id);
-            string brandName = await _brandsService.GetBrandNameByIdAsync(product.BrandId); 
-            string categoryName = await _categoriesService.GetCategoryNameByIdAsync(product.CategoryId);
+            var product = _dbContext.Products.AsNoTracking().FirstOrDefault(p =>  p.Id == id);
 
             ProductDTO productDTO = _mapper.Map<ProductDTO>(product);
 
@@ -100,18 +98,18 @@ namespace OnlineStore.Services
             return await GetProductDTOAsync(product.Id);
         }
 
-        public async Task<ProductDTO?> UpdateProduct(ProductDTO productDetails)
+        public async Task<bool> UpdateProduct(ProductDTO productDetails)
         {
             if (productDetails == null)
             {
-                return null; 
+                return false; 
             }
 
             var productToUpdate = _dbContext.Products.FirstOrDefault(p => p.Id == productDetails.Id);
 
             if (productToUpdate == null)
             {
-                return null;
+                return false;
             }
 
             productToUpdate.Name = productDetails.Name;
@@ -123,10 +121,11 @@ namespace OnlineStore.Services
             productToUpdate.BrandId = productDetails.BrandId;
             productToUpdate.CategoryId = productDetails.CategoryId;
 
-            await _dbContext.SaveChangesAsync(); 
+            await _dbContext.SaveChangesAsync();
 
             // -------
-            return await GetProductDTOAsync(productToUpdate.Id); 
+            //return await GetProductDTOAsync(productToUpdate.Id); 
+            return true; 
         }
     }
 }

@@ -8,9 +8,6 @@ namespace OnlineStore.Components.Pages
     public partial class FormAddProduct : ComponentBase
     {
         [Inject]
-        private HttpClient _httpClient { get; set; }
-
-        [Inject]
         private IHttpClientFactory _httpClientFactory { get; set; }
 
         [Inject]

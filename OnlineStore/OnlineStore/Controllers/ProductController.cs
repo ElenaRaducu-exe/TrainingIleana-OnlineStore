@@ -89,23 +89,16 @@ namespace OnlineStore.Controllers
         //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateProduct([FromRoute] int id, [FromBody] ProductDTO productDetails)
         {
-            // ---------
             var productDTO = await _productService.GetProductDTOAsync(id); 
 
             if(productDTO == null)
             {
                 return BadRequest("Product not found!");
             }
-            // -----
 
-            var updatedProduct = await _productService.UpdateProduct(productDetails);
+            await _productService.UpdateProduct(productDetails);
 
-            if (updatedProduct == null)
-            {
-                return BadRequest("Product not found!");
-            }
-
-            return Ok(updatedProduct);
+            return Ok();
         }
     }
 }

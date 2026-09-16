@@ -14,6 +14,6 @@ namespace OnlineStore.Services.Contracts
 
         Task<ProductDTO> ChangeActiveMode(int id);
 
-        Task<ProductDTO?> UpdateProduct(ProductDTO productDetails);
+        Task<bool> UpdateProduct(ProductDTO productDetails);
     }
 }
