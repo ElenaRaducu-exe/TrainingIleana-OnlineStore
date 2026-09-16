@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MudBlazor.Services;
 using OnlineStore.Components;
+using OnlineStore.Components.Pages;
 using OnlineStore.Data;
 using OnlineStore.DBModels;
 using OnlineStore.JWTAuthentication.Handlers;
@@ -71,12 +72,14 @@ builder.Services.AddScoped<ITokenProvider, TokenProvider>();
 builder.Services.AddControllers(); 
 
 // Services
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICreateUserService, CreateUserService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IBrandsService, BrandsService>();
 builder.Services.AddScoped<ICategoriesService, CategoriesService>();
+builder.Services.AddScoped<ICartProductsService, CartProductsService>(); 
 
 //AutoMapper
 /*builder.Services.AddScoped<ILoggerFactory, LoggerFactory>();

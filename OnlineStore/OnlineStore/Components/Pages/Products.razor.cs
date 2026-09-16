@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using OnlineStore.DBModels;
+using OnlineStore.JWTAuthentication.Providers.Contracts;
 using OnlineStore.Models;
 using OnlineStore.Services.Contracts;
 using System.Net.NetworkInformation;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using System.Net.Http.Headers;
 
 namespace OnlineStore.Components.Pages
 {
@@ -15,6 +17,12 @@ namespace OnlineStore.Components.Pages
 
         [Inject]
         private NavigationManager _navigation { get; set; }
+
+        [Inject]
+        private ICartProductsService _cartService { get; set; }
+
+        [Inject]
+        private ITokenProvider _tokenProvider { get; set; }
 
         public List<ProductDTO> ProductsList = new(); 
 
@@ -84,14 +92,21 @@ namespace OnlineStore.Components.Pages
 
         protected async Task AddToCart(ProductDTO productDTO)
         {
+            var token = await _tokenProvider.GetToken();
+
             var httpClient = _httpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(_navigation.BaseUri);
 
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             productDTO.Stock--;
 
-            var response = await httpClient.PutAsJsonAsync($"api/admin/products/update/product/{productDTO.Id}", productDTO);
+            StateHasChanged();
 
-            StateHasChanged(); 
+            var response = await httpClient.PutAsJsonAsync($"api/admin/products/update/product/{productDTO.Id}", productDTO);
+            var result = await httpClient.PostAsJsonAsync($"api/cart/add/{productDTO.Id}", productDTO);
+
+            await _cartService.AddProductToCartProductsList(productDTO); 
         }
     }
-}
+} 

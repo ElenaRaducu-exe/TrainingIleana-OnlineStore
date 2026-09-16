@@ -9,7 +9,5 @@ namespace OnlineStore.Services.Contracts
         Task<User?> GetUserByIdAsync(int id); 
 
         Task<User> UpdateUserActiveMode(User user);
-
-        Task<User?> GetUser(); 
     }
 }

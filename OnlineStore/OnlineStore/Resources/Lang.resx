@@ -135,7 +135,13 @@
   <data name="Btn_Edit" xml:space="preserve">
     <value>Edit</value>
   </data>
+  <data name="Btn_NavigationToProductsPage" xml:space="preserve">
+    <value>Go to products page!</value>
+  </data>
   <data name="Label_Test" xml:space="preserve">
     <value>Test</value>
+  </data>
+  <data name="Msg_EmptyCart" xml:space="preserve">
+    <value>Your cart is empty!</value>
   </data>
 </root>

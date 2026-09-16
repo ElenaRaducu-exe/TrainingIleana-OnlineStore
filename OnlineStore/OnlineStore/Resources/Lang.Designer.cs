@@ -115,11 +115,29 @@ namespace Res {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Go to products page!.
+        /// </summary>
+        public static string Btn_NavigationToProductsPage {
+            get {
+                return ResourceManager.GetString("Btn_NavigationToProductsPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Test.
         /// </summary>
         public static string Label_Test {
             get {
                 return ResourceManager.GetString("Label_Test", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your cart is empty!.
+        /// </summary>
+        public static string Msg_EmptyCart {
+            get {
+                return ResourceManager.GetString("Msg_EmptyCart", resourceCulture);
             }
         }
     }

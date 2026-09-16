@@ -1,0 +1,35 @@
+﻿@page "/cart/products"
+
+@if (_products != null) 
+{
+    <MudGrid Spacing="6">
+        @foreach (var product in _products)
+        {
+            <MudItem xs="12" sm="6" md="4" lg="4">
+                <ProductCard ProductId="@product.Id"
+                             Name="@product.Name"
+                             Description="@product.Description"
+                             Price="@product.Price"
+                             Stock="@product.Stock"
+                             ImageUrl="@product.ImageUrl"
+                             CategoryId="@product.CategoryId"
+                             BrandId="@product.BrandId"
+                             IsActive="@product.IsActive"
+                             OnSelectedId="@RedirectToProductDetailsPage">
+                </ProductCard>
+            </MudItem>
+        }
+    </MudGrid>
+}
+else
+{
+    <MudText Typo="Typo.h5">
+        @Res.Lang.Msg_EmptyCart
+    </MudText>
+
+    <MudButton OnClick="@NavigateToProductsPage"
+               Variant="Variant.Filled"
+               Style="background-color: #C998ED; margin-top: 15px;">
+        @Res.Lang.Btn_NavigationToProductsPage
+    </MudButton>
+}
