@@ -30,7 +30,7 @@ namespace OnlineStore.JWTAuthentication.Services
             {
                 return null;
             }
-
+            
             // password verification 
             var passwordVerificationResult = _passwordHasher.VerifyHashedPassword
                     (currentUser, currentUser.PasswordHash, loginRequest.Password);
