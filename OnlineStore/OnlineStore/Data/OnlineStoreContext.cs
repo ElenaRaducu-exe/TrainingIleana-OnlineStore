@@ -120,11 +120,16 @@ public partial class OnlineStoreContext : DbContext
             entity.HasIndex(e => e.UserId, "UQ__Cart__CB9A1CDE84A9AF71").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.CartItemId).HasColumnName("cartItemID");
             entity.Property(e => e.CreatedAt)
                 .HasPrecision(3)
                 .HasDefaultValueSql("(getutcdate())")
                 .HasColumnName("createdAt");
             entity.Property(e => e.UserId).HasColumnName("userID");
+
+            entity.HasOne(d => d.CartItem).WithMany(p => p.Carts)
+                .HasForeignKey(d => d.CartItemId)
+                .HasConstraintName("FK__Cart__cartItemID__5070F446");
 
             entity.HasOne(d => d.User).WithOne(p => p.Cart)
                 .HasForeignKey<Cart>(d => d.UserId)
@@ -139,14 +144,8 @@ public partial class OnlineStoreContext : DbContext
             entity.ToTable("CartItem");
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.CartId).HasColumnName("cartID");
             entity.Property(e => e.ProductId).HasColumnName("productID");
             entity.Property(e => e.Quantity).HasColumnName("quantity");
-
-            entity.HasOne(d => d.Cart).WithMany(p => p.CartItems)
-                .HasForeignKey(d => d.CartId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__CartItem__cartID__2A4B4B5E");
 
             entity.HasOne(d => d.Product).WithMany(p => p.CartItems)
                 .HasForeignKey(d => d.ProductId)
