@@ -1,6 +1,6 @@
 ﻿@page "/cart/products"
 
-@if (_products != null) 
+@if (_products != null && _products.Count > 0) 
 {
     <MudGrid Spacing="6">
         @foreach (var product in _products)

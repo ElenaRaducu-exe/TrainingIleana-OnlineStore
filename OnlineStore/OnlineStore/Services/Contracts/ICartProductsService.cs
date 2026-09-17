@@ -7,5 +7,7 @@ namespace OnlineStore.Services.Contracts
         Task AddProductToCartProductsList(ProductDTO productDTO);
 
         Task<List<ProductDTO>?> GetCartProducts();
+
+        Task AddProductToCart(int productId, int userId);
     }
 }

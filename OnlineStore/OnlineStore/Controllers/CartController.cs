@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OnlineStore.Services.Contracts;
 
 namespace OnlineStore.Controllers
 {
@@ -6,8 +7,15 @@ namespace OnlineStore.Controllers
     [Route("api/cart")]
     public class CartController : ControllerBase
     {
-        [HttpPost("add/{productId:int}")]
-        public IActionResult AddToCart(int productId)
+        private readonly ICartProductsService _cartProductsService;
+
+        public CartController(ICartProductsService cartProductsService)
+        {
+            _cartProductsService = cartProductsService;
+        }
+
+        [HttpPost("add/products-list/{productId:int}")]
+        public async Task<IActionResult> AddToCartProductsList(int productId)
         {
             var userIdClaim = User.FindFirst("UserId"); 
 
@@ -17,6 +25,8 @@ namespace OnlineStore.Controllers
             }
 
             int userId = int.Parse(userIdClaim.Value);
+
+            await _cartProductsService.AddProductToCart(productId, userId);
 
             Console.WriteLine($"UserId: {userId}"); 
             Console.WriteLine($"ProductId: {productId}");

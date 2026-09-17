@@ -34,7 +34,7 @@
     <AuthorizeView Roles="Customer">
         <MudButton Variant="Variant.Filled"
                    Style="background-color: #C998ED; margin-top: 15px;"
-                   Disabled="@(productDTO.IsActive ? false : true || productDTO.Stock > 0 ? true : false)"
+                   Disabled="@(productDTO.IsActive && productDTO.Stock > 0 ? false : true)"
                    OnClick="@(() => AddToCart(productDTO))">
             @Res.Lang.Btn_AddToCart
         </MudButton>

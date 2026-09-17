@@ -58,7 +58,7 @@ namespace OnlineStore.Components.Pages
         protected override async Task OnInitializedAsync()
         {
             _brand = await _brandsService.GetBrandByIdAsync(BrandId);
-            _category = await _categoriesService.GetCategoryByIdAsync(CategoryId); 
+            _category = await _categoriesService.GetCategoryByIdAsync(CategoryId);
         }
     }
 }
