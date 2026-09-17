@@ -117,8 +117,6 @@ public partial class OnlineStoreContext : DbContext
 
             entity.ToTable("Cart");
 
-            entity.HasIndex(e => e.UserId, "UQ__Cart__CB9A1CDE84A9AF71").IsUnique();
-
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CartItemId).HasColumnName("cartItemID");
             entity.Property(e => e.CreatedAt)
@@ -131,8 +129,8 @@ public partial class OnlineStoreContext : DbContext
                 .HasForeignKey(d => d.CartItemId)
                 .HasConstraintName("FK__Cart__cartItemID__5070F446");
 
-            entity.HasOne(d => d.User).WithOne(p => p.Cart)
-                .HasForeignKey<Cart>(d => d.UserId)
+            entity.HasOne(d => d.User).WithMany(p => p.Carts)
+                .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Cart__userID__276EDEB3");
         });

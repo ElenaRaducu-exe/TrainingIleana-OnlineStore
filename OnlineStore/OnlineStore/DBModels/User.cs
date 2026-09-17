@@ -21,7 +21,7 @@ public partial class User
 
     public virtual ICollection<CardDetail> CardDetails { get; set; } = new List<CardDetail>();
 
-    public virtual Cart? Cart { get; set; }
+    public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
     public virtual Customer? Customer { get; set; }
 
