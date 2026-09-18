@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using OnlineStore.Components.Pages;
 using OnlineStore.Data;
 using OnlineStore.DBModels;
@@ -11,17 +12,27 @@ namespace OnlineStore.Services
     public class CartProductsService : ICartProductsService
     {
         private List<ProductDTO> _cartProducts = new List<ProductDTO>();
-        private List<CartItemSummaries> _cartItems = new List<CartItemSummaries>();
         private readonly OnlineStoreContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public CartProductsService(OnlineStoreContext onlineStoreContext)
+        public CartProductsService(OnlineStoreContext onlineStoreContext, IMapper mapper)
         {
             _dbContext = onlineStoreContext;
+            _mapper = mapper;
         }
 
-        public async Task GetCartItems()
+        public async Task<List<CartItemSummaries>?> GetCartItems()
         {
-            _cartItems = await _dbContext.Database.SqlQuery<CartItemSummaries>($"exec dbo.spGetCartItemsDetails").ToListAsync();
+            return await _dbContext.Database.SqlQuery<CartItemSummaries>($"exec dbo.spGetCartItemsDetails").ToListAsync();
+        }
+
+        public async Task<List<CartItemDTO>?> GetCartItemsByUser(int userId)
+        {
+            var cartItemSummeris = await _dbContext.Database.SqlQuery<CartItemSummaries>($"exec dbo.spGetCartItemsDetailsUser @UserId={userId}").ToListAsync();
+
+            var cartItemDTOs = _mapper.Map<List<CartItemDTO>>(cartItemSummeris);
+
+            return cartItemDTOs;
         }
 
         public async Task AddProductToCartProductsList(ProductDTO productDTO)
@@ -32,45 +43,38 @@ namespace OnlineStore.Services
             }
         }
 
-        public async Task<List<ProductDTO>?> GetCartProducts()
-        {
-            return _cartProducts;
-        }
-
         public async Task AddProductToCart(int productId, int userId)
         {
-            if (_dbContext.CartItems.Any(p => p.ProductId == productId))
-            {
-                var cartItemExisted = _dbContext.CartItems.FirstOrDefault(p => p.ProductId == productId);
-                if(cartItemExisted != null)
-                {
-                    cartItemExisted.Quantity++;
-                    await _dbContext.SaveChangesAsync();
-                }
-            }
-            else
-            {
-                var cartItem = new CartItem()
-                {
-                    Quantity = 1,
-                    ProductId = productId
-                };
+            var existingCart = _dbContext.Carts.Include(c => c.CartItem).FirstOrDefault(c => 
+                        c.UserId == userId && c.CartItem != null && c.CartItem.ProductId == productId);
 
-                await _dbContext.CartItems.AddAsync(cartItem);
+            if(existingCart != null)
+            {
+                existingCart.CartItem.Quantity++;
 
                 await _dbContext.SaveChangesAsync();
 
-                Console.WriteLine($"CartItem Id 2: {cartItem.Id}");
-
-                var cart = new Cart()
-                {
-                    UserId = userId,
-                    CartItemId = cartItem.Id
-                };
-
-                _dbContext.Carts.Add(cart);
-                await _dbContext.SaveChangesAsync();
+                return;
             }
+
+            var cartItem = new CartItem()
+            {
+                Quantity = 1,
+                ProductId = productId
+            };
+
+            await _dbContext.CartItems.AddAsync(cartItem);
+
+            await _dbContext.SaveChangesAsync();
+
+            var cart = new Cart()
+            {
+                UserId = userId,
+                CartItemId = cartItem.Id
+            };
+
+            _dbContext.Carts.Add(cart);
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

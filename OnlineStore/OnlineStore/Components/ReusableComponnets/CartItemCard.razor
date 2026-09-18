@@ -1,0 +1,15 @@
+﻿<MudCard>
+    <MudCardMedia Image="@ImageUrl"
+                  Height="300"
+                  Style="background-size: contain;
+                  background-repeat: no-repeat;
+                  background-position: center;" />
+    <MudCardContent>
+        <MudText Typo="Typo.h5">@ProductName - @BrandName - @CategoryName</MudText>
+        <MudText Typo="Typo.h4">Quantity: @Quantity | Price: @Price</MudText>
+        <MudText Typo="Typo.body1">@Description</MudText>
+
+        @ChildContent
+
+    </MudCardContent>
+</MudCard>

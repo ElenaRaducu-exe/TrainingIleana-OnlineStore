@@ -1,6 +1,6 @@
-﻿namespace OnlineStore.Models.StoredProcedureModels
+﻿namespace OnlineStore.Models.DTOs
 {
-    public class CartItemSummaries
+    public class CartItemDTO
     {
         public int CartId { get; set; }
         public int UserId { get; set; }

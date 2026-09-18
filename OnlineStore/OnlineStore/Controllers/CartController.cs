@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OnlineStore.Models.DTOs;
 using OnlineStore.Services.Contracts;
 
 namespace OnlineStore.Controllers
@@ -8,30 +9,69 @@ namespace OnlineStore.Controllers
     public class CartController : ControllerBase
     {
         private readonly ICartProductsService _cartProductsService;
+        private readonly IProductService _productService;
 
-        public CartController(ICartProductsService cartProductsService)
+        public CartController(ICartProductsService cartProductsService,
+                              IProductService productService)
         {
             _cartProductsService = cartProductsService;
+            _productService = productService;
+        }
+
+        [HttpGet("items/user")]
+        public async Task<IActionResult> GetCartItems()
+        {
+            var userIdClaim = User.FindFirst("UserId");
+
+            if (userIdClaim == null)
+            {
+                return BadRequest();
+            }
+
+            int userId = int.Parse(userIdClaim.Value);
+
+            var result = await _cartProductsService.GetCartItemsByUser(userId);
+
+            if(result == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(result);
         }
 
         [HttpPost("add/products-list/{productId:int}")]
         public async Task<IActionResult> AddToCartProductsList(int productId)
         {
-            var userIdClaim = User.FindFirst("UserId"); 
+            var productDTO = await _productService.GetProductDTOAsync(productId);
 
-            if(userIdClaim == null)
+            if(productDTO == null)
             {
-                return BadRequest(); 
+                return BadRequest("Product not found!");
+            }
+
+            await _cartProductsService.AddProductToCartProductsList(productDTO);
+
+            return Ok(); 
+        }
+
+        [HttpPost("add/product/{productId:int}")]
+        public async Task<IActionResult> AddProductToCart(int productId)
+        {
+            var userIdClaim = User.FindFirst("UserId");
+
+            if (userIdClaim == null)
+            {
+                return BadRequest();
             }
 
             int userId = int.Parse(userIdClaim.Value);
 
+            Console.WriteLine($"UserId: {userId}");
+
             await _cartProductsService.AddProductToCart(productId, userId);
 
-            Console.WriteLine($"UserId: {userId}"); 
-            Console.WriteLine($"ProductId: {productId}");
-
-            return Ok(); 
+            return Ok();
         }
     }
 }

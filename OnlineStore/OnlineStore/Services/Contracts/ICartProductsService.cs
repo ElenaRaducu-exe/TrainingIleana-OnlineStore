@@ -1,4 +1,5 @@
 ﻿using OnlineStore.Models.DTOs;
+using OnlineStore.Models.StoredProcedureModels;
 
 namespace OnlineStore.Services.Contracts
 {
@@ -6,8 +7,10 @@ namespace OnlineStore.Services.Contracts
     {
         Task AddProductToCartProductsList(ProductDTO productDTO);
 
-        Task<List<ProductDTO>?> GetCartProducts();
+        Task<List<CartItemSummaries>?> GetCartItems();
 
         Task AddProductToCart(int productId, int userId);
+
+        Task<List<CartItemDTO>?> GetCartItemsByUser(int userId);
     }
 }

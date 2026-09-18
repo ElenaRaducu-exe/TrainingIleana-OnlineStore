@@ -37,8 +37,4 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\FrontendModels\" />
-  </ItemGroup>
-
 </Project>

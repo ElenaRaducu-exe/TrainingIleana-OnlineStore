@@ -1,27 +1,7 @@
 ﻿@page "/cart/products"
+@using OnlineStore.Components.ReusableComponnets
 
-@if (_products != null && _products.Count > 0) 
-{
-    <MudGrid Spacing="6">
-        @foreach (var product in _products)
-        {
-            <MudItem xs="12" sm="6" md="4" lg="4">
-                <ProductCard ProductId="@product.Id"
-                             Name="@product.Name"
-                             Description="@product.Description"
-                             Price="@product.Price"
-                             Stock="@product.Stock"
-                             ImageUrl="@product.ImageUrl"
-                             CategoryId="@product.CategoryId"
-                             BrandId="@product.BrandId"
-                             IsActive="@product.IsActive"
-                             OnSelectedId="@RedirectToProductDetailsPage">
-                </ProductCard>
-            </MudItem>
-        }
-    </MudGrid>
-}
-else
+@if(_cartItems == null || _cartItems.Count() == 0)
 {
     <MudText Typo="Typo.h5">
         @Res.Lang.Msg_EmptyCart
@@ -32,4 +12,17 @@ else
                Style="background-color: #C998ED; margin-top: 15px;">
         @Res.Lang.Btn_NavigationToProductsPage
     </MudButton>
+}
+else
+{
+    @foreach(var item in _cartItems)
+    {
+        <CartItemCard Quantity="@item.Quantity"
+                      ProductName="@item.ProductName"
+                      Description="@item.Description"
+                      Price="@item.Price"
+                      ImageUrl="@item.ImageUrl"
+                      CategoryName="@item.CategoryName"
+                      BrandName="@item.BrandName" />
+    }
 }

@@ -4,7 +4,7 @@ using OnlineStore.Models;
 using OnlineStore.Services.Contracts;
 using System.ComponentModel.DataAnnotations;
 
-namespace OnlineStore.Components.Pages
+namespace OnlineStore.Components.ReusableComponnets
 {
     public partial class ProductCard : ComponentBase
     {

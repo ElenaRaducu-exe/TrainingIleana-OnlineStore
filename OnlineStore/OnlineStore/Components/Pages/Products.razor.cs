@@ -103,12 +103,10 @@ namespace OnlineStore.Components.Pages
 
             StateHasChanged();
 
-            var response = await httpClient.PutAsJsonAsync($"api/admin/products/update/product/{productDTO.Id}", productDTO);
+            await httpClient.PutAsJsonAsync($"api/admin/products/update/product/{productDTO.Id}", productDTO);
 
-            // CartController - AddToCartProductsList
-            var result = await httpClient.PostAsJsonAsync($"api/cart/add/products-list/{productDTO.Id}", productDTO);
-
-            await _cartService.AddProductToCartProductsList(productDTO); 
+            await httpClient.PostAsJsonAsync($"api/cart/add/products-list/{productDTO.Id}", productDTO);
+            await httpClient.PostAsJsonAsync($"api/cart/add/product/{productDTO.Id}", productDTO); 
         }
     }
 } 

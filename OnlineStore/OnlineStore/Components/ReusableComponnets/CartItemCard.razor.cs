@@ -1,18 +1,25 @@
-﻿namespace OnlineStore.Models.StoredProcedureModels
+using Microsoft.AspNetCore.Components;
+
+namespace OnlineStore.Components.ReusableComponnets
 {
-    public class CartItemSummaries
+    public partial class CartItemCard : ComponentBase
     {
-        public int CartId { get; set; }
-        public int UserId { get; set; }
-        public int CartItemId { get; set; }
+        [Parameter]
         public int Quantity { get; set; }
-        public int ProductId { get; set; }
-        public string Username { get; set; } = string.Empty;
+        [Parameter]
         public string ProductName { get; set; } = string.Empty;
+        [Parameter]
         public string Description { get; set; } = string.Empty;
+        [Parameter]
         public decimal Price { get; set; }
+        [Parameter]
         public string ImageUrl { get; set; } = string.Empty;
+        [Parameter]
         public string CategoryName { get; set; } = string.Empty;
+        [Parameter]
         public string BrandName { get; set; } = string.Empty;
+
+        [Parameter]
+        public RenderFragment ChildContent { get; set; }
     }
 }
