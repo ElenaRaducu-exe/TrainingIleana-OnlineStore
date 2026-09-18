@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Components;
-using OnlineStore.Models;
+using OnlineStore.Models.DTOs;
 using OnlineStore.Services.Contracts;
 
 namespace OnlineStore.Components.Pages

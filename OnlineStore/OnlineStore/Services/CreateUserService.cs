@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using OnlineStore.Data;
 using OnlineStore.DBModels;
 using OnlineStore.Services.Contracts;
-using OnlineStore.Models;
+using OnlineStore.Models.DTOs;
 
 namespace OnlineStore.Services
 {

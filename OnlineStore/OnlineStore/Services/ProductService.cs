@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using OnlineStore.Data;
 using OnlineStore.DBModels;
-using OnlineStore.Models;
+using OnlineStore.Models.DTOs;
 using OnlineStore.Services.Contracts;
 
 namespace OnlineStore.Services

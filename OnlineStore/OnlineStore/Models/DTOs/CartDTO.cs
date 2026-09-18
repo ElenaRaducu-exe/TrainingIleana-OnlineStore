@@ -1,4 +1,4 @@
-﻿namespace OnlineStore.Models
+﻿namespace OnlineStore.Models.DTOs
 {
     public class CartDTO
     {

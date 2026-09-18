@@ -2,11 +2,11 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using OnlineStore.DBModels;
 using OnlineStore.JWTAuthentication.Providers.Contracts;
-using OnlineStore.Models;
 using OnlineStore.Services.Contracts;
 using System.Net.NetworkInformation;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Net.Http.Headers;
+using OnlineStore.Models.DTOs;
 
 namespace OnlineStore.Components.Pages
 {

@@ -1,4 +1,4 @@
-﻿using OnlineStore.Models;
+﻿using OnlineStore.Models.DTOs;
 
 namespace OnlineStore.Services.Contracts
 {

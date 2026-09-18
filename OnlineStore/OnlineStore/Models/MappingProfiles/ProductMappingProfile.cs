@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using OnlineStore.DBModels;
+using OnlineStore.Models.DTOs;
 
-namespace OnlineStore.Models
+namespace OnlineStore.Models.MappingProfiles
 {
     public class ProductMappingProfile : Profile
     {
