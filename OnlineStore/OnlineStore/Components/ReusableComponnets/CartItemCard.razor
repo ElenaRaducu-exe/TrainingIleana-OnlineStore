@@ -1,15 +1,21 @@
-﻿<MudCard>
-    <MudCardMedia Image="@ImageUrl"
-                  Height="300"
+﻿﻿<MudCard>
+    <MudStack Row="true">
+        <MudImage Src="@ImageUrl"
+                  Height="200"
+                  Width="200"
                   Style="background-size: contain;
-                  background-repeat: no-repeat;
-                  background-position: center;" />
-    <MudCardContent>
-        <MudText Typo="Typo.h5">@ProductName - @BrandName - @CategoryName</MudText>
-        <MudText Typo="Typo.h4">Quantity: @Quantity | Price: @Price</MudText>
-        <MudText Typo="Typo.body1">@Description</MudText>
+                         background-repeat: no-repeat;
+                         background-position: center;" />
+        <MudCardContent>
+            <MudText Typo="Typo.body1">@ProductName</MudText>
+            <MudText Typo="Typo.body2">@BrandName - @CategoryName</MudText>
+            <MudText Typo="Typo.body2">@Description</MudText>
+        </MudCardContent>
+
+       <MudText Typo="Typo.h6">Quantity: @Quantity</MudText>
+       <MudText Typo="Typo.h5">@Price RON</MudText>
 
         @ChildContent
 
-    </MudCardContent>
+    </MudStack>
 </MudCard>
