@@ -1,21 +1,39 @@
 ﻿﻿<MudCard>
-    <MudStack Row="true">
-        <MudImage Src="@ImageUrl"
-                  Height="200"
-                  Width="200"
-                  Style="background-size: contain;
-                         background-repeat: no-repeat;
-                         background-position: center;" />
-        <MudCardContent>
+    <MudGrid>
+        <MudItem xs="3">
+            <MudImage Src="@ImageUrl"
+                      Height="200"
+                      Width="200"
+                      Style="background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;" />
+        </MudItem>
+        
+        <MudItem xs="4">
             <MudText Typo="Typo.body1">@ProductName</MudText>
             <MudText Typo="Typo.body2">@BrandName - @CategoryName</MudText>
             <MudText Typo="Typo.body2">@Description</MudText>
-        </MudCardContent>
+        </MudItem>
 
-       <MudText Typo="Typo.h6">Quantity: @Quantity</MudText>
-       <MudText Typo="Typo.h5">@Price RON</MudText>
+        <MudItem xs="1">
+            <MudNumericField T="int"
+                             Value="@Quantity"
+                             Label="Quantity"
+                             Required="true"
+                             ValueChanged="UpdateQuantity" />
+        </MudItem>
+
+        <MudItem xs="2">
+            <MudText Typo="Typo.body1">Price per piece: </MudText>
+            <MudText Typo="Typo.body1">@Price RON</MudText>
+        </MudItem>
+
+        <MudItem xs="2">
+            <MudText Typo="Typo.body1">Total:</MudText>
+            <MudText Typo="Typo.body1">@TotalPrice RON</MudText>
+        </MudItem>
 
         @ChildContent
 
-    </MudStack>
+    </MudGrid>
 </MudCard>

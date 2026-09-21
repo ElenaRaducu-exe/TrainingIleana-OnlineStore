@@ -24,6 +24,7 @@ namespace OnlineStore.Components.Pages
         private ITokenProvider _tokenProvider { get; set; }
 
         private List<CartItemModel> _cartItems { get; set; }
+        private decimal _totalOrderPrice { get; set; }
 
         [Inject]
         private IMapper _mapper { get; set; }
@@ -43,6 +44,8 @@ namespace OnlineStore.Components.Pages
             {
                 _cartItems = _mapper.Map<List<CartItemModel>>(cartItemDTO);
             }
+
+            _totalOrderPrice = _cartItems.Sum(item => item.Price * item.Quantity); 
         }
 
         public void RedirectToProductDetailsPage(int id)

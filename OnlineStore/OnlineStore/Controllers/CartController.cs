@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineStore.Models.DTOs;
+using OnlineStore.Models.FrontendModels;
 using OnlineStore.Services.Contracts;
 
 namespace OnlineStore.Controllers
@@ -70,6 +71,21 @@ namespace OnlineStore.Controllers
             Console.WriteLine($"UserId: {userId}");
 
             await _cartProductsService.AddProductToCart(productId, userId);
+
+            return Ok();
+        }
+
+        // api/cart/update/quantity/{cartItemId:int}
+        [HttpPut("update/quantity/{cartItemId:int}")]
+        public async Task<IActionResult> UpdateCartItemQuantity([FromRoute]int cartItemId, 
+                                                                [FromBody] CartItemModel cartItemDetails)
+        {
+            var result = await _cartProductsService.UpdateCartItemQuantity(cartItemId, cartItemDetails.Quantity);
+
+            if (!result)
+            {
+                return BadRequest();
+            }
 
             return Ok();
         }

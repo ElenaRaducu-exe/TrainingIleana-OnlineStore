@@ -28,9 +28,9 @@ namespace OnlineStore.Services
 
         public async Task<List<CartItemDTO>?> GetCartItemsByUser(int userId)
         {
-            var cartItemSummeris = await _dbContext.Database.SqlQuery<CartItemSummaries>($"exec dbo.spGetCartItemsDetailsUser @UserId={userId}").ToListAsync();
+            var cartItemSummaries = await _dbContext.Database.SqlQuery<CartItemSummaries>($"exec dbo.spGetCartItemsDetailsUser @UserId={userId}").ToListAsync();
 
-            var cartItemDTOs = _mapper.Map<List<CartItemDTO>>(cartItemSummeris);
+            var cartItemDTOs = _mapper.Map<List<CartItemDTO>>(cartItemSummaries);
 
             return cartItemDTOs;
         }
@@ -75,6 +75,48 @@ namespace OnlineStore.Services
 
             _dbContext.Carts.Add(cart);
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<bool> UpdateCartItemQuantity(int cartItemId, int quantity)
+        {
+            /*
+            var cartItemSummary = await _dbContext.Database.SqlQuery<CartItemSummaries>
+                ($"exec [dbo].[spGetCartItem] @UserId = {userId}, @CartItemId = {cartItemId}").FirstOrDefaultAsync();
+
+            if( cartItemSummary == null )
+            {
+                return false; 
+            }*/
+
+            var cartItem = await _dbContext.CartItems.FirstOrDefaultAsync(item => item.Id == cartItemId);
+
+            if(cartItem  == null )
+            {
+                return false; 
+            }
+
+            int initialQuantity = cartItem.Quantity;
+
+            var product = await _dbContext.Products.FirstOrDefaultAsync(product => product.Id == cartItem.ProductId);
+
+            if( product == null )
+            {
+                return false; 
+            }
+
+            var newProductStock = product.Stock - quantity + initialQuantity;
+
+            if(newProductStock < 0)
+            {
+                return false; 
+            }
+
+            product.Stock = newProductStock;
+            cartItem.Quantity = quantity;
+
+            await _dbContext.SaveChangesAsync();
+
+            return true; 
         }
     }
 }
