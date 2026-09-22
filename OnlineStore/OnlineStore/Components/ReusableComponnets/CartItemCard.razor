@@ -1,6 +1,6 @@
 ﻿﻿<MudCard>
-    <MudGrid>
-        <MudItem xs="3">
+    <MudGrid Spacing="20">
+        <MudItem xs=3>
             <MudImage Src="@ImageUrl"
                       Height="200"
                       Width="200"
@@ -9,13 +9,13 @@
             background-position: center;" />
         </MudItem>
         
-        <MudItem xs="4">
+        <MudItem xs=3>
             <MudText Typo="Typo.body1">@ProductName</MudText>
             <MudText Typo="Typo.body2">@BrandName - @CategoryName</MudText>
             <MudText Typo="Typo.body2">@Description</MudText>
         </MudItem>
 
-        <MudItem xs="1">
+        <MudItem xs=2>
             <MudNumericField T="int"
                              Value="@Quantity"
                              Label="Quantity"
@@ -23,17 +23,17 @@
                              ValueChanged="UpdateQuantity" />
         </MudItem>
 
-        <MudItem xs="2">
+        <MudItem xs=2>
             <MudText Typo="Typo.body1">Price per piece: </MudText>
             <MudText Typo="Typo.body1">@Price RON</MudText>
         </MudItem>
 
-        <MudItem xs="2">
+        <MudItem xs=2>
             <MudText Typo="Typo.body1">Total:</MudText>
             <MudText Typo="Typo.body1">@TotalPrice RON</MudText>
         </MudItem>
-
-        @ChildContent
-
     </MudGrid>
+
+    @ChildContent
+
 </MudCard>

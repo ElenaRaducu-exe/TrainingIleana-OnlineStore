@@ -2,6 +2,7 @@
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
 using OnlineStore.Models.StoredProcedureModels;
+using OnlineStore.DBModels; 
 
 namespace OnlineStore.Models.MappingProfiles
 {
@@ -13,7 +14,7 @@ namespace OnlineStore.Models.MappingProfiles
             CreateMap<CartItemSummaries, CartItemDTO>().ReverseMap();
 
             CreateMap<CartItemDTO, CartItemModel>(); 
-            CreateMap<CartItemDTO, CartItemModel>().ReverseMap(); 
+            CreateMap<CartItemDTO, CartItemModel>().ReverseMap();
         }
     }
 }

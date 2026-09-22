@@ -68,6 +68,7 @@ namespace OnlineStore.Components.ReusableComponnets
             if (response.IsSuccessStatusCode)
             {
                 Quantity = newQuantity;
+
                 TotalPrice = Price * Quantity;
                 StateHasChanged(); 
             }

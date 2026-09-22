@@ -28,12 +28,16 @@ namespace OnlineStore.Components.Pages
 
         public int SelectedProductId { get; set; }
 
+        private bool _resultAddProductToCart { get; set; } = false; 
+
         protected override async Task OnInitializedAsync()
         {
             var httpClient = _httpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(_navigation.BaseUri);
 
             ProductsList = await httpClient.GetFromJsonAsync<List<ProductDTO>>("api/admin/products");
+
+            _resultAddProductToCart = false; 
         }
 
         protected async Task DeleteProduct(int? productId)
@@ -106,7 +110,12 @@ namespace OnlineStore.Components.Pages
             await httpClient.PutAsJsonAsync($"api/admin/products/update/product/{productDTO.Id}", productDTO);
 
             await httpClient.PostAsJsonAsync($"api/cart/add/products-list/{productDTO.Id}", productDTO);
-            await httpClient.PostAsJsonAsync($"api/cart/add/product/{productDTO.Id}", productDTO); 
+
+            var result = await httpClient.PostAsJsonAsync($"api/cart/add/product/{productDTO.Id}", productDTO);
+            if (result.IsSuccessStatusCode)
+            {
+                _resultAddProductToCart = true; 
+            }
         }
     }
 } 

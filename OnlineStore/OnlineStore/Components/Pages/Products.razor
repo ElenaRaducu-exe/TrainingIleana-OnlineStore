@@ -5,6 +5,15 @@
 
 @if (ProductsList != null) 
 {
+    @if (_resultAddProductToCart)
+    {
+        <MudAlert Severity="Severity.Success"
+                  Dense="true"
+                  Class="my-2">
+            The product was added to cart successfully!
+        </MudAlert>
+    }
+
     <MudGrid Spacing="6">
         @foreach (var product in ProductsList)
         {
@@ -52,7 +61,6 @@
                             @Res.Lang.Btn_AddToCart
                         </MudButton>
                     </AuthorizeView>
-                    
                 </ProductCard>
             </MudItem>
         }

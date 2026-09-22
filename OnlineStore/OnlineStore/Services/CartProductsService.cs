@@ -6,6 +6,7 @@ using OnlineStore.DBModels;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.StoredProcedureModels;
 using OnlineStore.Services.Contracts;
+using static MudBlazor.CategoryTypes;
 
 namespace OnlineStore.Services
 {
@@ -45,36 +46,53 @@ namespace OnlineStore.Services
 
         public async Task AddProductToCart(int productId, int userId)
         {
-            var existingCart = _dbContext.Carts.Include(c => c.CartItem).FirstOrDefault(c => 
-                        c.UserId == userId && c.CartItem != null && c.CartItem.ProductId == productId);
+            var existingCart = _dbContext.Carts.FirstOrDefault(c => c.UserId == userId);
 
             if(existingCart != null)
             {
-                existingCart.CartItem.Quantity++;
+                var existingCartItem = _dbContext.CartItems.FirstOrDefault(c => c.ProductId == productId && c.CartId == existingCart.Id);
 
+                if (existingCartItem != null)
+                {
+                    existingCartItem.Quantity++;
+                    await _dbContext.SaveChangesAsync();
+                }
+                else
+                {
+                    var cartItem = new CartItem()
+                    {
+                        Quantity = 1,
+                        ProductId = productId,
+                        CartId = existingCart.Id
+                    };
+
+                    await _dbContext.CartItems.AddAsync(cartItem);
+
+                    await _dbContext.SaveChangesAsync();
+
+                    return;
+                }
+            }
+            else
+            {
+                var cart = new Cart()
+                {
+                    UserId = userId
+                };
+
+                await _dbContext.Carts.AddAsync(cart);
                 await _dbContext.SaveChangesAsync();
 
-                return;
+                var cartItem = new CartItem()
+                {
+                    Quantity = 1,
+                    ProductId = productId,
+                    CartId = cart.Id
+                };
+
+                await _dbContext.CartItems.AddAsync(cartItem);
+                await _dbContext.SaveChangesAsync();
             }
-
-            var cartItem = new CartItem()
-            {
-                Quantity = 1,
-                ProductId = productId
-            };
-
-            await _dbContext.CartItems.AddAsync(cartItem);
-
-            await _dbContext.SaveChangesAsync();
-
-            var cart = new Cart()
-            {
-                UserId = userId,
-                CartItemId = cartItem.Id
-            };
-
-            _dbContext.Carts.Add(cart);
-            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<bool> UpdateCartItemQuantity(int cartItemId, int quantity)
