@@ -77,10 +77,9 @@ namespace OnlineStore.Controllers
 
         // api/cart/update/quantity/{cartItemId:int}
         [HttpPut("update/quantity/{cartItemId:int}")]
-        public async Task<IActionResult> UpdateCartItemQuantity([FromRoute]int cartItemId, 
-                                                                [FromBody] CartItemModel cartItemDetails)
+        public async Task<IActionResult> UpdateCartItemQuantity([FromRoute]int cartItemId, [FromBody]int newQuantity)
         {
-            var result = await _cartProductsService.UpdateCartItemQuantity(cartItemId, cartItemDetails.Quantity);
+            var result = await _cartProductsService.UpdateCartItemQuantity(cartItemId, newQuantity);
 
             if (!result)
             {

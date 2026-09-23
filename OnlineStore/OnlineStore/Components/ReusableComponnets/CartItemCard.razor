@@ -1,7 +1,7 @@
-﻿﻿<MudCard onclick="@(() => CartItemClicked(CartItemId))">
+﻿﻿<MudCard onclick="@(() => CartItemClicked(CartItemModel.CartItemId))">
     <MudGrid Spacing="20">
         <MudItem xs=3>
-            <MudImage Src="@ImageUrl"
+            <MudImage Src="@CartItemModel.ImageUrl"
                       Height="200"
                       Width="200"
                       Style="background-size: contain;
@@ -10,14 +10,14 @@
         </MudItem>
         
         <MudItem xs=3>
-            <MudText Typo="Typo.body1">@ProductName</MudText>
-            <MudText Typo="Typo.body2">@BrandName - @CategoryName</MudText>
-            <MudText Typo="Typo.body2">@Description</MudText>
+            <MudText Typo="Typo.body1">@CartItemModel.ProductName</MudText> 
+            <MudText Typo="Typo.body2">@CartItemModel.BrandName - @CartItemModel.CategoryName</MudText>
+            <MudText Typo="Typo.body2">@CartItemModel.Description</MudText>
         </MudItem>
 
         <MudItem xs=2>
             <MudNumericField T="int"
-                             Value="@Quantity"
+                             Value="@_quantity"
                              Label="Quantity"
                              Required="true"
                              ValueChanged="UpdateQuantity" />
@@ -25,7 +25,7 @@
 
         <MudItem xs=2>
             <MudText Typo="Typo.body1">Price: </MudText>
-            <MudText Typo="Typo.body1">@Price RON</MudText>
+            <MudText Typo="Typo.body1">@CartItemModel.Price RON</MudText>
         </MudItem>
 
         <MudItem xs=2>

@@ -19,24 +19,16 @@ else
         <MudItem xs="10">
             @foreach (var item in _cartItems)
             {
-                <CartItemCard Quantity="@item.Quantity"
-                              ProductName="@item.ProductName"
-                              Description="@item.Description"
-                              Price="@item.Price"
-                              ImageUrl="@item.ImageUrl"
-                              CategoryName="@item.CategoryName"
-                              BrandName="@item.BrandName"
-                              CartId="@item.CartId"
-                              CartItemId="@item.CartItemId"
-                              ProductId="@item.ProductId"
-                              UserId="@item.UserId" 
+                <CartItemCard CartItemModel="@item"
                               OnQuantityUpdated="@HandleQuantityUpdated"
                               OnItemSelected="@RedirectToProductDetailsPage">
+
                     <MudButton Variant="Variant.Filled"
                                Style="background-color: #C998ED; margin-top: 15px;"
                                OnClick="@(() => DeleteCartItem(item.CartId, item.CartItemId))">
                         @Res.Lang.Btn_Delete
                     </MudButton>
+
                 </CartItemCard>
             }
         </MudItem>

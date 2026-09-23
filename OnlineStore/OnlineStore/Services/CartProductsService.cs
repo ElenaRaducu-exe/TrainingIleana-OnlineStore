@@ -95,7 +95,7 @@ namespace OnlineStore.Services
             }
         }
 
-        public async Task<bool> UpdateCartItemQuantity(int cartItemId, int quantity)
+        public async Task<bool> UpdateCartItemQuantity(int cartItemId, int newQuantity)
         {
             /*
             var cartItemSummary = await _dbContext.Database.SqlQuery<CartItemSummaries>
@@ -122,7 +122,7 @@ namespace OnlineStore.Services
                 return false; 
             }
 
-            var newProductStock = product.Stock - quantity + initialQuantity;
+            var newProductStock = product.Stock - newQuantity + initialQuantity;
 
             if(newProductStock < 0)
             {
@@ -130,7 +130,7 @@ namespace OnlineStore.Services
             }
      
             product.Stock = newProductStock;
-            cartItem.Quantity = quantity;
+            cartItem.Quantity = newQuantity;
 
             await _dbContext.SaveChangesAsync();
 

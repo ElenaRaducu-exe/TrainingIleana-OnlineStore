@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using OnlineStore.JWTAuthentication.Providers.Contracts;
+using OnlineStore.Models.FrontendModels;
 using OnlineStore.Services.Contracts;
 using System.Net.Http.Headers;
 
@@ -8,27 +9,9 @@ namespace OnlineStore.Components.ReusableComponnets
     public partial class CartItemCard : ComponentBase
     {
         [Parameter]
-        public int Quantity { get; set; }
-        [Parameter]
-        public string ProductName { get; set; } = string.Empty;
-        [Parameter]
-        public string Description { get; set; } = string.Empty;
-        [Parameter]
-        public decimal Price { get; set; }
-        [Parameter]
-        public string ImageUrl { get; set; } = string.Empty;
-        [Parameter]
-        public string CategoryName { get; set; } = string.Empty;
-        [Parameter]
-        public string BrandName { get; set; } = string.Empty;
-        [Parameter]
-        public int CartId { get; set; }
-        [Parameter]
-        public int CartItemId { get; set; }
-        [Parameter]
-        public int ProductId { get; set; }
-        [Parameter]
-        public int UserId { get; set; }
+        public CartItemModel CartItemModel { get; set; } 
+
+        private int _quantity { get; set; }
 
         [Parameter]
         public EventCallback OnQuantityUpdated { get; set; }
@@ -52,7 +35,8 @@ namespace OnlineStore.Components.ReusableComponnets
 
         protected override async Task OnInitializedAsync()
         {
-            TotalPrice = Price * Quantity; 
+            TotalPrice = CartItemModel.Price * CartItemModel.Quantity;
+            _quantity = CartItemModel.Quantity;
         }
 
         private async Task UpdateQuantity(int newQuantity)
@@ -64,18 +48,13 @@ namespace OnlineStore.Components.ReusableComponnets
 
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var cartItemDetails = new CartItemCard
-            {
-                Quantity = newQuantity
-            };
-
-            var response = await httpClient.PutAsJsonAsync($"api/cart/update/quantity/{CartItemId}", cartItemDetails);
+            var response = await httpClient.PutAsJsonAsync($"api/cart/update/quantity/{CartItemModel.CartItemId}", newQuantity);
 
             if (response.IsSuccessStatusCode)
             {
-                Quantity = newQuantity;
+                _quantity = newQuantity;
 
-                TotalPrice = Price * Quantity;
+                TotalPrice = CartItemModel.Price * _quantity;
                 StateHasChanged(); 
 
                 await OnQuantityUpdated.InvokeAsync();
