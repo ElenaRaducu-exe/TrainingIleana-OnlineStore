@@ -29,7 +29,13 @@ else
                               CartId="@item.CartId"
                               CartItemId="@item.CartItemId"
                               ProductId="@item.ProductId"
-                              UserId="@item.UserId" />
+                              UserId="@item.UserId" >
+                    <MudButton Variant="Variant.Filled"
+                               Style="background-color: #C998ED; margin-top: 15px;"
+                               OnClick="@(() => DeleteCartItem(item.CartId, item.CartItemId))">
+                        @Res.Lang.Btn_Delete
+                    </MudButton>
+                </CartItemCard>
             }
         </MudItem>
 

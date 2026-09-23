@@ -14,5 +14,7 @@ namespace OnlineStore.Services.Contracts
         Task<List<CartItemDTO>?> GetCartItemsByUser(int userId);
 
         Task<bool> UpdateCartItemQuantity(int cartItem, int quantity);
+
+        Task<bool> DeleteCartItem(int cartItemId);
     }
 }

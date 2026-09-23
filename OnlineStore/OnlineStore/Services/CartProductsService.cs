@@ -136,5 +136,40 @@ namespace OnlineStore.Services
 
             return true; 
         }
+
+        public async Task<bool> DeleteCartItem(int cartItemId) 
+        {
+            var cartItem = _dbContext.CartItems.FirstOrDefault(item => item.Id == cartItemId);
+
+            if (cartItem == null)
+            {
+                return false;
+            }
+
+            var cart = _dbContext.Carts.FirstOrDefault(cart => cart.Id == cartItem.CartId);
+
+            if (cart == null)
+            {
+                return false;
+            }
+
+            var product = _dbContext.Products.FirstOrDefault(product => product.Id == cartItem.ProductId);
+            if(product == null)
+            {
+                return false; 
+            }
+            product.Stock += cartItem.Quantity;
+
+            _dbContext.CartItems.Remove(cartItem);
+            await _dbContext.SaveChangesAsync();
+
+            if(_dbContext.CartItems.Count() == 0)
+            {
+                _dbContext.Carts.Remove(cart);
+                await _dbContext.SaveChangesAsync();
+            }
+
+            return true; 
+        }
     }
 }

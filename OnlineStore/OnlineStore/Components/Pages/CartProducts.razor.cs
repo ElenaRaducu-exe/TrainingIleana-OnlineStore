@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Components;
+using OnlineStore.DBModels;
 using OnlineStore.JWTAuthentication.Providers.Contracts;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
@@ -56,6 +57,28 @@ namespace OnlineStore.Components.Pages
         public void NavigateToProductsPage()
         {
             _navigation.NavigateTo("/dashboard/products");
+        }
+
+        protected async Task DeleteCartItem(int cartId, int cartItemId)
+        {
+            var token = await _tokenProvider.GetToken();
+
+            var httpClient = _httpClientFactory.CreateClient();
+            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
+
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var cart = _cartItems.FirstOrDefault(cart => cart.CartId == cartId);
+            var cartItem = _cartItems.FirstOrDefault(item => item.CartItemId == cartItemId);
+
+            var response = await httpClient.DeleteAsync($"api/cart/delete/{cartItemId}");
+
+            if (response.IsSuccessStatusCode && cartItem != null)
+            {
+                _cartItems.Remove(cartItem);
+
+                StateHasChanged();
+            }
         }
     }
 }

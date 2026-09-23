@@ -89,5 +89,19 @@ namespace OnlineStore.Controllers
 
             return Ok();
         }
+
+        // api/cart/delete/{cartItemId:int}
+        [HttpDelete("delete/{cartItemId:int}")]
+        public async Task<IActionResult> DeleteCartItem([FromRoute]int cartItemId)
+        {
+            var result = await _cartProductsService.DeleteCartItem(cartItemId);
+
+            if (!result)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
+        }
     }
 }
