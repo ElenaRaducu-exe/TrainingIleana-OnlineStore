@@ -80,5 +80,10 @@ namespace OnlineStore.Components.Pages
                 StateHasChanged();
             }
         }
+
+        private async Task HandleQuantityUpdated()
+        {
+            await OnInitializedAsync();
+        }
     }
 }

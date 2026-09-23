@@ -31,6 +31,9 @@ namespace OnlineStore.Components.ReusableComponnets
         public int UserId { get; set; }
 
         [Parameter]
+        public EventCallback OnQuantityUpdated { get; set; }
+
+        [Parameter]
         public RenderFragment ChildContent { get; set; }
 
         public decimal TotalPrice { get; set; }
@@ -71,6 +74,8 @@ namespace OnlineStore.Components.ReusableComponnets
 
                 TotalPrice = Price * Quantity;
                 StateHasChanged(); 
+
+                await OnQuantityUpdated.InvokeAsync();
             }
         }
     }
