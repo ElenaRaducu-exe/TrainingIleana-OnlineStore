@@ -19,18 +19,15 @@ namespace OnlineStore.Components.Pages
         private NavigationManager _navigation { get; set; }
 
         [Inject]
-        private ICartProductsService _cartService { get; set; }
-
-        [Inject]
         private ITokenProvider _tokenProvider { get; set; }
-
-        private List<CartItemModel> _cartItems { get; set; }
-        private decimal _totalOrderPrice { get; set; }
 
         [Inject]
         private IMapper _mapper { get; set; }
 
-        protected override async Task OnInitializedAsync()
+        private List<CartItemModel> _cartItems { get; set; }
+        private decimal _totalOrderPrice { get; set; }
+
+        protected async Task IntializedPageLoadData()
         {
             var token = await _tokenProvider.GetToken();
 
@@ -41,17 +38,23 @@ namespace OnlineStore.Components.Pages
 
             var cartItemDTO = await httpClient.GetFromJsonAsync<List<CartItemDTO>>("api/cart/items/user");
 
-            if(cartItemDTO != null)
+            if (cartItemDTO != null)
             {
                 _cartItems = _mapper.Map<List<CartItemModel>>(cartItemDTO);
             }
 
-            _totalOrderPrice = _cartItems.Sum(item => item.Price * item.Quantity); 
+            _totalOrderPrice = _cartItems.Sum(item => item.Price * item.Quantity);
         }
 
-        public void RedirectToProductDetailsPage(int id)
+        protected override async Task OnInitializedAsync()
         {
-            _navigation.NavigateTo($"/dashboard/products/{id}");
+            await IntializedPageLoadData();
+        }
+
+        public void RedirectToProductDetailsPage(int cartItemId)
+        {
+            var item = _cartItems.FirstOrDefault(item => item.CartItemId == cartItemId);
+            _navigation.NavigateTo($"/dashboard/products/{item.ProductId}");
         }
 
         public void NavigateToProductsPage()
@@ -83,7 +86,7 @@ namespace OnlineStore.Components.Pages
 
         private async Task HandleQuantityUpdated()
         {
-            await OnInitializedAsync();
+            await IntializedPageLoadData();
         }
     }
 }

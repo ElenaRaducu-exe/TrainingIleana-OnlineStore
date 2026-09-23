@@ -30,7 +30,8 @@ else
                               CartItemId="@item.CartItemId"
                               ProductId="@item.ProductId"
                               UserId="@item.UserId" 
-                              OnQuantityUpdated="@HandleQuantityUpdated">
+                              OnQuantityUpdated="@HandleQuantityUpdated"
+                              OnItemSelected="@RedirectToProductDetailsPage">
                     <MudButton Variant="Variant.Filled"
                                Style="background-color: #C998ED; margin-top: 15px;"
                                OnClick="@(() => DeleteCartItem(item.CartId, item.CartItemId))">

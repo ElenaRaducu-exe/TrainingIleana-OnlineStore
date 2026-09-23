@@ -128,7 +128,7 @@ namespace OnlineStore.Services
             {
                 return false; 
             }
-
+     
             product.Stock = newProductStock;
             cartItem.Quantity = quantity;
 

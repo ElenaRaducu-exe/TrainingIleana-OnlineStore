@@ -34,6 +34,9 @@ namespace OnlineStore.Components.ReusableComponnets
         public EventCallback OnQuantityUpdated { get; set; }
 
         [Parameter]
+        public EventCallback<int> OnItemSelected { get; set; }
+
+        [Parameter]
         public RenderFragment ChildContent { get; set; }
 
         public decimal TotalPrice { get; set; }
@@ -77,6 +80,11 @@ namespace OnlineStore.Components.ReusableComponnets
 
                 await OnQuantityUpdated.InvokeAsync();
             }
+        }
+
+        private async Task CartItemClicked(int cartItemId)
+        {
+            await OnItemSelected.InvokeAsync(cartItemId);
         }
     }
 }
