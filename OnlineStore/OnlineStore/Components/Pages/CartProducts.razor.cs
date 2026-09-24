@@ -26,6 +26,7 @@ namespace OnlineStore.Components.Pages
 
         private List<CartItemModel> _cartItems { get; set; }
         private decimal _totalOrderPrice { get; set; }
+        private int _totalCartItems { get; set; }
 
         protected async Task IntializedPageLoadData()
         {
@@ -44,6 +45,8 @@ namespace OnlineStore.Components.Pages
             }
 
             _totalOrderPrice = _cartItems.Sum(item => item.Price * item.Quantity);
+
+            _totalCartItems = _cartItems.Count();
         }
 
         protected override async Task OnInitializedAsync()
