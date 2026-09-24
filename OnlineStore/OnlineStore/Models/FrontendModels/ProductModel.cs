@@ -1,17 +1,33 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace OnlineStore.Models.DTOs
+namespace OnlineStore.Models.FrontendModels
 {
-    public class ProductDTO
+    public class ProductModel
     {
         public int Id { get; set; }
+
+        [Required]
         public string Name { get; set; }
+
+        [Required]
         public string? Description { get; set; }
+
+        [Required]
         public decimal Price { get; set; }
+
+        [Required]
         public int Stock { get; set; }
+
+        [Required]
         public string? ImageUrl { get; set; }
+
+        [Required]
         public bool IsActive { get; set; }
-        public int CategoryId {  get; set; }
-        public int BrandId {  get; set; }
+
+        [Required]
+        public int CategoryId { get; set; }
+
+        [Required]
+        public int BrandId { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using OnlineStore.DBModels;
 using OnlineStore.Models;
+using OnlineStore.Models.FrontendModels;
 using OnlineStore.Services.Contracts;
 using System.ComponentModel.DataAnnotations;
 
@@ -15,31 +16,7 @@ namespace OnlineStore.Components.ReusableComponnets
         private ICategoriesService _categoriesService { get; set; }
 
         [Parameter]
-        public int ProductId { get; set; }
-
-        [Parameter]
-        public string Name { get; set; }
-
-        [Parameter]
-        public string? Description { get; set; }
-
-        [Parameter]
-        public decimal Price { get; set; }
-
-        [Parameter]
-        public int Stock { get; set; }
-
-        [Parameter]
-        public string? ImageUrl { get; set; }
-
-        [Parameter]
-        public bool IsActive { get; set; }
-
-        [Parameter]
-        public int CategoryId { get; set; }
-
-        [Parameter]
-        public int BrandId { get; set; }
+        public ProductModel ProductModel { get; set; }
 
         [Parameter]
         public EventCallback<int> OnSelectedId { get; set; }
@@ -50,15 +27,15 @@ namespace OnlineStore.Components.ReusableComponnets
         private Brand _brand { get; set; } = new();
         private Category _category { get; set; } = new(); 
 
-        private async Task ProductCardClicked()
+        private async Task ProductCardClicked(int ProductId)
         {
             await OnSelectedId.InvokeAsync(ProductId);
         }
 
         protected override async Task OnInitializedAsync()
         {
-            _brand = await _brandsService.GetBrandByIdAsync(BrandId);
-            _category = await _categoriesService.GetCategoryByIdAsync(CategoryId);
+            _brand = await _brandsService.GetBrandByIdAsync(ProductModel.BrandId);
+            _category = await _categoriesService.GetCategoryByIdAsync(ProductModel.CategoryId);
         }
     }
 }

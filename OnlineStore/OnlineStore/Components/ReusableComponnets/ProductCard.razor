@@ -1,15 +1,15 @@
-﻿<MudCard Style="@($"height: 100%; background-color: {(!IsActive ? "#e0e0e0" : (Stock <= 0 ? "#F4C3CD" : ""))}")"
-         onclick="@ProductCardClicked">
-    <MudCardMedia Image="@ImageUrl" 
+﻿<MudCard Style="@($"height: 100%; background-color: {(!ProductModel.IsActive ? "#e0e0e0" : (ProductModel.Stock <= 0 ? "#F4C3CD" : ""))}")"
+         onclick="@(() => ProductCardClicked(ProductModel.Id))">
+    <MudCardMedia Image="@ProductModel.ImageUrl"
                   Height="300" 
                   Style="background-size: contain;
                          background-repeat: no-repeat; 
                          background-position: center;" />
     <MudCardContent>
-        <MudText Typo="Typo.h5">@Name</MudText>
-        <MudText Typo="Typo.body1">@Description</MudText>
+        <MudText Typo="Typo.h5">@ProductModel.Name</MudText>
+        <MudText Typo="Typo.body1">@ProductModel.Description</MudText>
         <MudText Typo="Typo.body2">Category: @_category.CategoryName | Brand: @_brand.BrandName</MudText>
-        <MudText Typo="Typo.body2">Stock: @Stock | Price: @Price</MudText>
+        <MudText Typo="Typo.body2">Stock: @ProductModel.Stock | Price: @ProductModel.Price</MudText>
 
         @ChildContent
 

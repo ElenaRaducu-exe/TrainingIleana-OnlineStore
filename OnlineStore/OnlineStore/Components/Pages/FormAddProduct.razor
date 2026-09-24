@@ -8,39 +8,39 @@
 <h3>AddProductFrom</h3>
 
 <MudForm>
-    <MudTextField @bind-value="_productDTO.Name"          
+    <MudTextField @bind-value="_productModel.Name"          
                   Label="Name"
                   Required="true"
                   RequiredError="Name is required!" />
 
-    <MudTextField @bind-value="_productDTO.Description"        
+    <MudTextField @bind-value="_productModel.Description"
                   Label="Description"
                   Required="true"
                   RequiredError="Description is required!" />
 
-    <MudNumericField @bind-Value="_productDTO.Price"
+    <MudNumericField @bind-Value="_productModel.Price"
                      Label="Price"
                      Required="true"
                      RequiredError="Price is required!"
                      Error="@_priceError" />
 
-    <MudNumericField @bind-Value="_productDTO.Stock"
+    <MudNumericField @bind-Value="_productModel.Stock"
                      Label="Stock"
                      Required="true"
                      RequiredError="Stock is required!"
                      Error="@_stockError" />
 
-    <MudTextField @bind-value="_productDTO.ImageUrl"        
+    <MudTextField @bind-value="_productModel.ImageUrl"
                   Label="ImageURL"
                   Required="true"
                   RequiredError="ImageURL is required!" />
 
-    <MudSwitch @bind-Value="_productDTO.IsActive"
+    <MudSwitch @bind-Value="_productModel.IsActive"
                Label="Active Mode"
                Color="Color.Success"/>
 
     <MudSelect T="int"
-               @bind-value="_productDTO.BrandId"
+               @bind-value="_productModel.BrandId"
                Label="Brand"
                Required="true"
                RequiredError="Brand is required!">
@@ -53,7 +53,7 @@
     </MudSelect>
 
     <MudSelect T="int"
-               @bind-value="@_productDTO.CategoryId"
+               @bind-value="@_productModel.CategoryId"
                Label="Category"
                Required="true"
                RequiredError="Category is required!">
@@ -77,7 +77,7 @@
     {
         <MudButton Variant="Variant.Filled"
                    Style="background-color: #C998ED;"
-                   OnClick="@(() => EditProduct(_productDTO))">
+                   OnClick="@(() => EditProduct(_productModel))">
             @Res.Lang.Btn_Edit
         </MudButton>
     }

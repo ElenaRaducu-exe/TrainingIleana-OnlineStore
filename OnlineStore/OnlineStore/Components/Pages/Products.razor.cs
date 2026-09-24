@@ -1,12 +1,9 @@
 using Microsoft.AspNetCore.Components;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using OnlineStore.DBModels;
 using OnlineStore.JWTAuthentication.Providers.Contracts;
-using OnlineStore.Services.Contracts;
-using System.Net.NetworkInformation;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Net.Http.Headers;
 using OnlineStore.Models.DTOs;
+using OnlineStore.Models.FrontendModels;
+using AutoMapper;
 
 namespace OnlineStore.Components.Pages
 {
@@ -19,12 +16,12 @@ namespace OnlineStore.Components.Pages
         private NavigationManager _navigation { get; set; }
 
         [Inject]
-        private ICartProductsService _cartService { get; set; }
-
-        [Inject]
         private ITokenProvider _tokenProvider { get; set; }
 
-        public List<ProductDTO> ProductsList = new(); 
+        [Inject]
+        private IMapper _mapper { get; set; }
+
+        public List<ProductModel> ProductsList = new(); 
 
         public int SelectedProductId { get; set; }
 
@@ -35,7 +32,9 @@ namespace OnlineStore.Components.Pages
             var httpClient = _httpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(_navigation.BaseUri);
 
-            ProductsList = await httpClient.GetFromJsonAsync<List<ProductDTO>>("api/admin/products");
+            var productDTOs = await httpClient.GetFromJsonAsync<List<ProductDTO>>("api/admin/products");
+
+            ProductsList = _mapper.Map<List<ProductModel>>(productDTOs);
 
             _resultAddProductToCart = false; 
         }
@@ -58,12 +57,13 @@ namespace OnlineStore.Components.Pages
             }
         }
 
-        protected async Task ChangeActiveMode(ProductDTO product)
+        protected async Task ChangeActiveMode(ProductModel product)
         {
             var httpClient = _httpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(_navigation.BaseUri);
 
-            var response = await httpClient.PutAsJsonAsync($"api/admin/products/update/product/active-status/{product.Id}", product); 
+            var productDTO = _mapper.Map<ProductModel>(product);
+            var response = await httpClient.PutAsJsonAsync($"api/admin/products/update/product/active-status/{product.Id}", productDTO); 
 
             if (response.IsSuccessStatusCode)
             {
@@ -94,7 +94,7 @@ namespace OnlineStore.Components.Pages
             _navigation.NavigateTo($"/dashboard/products/{SelectedProductId}");
         }
 
-        protected async Task AddToCart(ProductDTO productDTO)
+        protected async Task AddToCart(ProductModel product)
         {
             var token = await _tokenProvider.GetToken();
 
@@ -103,11 +103,13 @@ namespace OnlineStore.Components.Pages
 
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            productDTO.Stock--;
+            product.Stock--;
 
             StateHasChanged();
 
-            await httpClient.PutAsJsonAsync($"api/admin/products/update/product/{productDTO.Id}", productDTO);
+            var productDTO = _mapper.Map<ProductDTO>(product);
+
+            await httpClient.PutAsJsonAsync($"api/admin/products/update/product/{product.Id}", productDTO);
 
             await httpClient.PostAsJsonAsync($"api/cart/add/products-list/{productDTO.Id}", productDTO);
 

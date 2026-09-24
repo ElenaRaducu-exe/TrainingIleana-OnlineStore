@@ -1,7 +1,9 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Components;
 using OnlineStore.DBModels;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Services.Contracts;
+using OnlineStore.Models.FrontendModels;
 
 namespace OnlineStore.Components.Pages
 {
@@ -22,7 +24,10 @@ namespace OnlineStore.Components.Pages
         [Inject]
         private ICategoriesService _categoryService { get; set; }
 
-        private ProductDTO _productDTO = new();
+        [Inject]
+        private IMapper _mapper { get; set; }
+
+        private ProductModel _productModel = new();
 
         private List<Brand> _brands = new();
         private List<Category> _categories = new();
@@ -46,19 +51,24 @@ namespace OnlineStore.Components.Pages
 
             if(productId != null)
             {
-                _productDTO = await _productService.GetProductDTOAsync(productId.Value);
+                var _productDTO = await _productService.GetProductDTOAsync(productId.Value);
+
+                if(_productDTO != null)
+                {
+                    _productModel = _mapper.Map<ProductModel>(_productDTO);
+                }
             }
         }
 
         private async Task AddProduct()
         {
-            if (_productDTO.Stock < 0)
+            if (_productModel.Stock < 0)
             {
                 _stockError = true;
                 _stockErrorMessage = "Stock has to be at least 0!";
             }
 
-            if (_productDTO.Price <= 0)
+            if (_productModel.Price <= 0)
             {
                 _priceError = true;
                 _priceErrorMessage = "Price can not be 0 or negative!";
@@ -67,11 +77,12 @@ namespace OnlineStore.Components.Pages
             var httpClient = _httpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(_navigation.BaseUri);
 
-            var response = await httpClient.PostAsJsonAsync("api/admin/products/add/product", _productDTO);
+            var productDTO = _mapper.Map<ProductModel>(_productModel);
+            var response = await httpClient.PostAsJsonAsync("api/admin/products/add/product", productDTO);
 
             if (response.IsSuccessStatusCode)
             {
-                _productDTO = new ProductDTO();
+                _productModel = new ProductModel();
                 _message = "Product added successfully!";
 
                 _stockError = false;
@@ -88,11 +99,12 @@ namespace OnlineStore.Components.Pages
             }
         }
 
-        protected async Task EditProduct(ProductDTO productDTO)
+        protected async Task EditProduct(ProductModel productModel)
         {
             var httpClient = _httpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(_navigation.BaseUri);
 
+            var productDTO = _mapper.Map<ProductDTO>(_productModel);
             var response = await httpClient.PutAsJsonAsync($"api/admin/products/update/product/{productDTO.Id}", productDTO);
 
             if (response.IsSuccessStatusCode)

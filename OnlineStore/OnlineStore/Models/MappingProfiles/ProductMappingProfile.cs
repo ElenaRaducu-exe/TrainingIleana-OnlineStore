@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using OnlineStore.DBModels;
 using OnlineStore.Models.DTOs;
+using OnlineStore.Models.FrontendModels;
 
 namespace OnlineStore.Models.MappingProfiles
 {
@@ -16,6 +17,9 @@ namespace OnlineStore.Models.MappingProfiles
 
             // Or use ReverseMap() for bidirectional mapping
             //CreateMap<Product, ProductDTO>().ReverseMap();
+
+            CreateMap<ProductDTO, ProductModel>();
+            CreateMap<ProductDTO, ProductModel>().ReverseMap();
         }
     }
 }

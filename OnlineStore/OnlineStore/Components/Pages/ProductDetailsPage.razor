@@ -3,29 +3,29 @@
 @using Microsoft.AspNetCore.Components.Authorization
 
 <MudCard>
-    <MudCardMedia Image="@productDTO.ImageUrl" 
+    <MudCardMedia Image="@productModel.ImageUrl"
                   Height="300"
                   Style="background-size: contain;
                          background-repeat: no-repeat;
                          background-position: center;" />
     <MudCardContent>
-        <MudText Align="Align.Center" Typo="Typo.h5">@productDTO.Name</MudText>
-        <MudText Align="Align.Center" Typo="Typo.subtitle1">@productDTO.Description</MudText>
+        <MudText Align="Align.Center" Typo="Typo.h5">@productModel.Name</MudText>
+        <MudText Align="Align.Center" Typo="Typo.subtitle1">@productModel.Description</MudText>
         <MudText Align="Align.Center" Typo="Typo.body1">Category: @_category | Brand: @_brand</MudText>
-        <MudText Align="Align.Center" Typo="Typo.body2">Stock: @productDTO.Stock | Price: @productDTO.Price</MudText>
+        <MudText Align="Align.Center" Typo="Typo.body2">Stock: @productModel.Stock | Price: @productModel.Price</MudText>
     </MudCardContent>
 
     <AuthorizeView Roles="Admin">
         <MudCardActions>
             <MudButton Variant="Variant.Filled"
                        Style="background-color: #C998ED;"
-                       OnClick="@(() => DeleteProduct(productDTO.Id))">
+                       OnClick="@(() => DeleteProduct(productModel.Id))">
                 @Res.Lang.Btn_Delete
             </MudButton>
 
             <MudButton Variant="Variant.Filled"
                        Style="background-color: #C998ED;"
-                       OnClick="@(() => EditProduct(productDTO.Id))">
+                       OnClick="@(() => EditProduct(productModel.Id))">
                 @Res.Lang.Btn_Edit
             </MudButton>
         </MudCardActions>
@@ -34,8 +34,8 @@
     <AuthorizeView Roles="Customer">
         <MudButton Variant="Variant.Filled"
                    Style="background-color: #C998ED; margin-top: 15px;"
-                   Disabled="@(productDTO.IsActive && productDTO.Stock > 0 ? false : true)"
-                   OnClick="@(() => AddToCart(productDTO))">
+                   Disabled="@(productModel.IsActive && productModel.Stock > 0 ? false : true)"
+                   OnClick="@(() => AddToCart(productModel))">
             @Res.Lang.Btn_AddToCart
         </MudButton>
     </AuthorizeView>
