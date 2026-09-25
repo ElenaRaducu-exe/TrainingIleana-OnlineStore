@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
 using AutoMapper;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OnlineStore.Components.Pages
 {
@@ -28,16 +29,24 @@ namespace OnlineStore.Components.Pages
         private bool _resultAddProductToCart { get; set; } = false;
 
         private int _pageNumber = 1; 
-        private int _pageSize = 20;
+        private int _pageSize = 10;
+        private int _totalProducts = 0;
+        private int _totalPages = 0;
 
         protected async Task LoadProducts()
         {
             var httpClient = _httpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(_navigation.BaseUri);
 
-            var productDTOs = await httpClient.GetFromJsonAsync<List<ProductDTO>>("api/admin/products");
+            //var productDTOs = await httpClient.GetFromJsonAsync<List<ProductDTO>>("api/admin/products");
+
+            var productDTOs = await httpClient.GetFromJsonAsync<List<ProductDTO>>
+                        ($"api/admin/products/pagination?pageNumber={_pageNumber}&pageSize={_pageSize}");
 
             ProductsList = _mapper.Map<List<ProductModel>>(productDTOs);
+
+            _totalProducts = await httpClient.GetFromJsonAsync<int>("api/admin/products/count");
+            _totalPages = (int)Math.Ceiling((double)_totalProducts / _pageSize);
         }
 
         protected override async Task OnInitializedAsync()
@@ -45,6 +54,13 @@ namespace OnlineStore.Components.Pages
             await LoadProducts(); 
 
             _resultAddProductToCart = false; 
+        }
+
+        private async Task OnPageChanged(int page)
+        {
+            _pageNumber = page;
+
+            await LoadProducts();
         }
 
         protected async Task DeleteProduct(int? productId)

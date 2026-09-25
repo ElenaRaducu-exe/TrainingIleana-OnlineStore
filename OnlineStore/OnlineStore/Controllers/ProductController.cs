@@ -56,8 +56,8 @@ namespace OnlineStore.Controllers
             return Ok(result); 
         }
 
-        [HttpGet("page={pageNumber:int}&pageSize={pageSize:int}")]
-        public async Task<IActionResult> GetProductDTOsPagination([FromRoute]int pageNumber, [FromRoute]int pageSize)
+        [HttpGet("pagination")]
+        public async Task<IActionResult> GetProductDTOsPagination([FromQuery]int pageNumber, [FromQuery] int pageSize)
         {
             var result = await _productService.GetProductDTOListPagination(pageNumber, pageSize);
 

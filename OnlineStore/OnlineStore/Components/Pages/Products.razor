@@ -57,4 +57,9 @@
             </MudItem>
         }
     </MudGrid>
+
+    <MudPagination Count="@_totalPages"
+                   Selected="@_pageNumber"
+                   SelectedChanged="@OnPageChanged"
+                   Color="Color.Primary"/>
 }
