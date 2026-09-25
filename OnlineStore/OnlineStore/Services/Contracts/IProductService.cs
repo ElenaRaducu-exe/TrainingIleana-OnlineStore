@@ -6,7 +6,7 @@ namespace OnlineStore.Services.Contracts
     {
         Task<bool> AddProductAsync(ProductDTO productDTO);
 
-        Task<ProductDTO?> GetProductDTOAsync(int id);
+        Task<ProductDTO?> GetProductDTOAsyncById(int id);
 
         Task<List<ProductDTO>> GetProductDTOListAsync(); 
 
@@ -17,5 +17,9 @@ namespace OnlineStore.Services.Contracts
         Task<bool> UpdateProduct(ProductDTO productDetails);
 
         Task<ProductDTO?> GetProductDTOById(int productId);
+
+        Task<List<ProductDTO>?> GetProductDTOListPagination(int pageNumber, int pageSize);
+
+        Task<int?> GetProductsCount();
     }
 }

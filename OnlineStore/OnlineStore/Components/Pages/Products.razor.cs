@@ -25,9 +25,12 @@ namespace OnlineStore.Components.Pages
 
         public int SelectedProductId { get; set; }
 
-        private bool _resultAddProductToCart { get; set; } = false; 
+        private bool _resultAddProductToCart { get; set; } = false;
 
-        protected override async Task OnInitializedAsync()
+        private int _pageNumber = 1; 
+        private int _pageSize = 20;
+
+        protected async Task LoadProducts()
         {
             var httpClient = _httpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(_navigation.BaseUri);
@@ -35,6 +38,11 @@ namespace OnlineStore.Components.Pages
             var productDTOs = await httpClient.GetFromJsonAsync<List<ProductDTO>>("api/admin/products");
 
             ProductsList = _mapper.Map<List<ProductModel>>(productDTOs);
+        }
+
+        protected override async Task OnInitializedAsync()
+        {
+            await LoadProducts(); 
 
             _resultAddProductToCart = false; 
         }

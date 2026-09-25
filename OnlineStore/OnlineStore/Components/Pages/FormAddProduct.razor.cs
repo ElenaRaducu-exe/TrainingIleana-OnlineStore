@@ -51,7 +51,7 @@ namespace OnlineStore.Components.Pages
 
             if(productId != null)
             {
-                var _productDTO = await _productService.GetProductDTOAsync(productId.Value);
+                var _productDTO = await _productService.GetProductDTOAsyncById(productId.Value);
 
                 if(_productDTO != null)
                 {

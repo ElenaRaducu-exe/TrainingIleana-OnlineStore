@@ -26,6 +26,19 @@ namespace OnlineStore.Services
             _mapper = mapper;
         }
 
+        public async Task<List<ProductDTO>?> GetProductDTOListAsync()
+        {
+            return await _dbContext.Database.SqlQuery<ProductDTO>($"exec dbo.spGetProducts").ToListAsync();
+
+            //List<Product> productDTOs = _dbContext.Products.ToList();
+            //return _mapper.Map<List<ProductDTO>>(productDTOs);
+        }
+
+        public async Task<List<ProductDTO>?> GetProductDTOListPagination(int pageNumber, int pageSize)
+        {
+            return await _dbContext.Database.SqlQuery<ProductDTO>($"spGetProductsPagination @PageNumber={pageNumber}, @PageSize={pageSize}").ToListAsync();
+        }
+
         public async Task<bool> AddProductAsync(ProductDTO productDTO)
         {
             if(productDTO.Stock < 0 || productDTO.Price <= 0 || productDTO.Name == null 
@@ -43,7 +56,7 @@ namespace OnlineStore.Services
             return true; 
         }
 
-        public async Task<ProductDTO?> GetProductDTOAsync(int id)
+        public async Task<ProductDTO?> GetProductDTOAsyncById(int id)
         {
             var product = _dbContext.Products.AsNoTracking().FirstOrDefault(p =>  p.Id == id);
 
@@ -56,14 +69,6 @@ namespace OnlineStore.Services
 
             return productDTO;
         }
-
-        public async Task<List<ProductDTO>?> GetProductDTOListAsync()
-        {
-            return await _dbContext.Database.SqlQuery<ProductDTO>($"exec dbo.spGetProducts").ToListAsync();
-
-            //List<Product> productDTOs = _dbContext.Products.ToList();
-            //return _mapper.Map<List<ProductDTO>>(productDTOs);
-         }
 
         public async Task<bool> DeleteProduct(int id)
         {
@@ -96,7 +101,7 @@ namespace OnlineStore.Services
 
             _dbContext.SaveChanges();
 
-            return await GetProductDTOAsync(product.Id);
+            return await GetProductDTOAsyncById(product.Id);
         }
 
         public async Task<bool> UpdateProduct(ProductDTO productDetails)
@@ -140,6 +145,11 @@ namespace OnlineStore.Services
 
             var productDTO = _mapper.Map<ProductDTO>(product);
             return productDTO;
+        }
+
+        public async Task<int?> GetProductsCount()
+        {
+            return await _dbContext.Products.CountAsync();
         }
     }
 }

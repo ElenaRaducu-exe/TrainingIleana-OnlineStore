@@ -34,7 +34,7 @@ namespace OnlineStore.Controllers
         [HttpGet("get/product/{id:int}")]
         public async Task<IActionResult> GetProduct(int id)
         {
-            var result = await _productService.GetProductDTOAsync(id);
+            var result = await _productService.GetProductDTOAsyncById(id);
 
             if (result == null)
             {
@@ -54,6 +54,32 @@ namespace OnlineStore.Controllers
             }
 
             return Ok(result); 
+        }
+
+        [HttpGet("page={pageNumber:int}&pageSize={pageSize:int}")]
+        public async Task<IActionResult> GetProductDTOsPagination([FromRoute]int pageNumber, [FromRoute]int pageSize)
+        {
+            var result = await _productService.GetProductDTOListPagination(pageNumber, pageSize);
+
+            if(result == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(result);
+        }
+
+        [HttpGet("count")]
+        public async Task<IActionResult> GetProductsCount()
+        {
+            var result = await _productService.GetProductsCount();
+
+            if (result == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(result);
         }
 
         [HttpDelete("delete/product/{id:int}")]
@@ -89,7 +115,7 @@ namespace OnlineStore.Controllers
         //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateProduct([FromRoute] int id, [FromBody] ProductDTO productDetails)
         {
-            var productDTO = await _productService.GetProductDTOAsync(id); 
+            var productDTO = await _productService.GetProductDTOAsyncById(id); 
 
             if(productDTO == null)
             {

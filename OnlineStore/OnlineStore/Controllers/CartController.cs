@@ -44,7 +44,7 @@ namespace OnlineStore.Controllers
         [HttpPost("add/products-list/{productId:int}")]
         public async Task<IActionResult> AddToCartProductsList(int productId)
         {
-            var productDTO = await _productService.GetProductDTOAsync(productId);
+            var productDTO = await _productService.GetProductDTOAsyncById(productId);
 
             if(productDTO == null)
             {
