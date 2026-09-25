@@ -1,39 +1,53 @@
-﻿﻿<MudCard onclick="@(() => CartItemClicked(CartItemModel.CartItemId))">
-    <MudGrid Spacing="20">
-        <MudItem xs=3>
-            <MudImage Src="@CartItemModel.ImageUrl"
-                      Height="200"
-                      Width="200"
-                      Style="background-size: contain;
-                             background-repeat: no-repeat;
-                             background-position: center;" />
-        </MudItem>
-        
-        <MudItem xs=3>
-            <MudText Typo="Typo.body1">@CartItemModel.ProductName</MudText> 
-            <MudText Typo="Typo.body2">@CartItemModel.BrandName - @CartItemModel.CategoryName</MudText>
-            <MudText Typo="Typo.body2">@CartItemModel.Description</MudText>
-        </MudItem>
+﻿<tr onclick="@(() => CartItemClicked(CartItemModel.CartItemId))">
+    <td>
+        <MudImage Src="@CartItemModel.ImageUrl"
+                  Height="150"
+                  Width="150"
+                  Style="background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;" />
+    </td>
 
-        <MudItem xs=2>
-            <MudNumericField T="int"
-                             Value="@_quantity"
-                             Label="Quantity"
-                             Required="true"
-                             ValueChanged="UpdateQuantity" />
-        </MudItem>
+    <td>
+        <MudText Typo="Typo.body1">
+            @CartItemModel.ProductName
+        </MudText>
+    </td>
+    
+    <td>
+        <MudText Typo="Typo.body2">
+            @CartItemModel.BrandName - @CartItemModel.CategoryName
+        </MudText>
+    </td>
+    
+    <td>
+        <MudText Typo="Typo.body2">
+            @CartItemModel.Description
+        </MudText>
+    </td>
+    
+    <td>
+        <MudStack Row="true"
+                  AlignItems="AlignItems.Center"
+                  Spacing="2">
+            <MudButton onclick="@(() => DecreaseQuantity(_quantity))">-</MudButton>
+            <MudText Typo="Typo.body2">@_quantity</MudText>
+            <MudButton Disabled="@(_availableStock == 0 ? true : false)"
+                       onclick="@(() => IncreaseQuantity(_quantity))">+</MudButton>
+        </MudStack>
+    </td>
 
-        <MudItem xs=2>
-            <MudText Typo="Typo.body1">Price: </MudText>
-            <MudText Typo="Typo.body1">@CartItemModel.Price RON</MudText>
-        </MudItem>
+    <td>
+        <MudText Typo="Typo.body2">Price: </MudText>
+        <MudText Typo="Typo.body2">@CartItemModel.Price RON</MudText>
+    </td>
 
-        <MudItem xs=2>
-            <MudText Typo="Typo.body1">Total:</MudText>
-            <MudText Typo="Typo.body1">@TotalPrice RON</MudText>
-        </MudItem>
-    </MudGrid>
+    <td>
+        <MudText Typo="Typo.body2">Total:</MudText>
+        <MudText Typo="Typo.body2">@TotalPrice RON</MudText>
+    </td>
 
-    @ChildContent
-
-</MudCard>
+    <td>
+        @ChildContent
+    </td>
+</tr>

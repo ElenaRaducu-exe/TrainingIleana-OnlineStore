@@ -1,6 +1,12 @@
 ﻿@page "/cart/products"
 @using OnlineStore.Components.ReusableComponnets
 
+<MudDivider />
+
+<MudText Typo="Typo.h4">@Res.Lang.Label_Cart</MudText>
+
+<MudDivider/>
+
 @if(_cartItems == null || _cartItems.Count() == 0)
 {
     <MudText Typo="Typo.h5">
@@ -15,40 +21,43 @@
 }
 else
 {
-    <MudGrid Spacing="10">
-        <MudItem xs="10">
-            @foreach (var item in _cartItems)
-            {
-                <CartItemCard CartItemModel="@item"
-                              OnQuantityUpdated="@HandleQuantityUpdated"
-                              OnItemSelected="@RedirectToProductDetailsPage">
+    <MudStack Row="true" 
+              AlignItems="AlignItems.Start"
+              Spacing="10"
+              Style="width:100%; margin-top: 30px">
+        <div>
+            <table>
+                <tbody>
+                    @foreach (var item in _cartItems)
+                    {
+                        <CartItemCard CartItemModel="@item"
+                                      OnQuantityUpdated="@HandleQuantityUpdated"
+                                      OnItemSelected="@RedirectToProductDetailsPage"
+                                      OnItemDeleted="@HandleItemDeleted">
 
-                    <MudButton Variant="Variant.Filled"
-                               Style="background-color: #C998ED; margin-top: 15px;"
-                               OnClick="@(() => DeleteCartItem(item.CartId, item.CartItemId))">
-                        @Res.Lang.Btn_Delete
-                    </MudButton>
+                            <MudButton Variant="Variant.Filled"
+                                       Style="background-color: #C998ED; margin-top: 15px;"
+                                       OnClick="@(() => DeleteCartItem(item.CartId, item.CartItemId))">
+                                @Res.Lang.Btn_Delete
+                            </MudButton>
 
-                </CartItemCard>
-            }
-        </MudItem>
+                        </CartItemCard>
+                    }
+                </tbody>
+            </table>
+        </div>
 
-        <MudItem xs="2">
-            <MudCard>
-                <MudText Typo="Typo.h5">Order Summary</MudText>
+        <div style="width: 250px;">
+            <MudText Typo="Typo.h5">@Res.Lang.Label_cartSummary</MudText>
 
-                <MudDivider/>
+            <MudDivider />
 
-                <MudText Typo="Typo.body1">Total:</MudText>
-                <MudText Typo="Typo.h6">@_totalOrderPrice RON</MudText>
+            <MudText Typo="Typo.body1">Total: @_totalOrderPrice RON</MudText>
 
-                <MudDivider />
+            <MudDivider />
 
-                <MudText Typo="Typo.body1">Number products:</MudText>
-                <MudText Typo="Typo.h6">@_totalCartItems</MudText>
+            <MudText Typo="Typo.body1">Number products: @_totalCartItems</MudText>
 
-            </MudCard>
-        </MudItem>
-
-    </MudGrid>
+        </div>
+    </MudStack>
 }

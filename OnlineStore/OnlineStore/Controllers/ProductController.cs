@@ -100,5 +100,19 @@ namespace OnlineStore.Controllers
 
             return Ok();
         }
+
+        // api/admin/products/{productId:int}
+        [HttpGet("{productId:int}")]
+        public async Task<IActionResult> GetProductDTOById([FromRoute] int productId)
+        {
+            var productDTO = await _productService.GetProductDTOById(productId);
+
+            if(productDTO == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(productDTO);
+        }
     }
 }

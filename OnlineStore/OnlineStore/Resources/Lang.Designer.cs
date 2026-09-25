@@ -124,6 +124,24 @@ namespace Res {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to My shopping Cart.
+        /// </summary>
+        public static string Label_Cart {
+            get {
+                return ResourceManager.GetString("Label_Cart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Order Summary.
+        /// </summary>
+        public static string Label_cartSummary {
+            get {
+                return ResourceManager.GetString("Label_cartSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Test.
         /// </summary>
         public static string Label_Test {

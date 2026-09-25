@@ -138,6 +138,12 @@
   <data name="Btn_NavigationToProductsPage" xml:space="preserve">
     <value>Go to products page!</value>
   </data>
+  <data name="Label_Cart" xml:space="preserve">
+    <value>My shopping Cart</value>
+  </data>
+  <data name="Label_cartSummary" xml:space="preserve">
+    <value>Order Summary</value>
+  </data>
   <data name="Label_Test" xml:space="preserve">
     <value>Test</value>
   </data>

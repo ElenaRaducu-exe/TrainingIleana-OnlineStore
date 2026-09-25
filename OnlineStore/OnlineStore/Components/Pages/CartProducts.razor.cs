@@ -91,5 +91,15 @@ namespace OnlineStore.Components.Pages
         {
             await IntializedPageLoadData();
         }
+
+        private async Task HandleItemDeleted(int cartItemId)
+        {
+            var cartItem = _cartItems.FirstOrDefault(item => item.CartItemId == cartItemId);
+
+            if (cartItem != null)
+            {
+                await DeleteCartItem(cartItem.CartId, cartItemId); 
+            }
+        }
     }
 }

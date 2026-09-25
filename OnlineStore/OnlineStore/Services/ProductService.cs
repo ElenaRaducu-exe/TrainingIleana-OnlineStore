@@ -128,5 +128,18 @@ namespace OnlineStore.Services
             //return await GetProductDTOAsync(productToUpdate.Id); 
             return true; 
         }
+
+        public async Task<ProductDTO?> GetProductDTOById(int productId)
+        {
+            var product = _dbContext.Products.FirstOrDefault(product => product.Id == productId);
+
+            if(product == null)
+            {
+                return null;
+            }
+
+            var productDTO = _mapper.Map<ProductDTO>(product);
+            return productDTO;
+        }
     }
 }
