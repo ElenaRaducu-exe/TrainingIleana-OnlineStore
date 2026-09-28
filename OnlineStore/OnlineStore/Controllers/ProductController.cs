@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using OnlineStore.Services;
 using OnlineStore.Services.Contracts;
 using OnlineStore.Models.DTOs;
+using OnlineStore.Models.FrontendModels;
 
 namespace OnlineStore.Controllers
 {
@@ -65,6 +66,32 @@ namespace OnlineStore.Controllers
             {
                 return BadRequest();
             }
+
+            return Ok(result);
+        }
+
+        [HttpGet("filtered")]
+        public async Task<IActionResult> GetFilteredSortedProductDTOs([FromQuery] ProductFiltersModel productFilters)
+        {
+            if(productFilters.PageNumber < 1 || productFilters.PageSize < 1)
+            {
+                return BadRequest("Invalid pagination parameters");
+            }
+
+            var result = await _productService.GetFilteredSortedProductDTOs(productFilters);
+
+            if(result == null)
+            {
+                return BadRequest("Not found!");
+            }
+
+            return Ok(result);
+        }
+
+        [HttpGet("filtered/count")]
+        public async Task<IActionResult> GetFilteredSortedProductsCount([FromQuery] ProductFiltersModel productFilters)
+        {
+            var result = await _productService.GetFilteredSortedProductsCount(productFilters);
 
             return Ok(result);
         }

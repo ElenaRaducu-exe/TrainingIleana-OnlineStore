@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using OnlineStore.Data;
 using OnlineStore.DBModels;
 using OnlineStore.Models.DTOs;
+using OnlineStore.Models.FrontendModels;
 using OnlineStore.Services.Contracts;
 
 namespace OnlineStore.Services
@@ -37,6 +38,41 @@ namespace OnlineStore.Services
         public async Task<List<ProductDTO>?> GetProductDTOListPagination(int pageNumber, int pageSize)
         {
             return await _dbContext.Database.SqlQuery<ProductDTO>($"spGetProductsPagination @PageNumber={pageNumber}, @PageSize={pageSize}").ToListAsync();
+        }
+
+        public async Task<List<ProductDTO>?> GetFilteredSortedProductDTOs(ProductFiltersModel productFilters)
+        {
+            return await _dbContext.Database.SqlQuery<ProductDTO>(
+                $"""
+                exec spGetFilteredSortedProducts 
+                    @Name = {productFilters.Name}, 
+                    @BrandId = {productFilters.BrandId}, 
+                    @CategoryId = {productFilters.CategoryId}, 
+                    @PriceFrom = {productFilters.PriceFrom}, 
+                    @PriceTo = {productFilters.PriceTo}, 
+                    @AvailableStock={productFilters.AvailableStock}, 
+                    @SortBy={productFilters.SortBy}, 
+                    @SortDirection={productFilters.SortDirection}, 
+                    @PageNumber={productFilters.PageNumber}, 
+                    @PageSize={productFilters.PageSize}
+                """
+                ).ToListAsync();
+        }
+
+        public async Task<int> GetFilteredSortedProductsCount(ProductFiltersModel productFilters)
+        {
+            var result = await _dbContext.Database.SqlQuery<int>(
+                $"""
+                exec spGetFilteredSortedProductsCount 
+                    @Name = {productFilters.Name}, 
+                    @BrandId = {productFilters.BrandId}, 
+                    @CategoryId = {productFilters.CategoryId}, 
+                    @PriceFrom = {productFilters.PriceFrom}, 
+                    @PriceTo = {productFilters.PriceTo}, 
+                    @AvailableStock={productFilters.AvailableStock} 
+                """
+                ).ToListAsync();
+            return result.First(); 
         }
 
         public async Task<bool> AddProductAsync(ProductDTO productDTO)
