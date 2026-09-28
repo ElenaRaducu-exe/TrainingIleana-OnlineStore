@@ -44,6 +44,7 @@ namespace OnlineStore.Components.Pages
         private int _totalProducts = 0;
         private int _totalPages = 0;
         private ProductFiltersModel _filtersModel = new();
+        private bool _isFiltered = false;
 
         protected async Task LoadProducts()
         {
@@ -79,13 +80,27 @@ namespace OnlineStore.Components.Pages
                 ["AvailableStock"] = _filtersModel.AvailableStock.ToString(),
                 ["SortBy"] = _filtersModel.SortBy,
                 ["SortDirection"] = _filtersModel.SortDirection,
-                ["PageNumber"] = _filtersModel.PageNumber.ToString(),
-                ["PageSize"] = _filtersModel.PageSize.ToString()
+                ["PageNumber"] = _pageNumber.ToString(),
+                ["PageSize"] = _pageSize.ToString()
+            };
+
+            var parametersCount = new Dictionary<string, string?>
+            {
+                ["Name"] = _filtersModel.Name,
+                ["BrandId"] = _filtersModel.BrandId.ToString(),
+                ["CategoryId"] = _filtersModel.CategoryId.ToString(),
+                ["PriceFrom"] = _filtersModel.PriceFrom.ToString(),
+                ["PriceTo"] = _filtersModel.PriceTo.ToString(),
+                ["AvailableStock"] = _filtersModel.AvailableStock.ToString()
             };
 
             var urlEndpoint = QueryHelpers.AddQueryString("api/admin/products/filtered", parameters);
+            var urlEndpointCount = QueryHelpers.AddQueryString("api/admin/products/filtered/count", parametersCount);
 
             var productDTOs = await httpClient.GetFromJsonAsync<List<ProductDTO>> (urlEndpoint);
+            _totalProducts = await httpClient.GetFromJsonAsync<int>(urlEndpointCount);
+
+            _totalPages = (int)Math.Ceiling((double)_totalProducts / _pageSize);
 
             ProductsList = _mapper.Map<List<ProductModel>>(productDTOs);
         }
@@ -101,7 +116,14 @@ namespace OnlineStore.Components.Pages
         {
             _pageNumber = page;
 
-            await LoadProducts();
+            if (_isFiltered)
+            {
+                await LoadFilteredProducts();
+            }
+            else
+            {
+                await LoadProducts();
+            }
         }
 
         protected async Task DeleteProduct(int? productId)
@@ -187,15 +209,17 @@ namespace OnlineStore.Components.Pages
 
         public async Task ApplyFilters()
         {
+            _isFiltered = true;
             _pageNumber = 1;
             await LoadFilteredProducts();
         }
 
         public async Task ResetFilters()
         {
+            _isFiltered = false;
             _filtersModel = new ProductFiltersModel();
             _pageNumber = 1;
-            await LoadFilteredProducts();
+            await LoadProducts();
         }
     }
 } 
