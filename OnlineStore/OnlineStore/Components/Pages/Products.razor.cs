@@ -5,6 +5,9 @@ using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
 using AutoMapper;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.WebUtilities;
+using OnlineStore.Services.Contracts;
+using OnlineStore.DBModels;
 
 namespace OnlineStore.Components.Pages
 {
@@ -22,16 +25,25 @@ namespace OnlineStore.Components.Pages
         [Inject]
         private IMapper _mapper { get; set; }
 
+        [Inject]
+        private IBrandsService _brandService { get; set; }
+
+        [Inject]
+        private ICategoriesService _categoryService { get; set; }
+
         public List<ProductModel> ProductsList = new(); 
+        public List<Brand> BrandList = new();
+        public List<Category> CategoryList = new();
 
         public int SelectedProductId { get; set; }
 
         private bool _resultAddProductToCart { get; set; } = false;
 
         private int _pageNumber = 1; 
-        private int _pageSize = 10;
+        private int _pageSize = 9;
         private int _totalProducts = 0;
         private int _totalPages = 0;
+        private ProductFiltersModel _filtersModel = new();
 
         protected async Task LoadProducts()
         {
@@ -47,6 +59,35 @@ namespace OnlineStore.Components.Pages
 
             _totalProducts = await httpClient.GetFromJsonAsync<int>("api/admin/products/count");
             _totalPages = (int)Math.Ceiling((double)_totalProducts / _pageSize);
+
+            BrandList = await _brandService.GetBrandsListAsync();
+            CategoryList = await _categoryService.GetCategoriesAsync();
+        }
+
+        protected async Task LoadFilteredProducts()
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
+
+            var parameters = new Dictionary<string, string?>
+            {
+                ["Name"] = _filtersModel.Name,
+                ["BrandId"] = _filtersModel.BrandId.ToString(),
+                ["CategoryId"] = _filtersModel.CategoryId.ToString(),
+                ["PriceFrom"] = _filtersModel.PriceFrom.ToString(),
+                ["PriceTo"] = _filtersModel.PriceTo.ToString(),
+                ["AvailableStock"] = _filtersModel.AvailableStock.ToString(),
+                ["SortBy"] = _filtersModel.SortBy,
+                ["SortDirection"] = _filtersModel.SortDirection,
+                ["PageNumber"] = _filtersModel.PageNumber.ToString(),
+                ["PageSize"] = _filtersModel.PageSize.ToString()
+            };
+
+            var urlEndpoint = QueryHelpers.AddQueryString("api/admin/products/filtered", parameters);
+
+            var productDTOs = await httpClient.GetFromJsonAsync<List<ProductDTO>> (urlEndpoint);
+
+            ProductsList = _mapper.Map<List<ProductModel>>(productDTOs);
         }
 
         protected override async Task OnInitializedAsync()
@@ -140,8 +181,21 @@ namespace OnlineStore.Components.Pages
             var result = await httpClient.PostAsJsonAsync($"api/cart/add/product/{productDTO.Id}", productDTO);
             if (result.IsSuccessStatusCode)
             {
-                _resultAddProductToCart = true; 
+                _resultAddProductToCart = true;
             }
+        }
+
+        public async Task ApplyFilters()
+        {
+            _pageNumber = 1;
+            await LoadFilteredProducts();
+        }
+
+        public async Task ResetFilters()
+        {
+            _filtersModel = new ProductFiltersModel();
+            _pageNumber = 1;
+            await LoadFilteredProducts();
         }
     }
 } 

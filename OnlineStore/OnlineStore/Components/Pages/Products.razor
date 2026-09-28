@@ -3,7 +3,7 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using OnlineStore.Components.ReusableComponnets
 
-@if (ProductsList != null) 
+@if (ProductsList != null)
 {
     @if (_resultAddProductToCart)
     {
@@ -14,52 +14,132 @@
         </MudAlert>
     }
 
-    <MudGrid Spacing="6">
-        @foreach (var product in ProductsList)
-        {
-            <MudItem xs="12" sm="6" md="4" lg="4">
-                <ProductCard ProductModel="@product"
-                             OnSelectedId="@RedirectToProductDetailsPage">
+    <MudStack Row ="true">
+        <MudPaper>
+            <MudStack Spacing="3">
+                <MudText Typo="Typo.h6">
+                    Filter products
+                </MudText>
 
-                    <AuthorizeView Roles="Admin">
-                        <MudButton Variant="Variant.Filled"
-                                   Style="background-color: #C998ED; margin-top: 15px;"
-                                   OnClick="@(() => DeleteProduct(product.Id))">
-                            @Res.Lang.Btn_Delete
-                        </MudButton>
+                <MudTextField T="string"
+                              Label="Product Name"
+                              @bind-Value="_filtersModel.Name" />
 
-                        <MudSpacer />
+                <MudSelect T="int?"
+                           @bind-Value="_filtersModel.BrandId"
+                           Label="Brand">
+                    @foreach (var brand in BrandList)
+                    {
+                        <MudSelectItem value="@((int?)brand.Id)">
+                            @brand.BrandName
+                        </MudSelectItem>
+                    }
+                </MudSelect>
 
-                        <MudButton Variant="Variant.Filled"
-                                   Style="background-color: #C998ED; margin-top: 15px;"
-                                   OnClick="@(() => ChangeActiveMode(product))">
-                            @(product.IsActive ? Res.Lang.Btn_Deactivate : Res.Lang.Btn_Activate)
-                        </MudButton>
+                <MudSelect T="int?"
+                           @bind-Value="_filtersModel.CategoryId"
+                           Label="Category">
+                    @foreach (var category in CategoryList)
+                    {
+                        <MudSelectItem value="@((int?)category.Id)">
+                            @category.CategoryName
+                        </MudSelectItem>
+                    }
+                </MudSelect>
 
-                        <MudSpacer />
+                <MudNumericField T="decimal?"
+                                 Label="Price from"
+                                 @bind-Value="_filtersModel.PriceFrom" />
 
-                        <MudButton Variant="Variant.Filled"
-                                   Style="background-color: #C998ED; margin-top: 15px;"
-                                   OnClick="@(() => RedirectToEditForm(product.Id))">
-                            @Res.Lang.Btn_Edit
-                        </MudButton>
-                    </AuthorizeView>
+                <MudNumericField T="decimal?"
+                                 Label="Price to"
+                                 @bind-Value="_filtersModel.PriceTo" />
 
-                    <AuthorizeView Roles="Customer">
-                        <MudButton Variant="Variant.Filled"
-                                   Style="background-color: #C998ED; margin-top: 15px;"
-                                   Disabled="@(product.IsActive && product.Stock > 0 ? false : true)"
-                                   OnClick="@(() => AddToCart(product))">
-                            @Res.Lang.Btn_AddToCart
-                        </MudButton>
-                    </AuthorizeView>
-                </ProductCard>
-            </MudItem>
-        }
-    </MudGrid>
+                <MudSelect T="bool?"
+                           Label="Availability"
+                           @bind-Value="_filtersModel.AvailableStock">
 
-    <MudPagination Count="@_totalPages"
-                   Selected="@_pageNumber"
-                   SelectedChanged="@OnPageChanged"
-                   Color="Color.Primary"/>
+                    <MudSelectItem T="bool?"
+                                   Value="@null">
+                        All products
+                    </MudSelectItem>
+
+                    <MudSelectItem T="bool?"
+                                   Value="@false">
+                        Out of stock
+                    </MudSelectItem>
+
+                    <MudSelectItem T="bool?"
+                                   Value="@true">
+                        In stock
+                    </MudSelectItem>
+                </MudSelect>
+
+                <MudButton Variant="Variant.Filled"
+                           Style="background-color: #C998ED; margin-top: 15px;"
+                           OnClick="@ApplyFilters">
+                    Apply filters
+                </MudButton>
+
+                <MudButton Variant="Variant.Filled"
+                           Style="background-color: #C998ED; margin-top: 15px;"
+                           OnClick="@ResetFilters">
+                    Reset filters
+                </MudButton>
+
+            </MudStack>
+        </MudPaper>
+
+        <MudPaper>
+        <MudGrid Spacing="6">
+            @foreach (var product in ProductsList)
+            {
+                <MudItem xs="12" sm="6" md="4" lg="4">
+                    <ProductCard ProductModel="@product"
+                    OnSelectedId="@RedirectToProductDetailsPage">
+
+                        <AuthorizeView Roles="Admin">
+                            <MudButton Variant="Variant.Filled"
+                                       Style="background-color: #C998ED; margin-top: 15px;"
+                                       OnClick="@(() => DeleteProduct(product.Id))">
+                                @Res.Lang.Btn_Delete
+                            </MudButton>
+
+                            <MudSpacer />
+
+                            <MudButton Variant="Variant.Filled"
+                                       Style="background-color: #C998ED; margin-top: 15px;"
+                                       OnClick="@(() => ChangeActiveMode(product))">
+                                @(product.IsActive ? Res.Lang.Btn_Deactivate : Res.Lang.Btn_Activate)
+                            </MudButton>
+
+                            <MudSpacer />
+
+                            <MudButton Variant="Variant.Filled"
+                                       Style="background-color: #C998ED; margin-top: 15px;"
+                                       OnClick="@(() => RedirectToEditForm(product.Id))">
+                                @Res.Lang.Btn_Edit
+                            </MudButton>
+                        </AuthorizeView>
+
+                        <AuthorizeView Roles="Customer">
+                            <MudButton Variant="Variant.Filled"
+                                       Style="background-color: #C998ED; margin-top: 15px;"
+                                       Disabled="@(product.IsActive && product.Stock > 0 ? false : true)"
+                                       OnClick="@(() => AddToCart(product))">
+                                @Res.Lang.Btn_AddToCart
+                            </MudButton>
+                        </AuthorizeView>
+                    </ProductCard>
+                </MudItem>
+            }
+        </MudGrid>
+
+        <MudPagination Count="@_totalPages"
+                       Selected="@_pageNumber"
+                       SelectedChanged="@OnPageChanged"
+                       Color="Color.Primary" />
+        </MudPaper>
+
+    </MudStack>
 }
