@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Alert_AddProductCartSuccessfully" xml:space="preserve">
+    <value>The product was added to cart successfully!</value>
+  </data>
   <data name="Btn_Activate" xml:space="preserve">
     <value>Activate</value>
   </data>
@@ -125,6 +128,9 @@
   </data>
   <data name="Btn_AddToCart" xml:space="preserve">
     <value>Add to cart</value>
+  </data>
+  <data name="Btn_ApplyFilters" xml:space="preserve">
+    <value>Apply Filters</value>
   </data>
   <data name="Btn_Deactivate" xml:space="preserve">
     <value>Deactivate</value>
@@ -138,16 +144,67 @@
   <data name="Btn_NavigationToProductsPage" xml:space="preserve">
     <value>Go to products page!</value>
   </data>
+  <data name="Btn_ResetFilters" xml:space="preserve">
+    <value>Reset Filters</value>
+  </data>
+  <data name="DropdownValue_AllProducts" xml:space="preserve">
+    <value>All products</value>
+  </data>
+  <data name="DropdownValue_InStock" xml:space="preserve">
+    <value>In Stock</value>
+  </data>
+  <data name="DropdownValue_OutOfStock" xml:space="preserve">
+    <value>Out of Stock</value>
+  </data>
+  <data name="DropdownValue_Sort_PriceAsc" xml:space="preserve">
+    <value>Price: low to high</value>
+  </data>
+  <data name="DropdownValue_Sort_PriceDesc" xml:space="preserve">
+    <value>Price: high to low</value>
+  </data>
+  <data name="DropdownValue_Sort_ProductNameAsc" xml:space="preserve">
+    <value>Product name: A-Z</value>
+  </data>
+  <data name="DropdownValue_Sort_ProductNameDesc" xml:space="preserve">
+    <value>Product name: Z-A</value>
+  </data>
+  <data name="Label_Availability" xml:space="preserve">
+    <value>Availability</value>
+  </data>
+  <data name="Label_Brand" xml:space="preserve">
+    <value>Brand</value>
+  </data>
   <data name="Label_Cart" xml:space="preserve">
     <value>My shopping Cart</value>
   </data>
   <data name="Label_cartSummary" xml:space="preserve">
     <value>Order Summary</value>
   </data>
+  <data name="Label_Category" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="Label_FilterProducts" xml:space="preserve">
+    <value>Filter Products</value>
+  </data>
+  <data name="Label_PriceFrom" xml:space="preserve">
+    <value>Price From</value>
+  </data>
+  <data name="Label_PriceTo" xml:space="preserve">
+    <value>Price To</value>
+  </data>
+  <data name="Label_ProductName" xml:space="preserve">
+    <value>Product Name</value>
+  </data>
+  <data name="Label_SortOptions" xml:space="preserve">
+    <value>Sorting options</value>
+  </data>
   <data name="Label_Test" xml:space="preserve">
     <value>Test</value>
   </data>
   <data name="Msg_EmptyCart" xml:space="preserve">
     <value>Your cart is empty!</value>
+  </data>
+  <data name="Msg_NoProductFoundFilters" xml:space="preserve">
+    <value>No product found after applying the filters.</value>
   </data>
 </root>

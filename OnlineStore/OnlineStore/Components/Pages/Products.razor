@@ -10,93 +10,122 @@
         <MudAlert Severity="Severity.Success"
                   Dense="true"
                   Class="my-2">
-            The product was added to cart successfully!
+            @Res.Lang.Alert_AddProductCartSuccessfully
         </MudAlert>
     }
 
     <MudStack Row ="true">
-        <MudPaper>
-            <MudStack Spacing="3">
-                <MudText Typo="Typo.h6">
-                    Filter products
-                </MudText>
+        <MudNavMenu>
+            <MudText Typo="Typo.h6">
+                @Res.Lang.Label_FilterProducts
+            </MudText>
 
-                <MudTextField T="string"
-                              Label="Product Name"
-                              @bind-Value="_filtersModel.Name" />
+            <MudTextField T="string"
+                          Label=@Res.Lang.Label_ProductName
+                          @bind-Value="_filtersModel.Name" />
 
-                <MudSelect T="int?"
-                           @bind-Value="_filtersModel.BrandId"
-                           Label="Brand">
-                    @foreach (var brand in BrandList)
-                    {
-                        <MudSelectItem value="@((int?)brand.Id)">
-                            @brand.BrandName
-                        </MudSelectItem>
-                    }
-                </MudSelect>
-
-                <MudSelect T="int?"
-                           @bind-Value="_filtersModel.CategoryId"
-                           Label="Category">
-                    @foreach (var category in CategoryList)
-                    {
-                        <MudSelectItem value="@((int?)category.Id)">
-                            @category.CategoryName
-                        </MudSelectItem>
-                    }
-                </MudSelect>
-
-                <MudNumericField T="decimal?"
-                                 Label="Price from"
-                                 @bind-Value="_filtersModel.PriceFrom" />
-
-                <MudNumericField T="decimal?"
-                                 Label="Price to"
-                                 @bind-Value="_filtersModel.PriceTo" />
-
-                <MudSelect T="bool?"
-                           Label="Availability"
-                           @bind-Value="_filtersModel.AvailableStock">
-
-                    <MudSelectItem T="bool?"
-                                   Value="@null">
-                        All products
+            <MudSelect T="int?"
+                       @bind-Value="_filtersModel.BrandId"
+                       Label=@Res.Lang.Label_Brand>
+                @foreach (var brand in BrandList)
+                {
+                    <MudSelectItem value="@((int?)brand.Id)">
+                        @brand.BrandName
                     </MudSelectItem>
+                }
+            </MudSelect>
 
-                    <MudSelectItem T="bool?"
-                                   Value="@false">
-                        Out of stock
+            <MudSelect T="int?"
+                       @bind-Value="_filtersModel.CategoryId"
+                       Label=@Res.Lang.Label_Category>
+                @foreach (var category in CategoryList)
+                {
+                    <MudSelectItem value="@((int?)category.Id)">
+                        @category.CategoryName
                     </MudSelectItem>
+                }
+            </MudSelect>
 
-                    <MudSelectItem T="bool?"
-                                   Value="@true">
-                        In stock
-                    </MudSelectItem>
-                </MudSelect>
+            <MudNumericField T="decimal?"
+                             Label=@Res.Lang.Label_PriceFrom
+                             @bind-Value="_filtersModel.PriceFrom" />
 
-                <MudButton Variant="Variant.Filled"
-                           Style="background-color: #C998ED; margin-top: 15px;"
-                           OnClick="@ApplyFilters">
-                    Apply filters
-                </MudButton>
+            <MudNumericField T="decimal?"
+                             Label=@Res.Lang.Label_PriceTo
+                             @bind-Value="_filtersModel.PriceTo" />
 
-                <MudButton Variant="Variant.Filled"
-                           Style="background-color: #C998ED; margin-top: 15px;"
-                           OnClick="@ResetFilters">
-                    Reset filters
-                </MudButton>
+            <MudSelect T="bool?"
+                       Label=@Res.Lang.Label_Availability
+                       @bind-Value="_filtersModel.AvailableStock">
 
-            </MudStack>
-        </MudPaper>
+                <MudSelectItem T="bool?"
+                               Value="@null">
+                    @Res.Lang.DropdownValue_AllProducts
+                </MudSelectItem>
 
-        <MudPaper>
+                <MudSelectItem T="bool?"
+                               Value="@false">
+                    @Res.Lang.DropdownValue_OutOfStock
+                </MudSelectItem>
+
+                <MudSelectItem T="bool?"
+                               Value="@true">
+                    @Res.Lang.DropdownValue_InStock
+                </MudSelectItem>
+            </MudSelect>
+
+            <MudSelect T="string"
+                       Label=@Res.Lang.Label_SortOptions
+                       Value="_sortFilter"
+                       ValueChanged="@OnSortSelected">
+                 <MudSelectItem T="string"
+                                Value="@("price:ASC")">
+                     @Res.Lang.DropdownValue_Sort_PriceAsc
+                 </MudSelectItem>
+
+                <MudSelectItem T="string"
+                               Value="@("price:DESC")">
+                    @Res.Lang.DropdownValue_Sort_PriceDesc
+                 </MudSelectItem>
+
+                <MudSelectItem T="string"
+                               Value="@("name:ASC")">
+                     @Res.Lang.DropdownValue_Sort_ProductNameAsc
+                 </MudSelectItem>
+
+                <MudSelectItem T="string"
+                               Value="@("name:DESC")">
+                    @Res.Lang.DropdownValue_Sort_ProductNameDesc
+                 </MudSelectItem>
+            </MudSelect>
+
+            <MudButton Variant="Variant.Filled"
+                       Style="background-color: #C998ED; margin-top: 15px;"
+                       OnClick="@ApplyFilters">
+                @Res.Lang.Btn_ApplyFilters
+            </MudButton>
+
+            <MudButton Variant="Variant.Filled"
+                       Style="background-color: #C998ED; margin-top: 15px;"
+                       OnClick="@ResetFilters">
+                @Res.Lang.Btn_ResetFilters
+            </MudButton>
+
+        </MudNavMenu>
+
         <MudGrid Spacing="6">
+            @if(_isProductListEmpty == true)
+            {
+                <MudText Typo="Typo.h5">
+                    @Res.Lang.Msg_NoProductFoundFilters
+                </MudText>
+            }
+
             @foreach (var product in ProductsList)
             {
                 <MudItem xs="12" sm="6" md="4" lg="4">
                     <ProductCard ProductModel="@product"
-                    OnSelectedId="@RedirectToProductDetailsPage">
+                                 OnSelectedId="@RedirectToProductDetailsPage">
 
                         <AuthorizeView Roles="Admin">
                             <MudButton Variant="Variant.Filled"
@@ -135,11 +164,14 @@
             }
         </MudGrid>
 
+    </MudStack>
+
+    <div style="margin: 30px auto;text-align: center">
         <MudPagination Count="@_totalPages"
                        Selected="@_pageNumber"
                        SelectedChanged="@OnPageChanged"
-                       Color="Color.Primary" />
-        </MudPaper>
-
-    </MudStack>
+                       Color="Color.Primary" 
+                       ShowFirstButton="true" 
+                       ShowLastButton="true" />
+    </div>
 }

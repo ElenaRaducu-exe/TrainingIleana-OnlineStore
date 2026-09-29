@@ -61,6 +61,15 @@ namespace Res {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The product was added to cart successfully!.
+        /// </summary>
+        public static string Alert_AddProductCartSuccessfully {
+            get {
+                return ResourceManager.GetString("Alert_AddProductCartSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Activate.
         /// </summary>
         public static string Btn_Activate {
@@ -84,6 +93,15 @@ namespace Res {
         public static string Btn_AddToCart {
             get {
                 return ResourceManager.GetString("Btn_AddToCart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Apply Filters.
+        /// </summary>
+        public static string Btn_ApplyFilters {
+            get {
+                return ResourceManager.GetString("Btn_ApplyFilters", resourceCulture);
             }
         }
         
@@ -124,6 +142,96 @@ namespace Res {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reset Filters.
+        /// </summary>
+        public static string Btn_ResetFilters {
+            get {
+                return ResourceManager.GetString("Btn_ResetFilters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All products.
+        /// </summary>
+        public static string DropdownValue_AllProducts {
+            get {
+                return ResourceManager.GetString("DropdownValue_AllProducts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In Stock.
+        /// </summary>
+        public static string DropdownValue_InStock {
+            get {
+                return ResourceManager.GetString("DropdownValue_InStock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Out of Stock.
+        /// </summary>
+        public static string DropdownValue_OutOfStock {
+            get {
+                return ResourceManager.GetString("DropdownValue_OutOfStock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Price: low to high.
+        /// </summary>
+        public static string DropdownValue_Sort_PriceAsc {
+            get {
+                return ResourceManager.GetString("DropdownValue_Sort_PriceAsc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Price: high to low.
+        /// </summary>
+        public static string DropdownValue_Sort_PriceDesc {
+            get {
+                return ResourceManager.GetString("DropdownValue_Sort_PriceDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Product name: A-Z.
+        /// </summary>
+        public static string DropdownValue_Sort_ProductNameAsc {
+            get {
+                return ResourceManager.GetString("DropdownValue_Sort_ProductNameAsc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Product name: Z-A.
+        /// </summary>
+        public static string DropdownValue_Sort_ProductNameDesc {
+            get {
+                return ResourceManager.GetString("DropdownValue_Sort_ProductNameDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Availability.
+        /// </summary>
+        public static string Label_Availability {
+            get {
+                return ResourceManager.GetString("Label_Availability", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Brand.
+        /// </summary>
+        public static string Label_Brand {
+            get {
+                return ResourceManager.GetString("Label_Brand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to My shopping Cart.
         /// </summary>
         public static string Label_Cart {
@@ -142,6 +250,60 @@ namespace Res {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Category.
+        /// </summary>
+        public static string Label_Category {
+            get {
+                return ResourceManager.GetString("Label_Category", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter Products.
+        /// </summary>
+        public static string Label_FilterProducts {
+            get {
+                return ResourceManager.GetString("Label_FilterProducts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Price From.
+        /// </summary>
+        public static string Label_PriceFrom {
+            get {
+                return ResourceManager.GetString("Label_PriceFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Price To.
+        /// </summary>
+        public static string Label_PriceTo {
+            get {
+                return ResourceManager.GetString("Label_PriceTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Product Name.
+        /// </summary>
+        public static string Label_ProductName {
+            get {
+                return ResourceManager.GetString("Label_ProductName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorting options.
+        /// </summary>
+        public static string Label_SortOptions {
+            get {
+                return ResourceManager.GetString("Label_SortOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Test.
         /// </summary>
         public static string Label_Test {
@@ -156,6 +318,15 @@ namespace Res {
         public static string Msg_EmptyCart {
             get {
                 return ResourceManager.GetString("Msg_EmptyCart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No product found after applying the filters..
+        /// </summary>
+        public static string Msg_NoProductFoundFilters {
+            get {
+                return ResourceManager.GetString("Msg_NoProductFoundFilters", resourceCulture);
             }
         }
     }
