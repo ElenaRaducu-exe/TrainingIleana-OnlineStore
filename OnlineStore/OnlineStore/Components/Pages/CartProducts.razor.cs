@@ -82,6 +82,7 @@ namespace OnlineStore.Components.Pages
             if (response.IsSuccessStatusCode && cartItem != null)
             {
                 _cartItems.Remove(cartItem);
+                _totalCartItems = _cartItems.Count();
 
                 StateHasChanged();
             }
