@@ -36,15 +36,15 @@ namespace OnlineStore.Components.Pages
         public List<Category> CategoryList = new();
 
         public int SelectedProductId { get; set; }
-
         private bool _resultAddProductToCart { get; set; } = false;
-
         private int _pageNumber = 1; 
         private int _pageSize = 9;
         private int _totalProducts = 0;
         private int _totalPages = 0;
         private ProductFiltersModel _filtersModel = new();
         private bool _isFiltered = false;
+        private bool _isProductListEmpty = false;
+        private string? _sortFilter { get; set; }
 
         protected async Task LoadProducts()
         {
@@ -98,6 +98,7 @@ namespace OnlineStore.Components.Pages
             var urlEndpointCount = QueryHelpers.AddQueryString("api/admin/products/filtered/count", parametersCount);
 
             var productDTOs = await httpClient.GetFromJsonAsync<List<ProductDTO>> (urlEndpoint);
+
             _totalProducts = await httpClient.GetFromJsonAsync<int>(urlEndpointCount);
 
             _totalPages = (int)Math.Ceiling((double)_totalProducts / _pageSize);
@@ -124,6 +125,16 @@ namespace OnlineStore.Components.Pages
             {
                 await LoadProducts();
             }
+        }
+
+        private async Task OnSortSelected(string sortValue)
+        {
+            _sortFilter = sortValue; 
+
+            var sortValues = sortValue.Split(':');
+
+            _filtersModel.SortBy = sortValues[0];
+            _filtersModel.SortDirection = sortValues[1];
         }
 
         protected async Task DeleteProduct(int? productId)
@@ -211,7 +222,13 @@ namespace OnlineStore.Components.Pages
         {
             _isFiltered = true;
             _pageNumber = 1;
+
             await LoadFilteredProducts();
+
+            if(_totalProducts == 0)
+            {
+                _isProductListEmpty = true; 
+            }
         }
 
         public async Task ResetFilters()
@@ -219,6 +236,8 @@ namespace OnlineStore.Components.Pages
             _isFiltered = false;
             _filtersModel = new ProductFiltersModel();
             _pageNumber = 1;
+            _sortFilter = null; 
+
             await LoadProducts();
         }
     }
