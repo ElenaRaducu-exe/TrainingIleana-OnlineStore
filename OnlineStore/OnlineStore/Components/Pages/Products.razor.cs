@@ -78,6 +78,7 @@ namespace OnlineStore.Components.Pages
                 ["PriceFrom"] = _filtersModel.PriceFrom.ToString(),
                 ["PriceTo"] = _filtersModel.PriceTo.ToString(),
                 ["AvailableStock"] = _filtersModel.AvailableStock.ToString(),
+                ["ActiveProduct"] = _filtersModel.ActiveProduct.ToString(),
                 ["SortBy"] = _filtersModel.SortBy,
                 ["SortDirection"] = _filtersModel.SortDirection,
                 ["PageNumber"] = _pageNumber.ToString(),
@@ -91,7 +92,8 @@ namespace OnlineStore.Components.Pages
                 ["CategoryId"] = _filtersModel.CategoryId.ToString(),
                 ["PriceFrom"] = _filtersModel.PriceFrom.ToString(),
                 ["PriceTo"] = _filtersModel.PriceTo.ToString(),
-                ["AvailableStock"] = _filtersModel.AvailableStock.ToString()
+                ["AvailableStock"] = _filtersModel.AvailableStock.ToString(),
+                ["ActiveProduct"] = _filtersModel.ActiveProduct.ToString(),
             };
 
             var urlEndpoint = QueryHelpers.AddQueryString("api/admin/products/filtered", parameters);
@@ -235,7 +237,11 @@ namespace OnlineStore.Components.Pages
 
             if(_totalProducts == 0)
             {
-                _isProductListEmpty = true; 
+                _isProductListEmpty = true;
+            }
+            else
+            {
+                _isProductListEmpty = false;
             }
         }
 

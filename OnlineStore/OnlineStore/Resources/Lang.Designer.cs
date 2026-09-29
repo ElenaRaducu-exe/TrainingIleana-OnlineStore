@@ -151,11 +151,29 @@ namespace Res {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Active.
+        /// </summary>
+        public static string DropdownValue_Active {
+            get {
+                return ResourceManager.GetString("DropdownValue_Active", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to All products.
         /// </summary>
         public static string DropdownValue_AllProducts {
             get {
                 return ResourceManager.GetString("DropdownValue_AllProducts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inactive.
+        /// </summary>
+        public static string DropdownValue_Inactive {
+            get {
+                return ResourceManager.GetString("DropdownValue_Inactive", resourceCulture);
             }
         }
         
@@ -210,6 +228,15 @@ namespace Res {
         public static string DropdownValue_Sort_ProductNameDesc {
             get {
                 return ResourceManager.GetString("DropdownValue_Sort_ProductNameDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Active status.
+        /// </summary>
+        public static string Label_ActiveStatus {
+            get {
+                return ResourceManager.GetString("Label_ActiveStatus", resourceCulture);
             }
         }
         

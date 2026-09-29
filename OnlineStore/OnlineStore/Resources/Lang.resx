@@ -147,8 +147,14 @@
   <data name="Btn_ResetFilters" xml:space="preserve">
     <value>Reset Filters</value>
   </data>
+  <data name="DropdownValue_Active" xml:space="preserve">
+    <value>Active</value>
+  </data>
   <data name="DropdownValue_AllProducts" xml:space="preserve">
     <value>All products</value>
+  </data>
+  <data name="DropdownValue_Inactive" xml:space="preserve">
+    <value>Inactive</value>
   </data>
   <data name="DropdownValue_InStock" xml:space="preserve">
     <value>In Stock</value>
@@ -167,6 +173,9 @@
   </data>
   <data name="DropdownValue_Sort_ProductNameDesc" xml:space="preserve">
     <value>Product name: Z-A</value>
+  </data>
+  <data name="Label_ActiveStatus" xml:space="preserve">
+    <value>Active status</value>
   </data>
   <data name="Label_Availability" xml:space="preserve">
     <value>Availability</value>

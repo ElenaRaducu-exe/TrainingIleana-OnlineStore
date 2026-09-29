@@ -50,7 +50,8 @@ namespace OnlineStore.Services
                     @CategoryId = {productFilters.CategoryId}, 
                     @PriceFrom = {productFilters.PriceFrom}, 
                     @PriceTo = {productFilters.PriceTo}, 
-                    @AvailableStock={productFilters.AvailableStock}, 
+                    @AvailableStock={productFilters.AvailableStock},
+                    @ActiveProduct={productFilters.ActiveProduct},
                     @SortBy={productFilters.SortBy}, 
                     @SortDirection={productFilters.SortDirection}, 
                     @PageNumber={productFilters.PageNumber}, 
@@ -69,7 +70,8 @@ namespace OnlineStore.Services
                     @CategoryId = {productFilters.CategoryId}, 
                     @PriceFrom = {productFilters.PriceFrom}, 
                     @PriceTo = {productFilters.PriceTo}, 
-                    @AvailableStock={productFilters.AvailableStock} 
+                    @AvailableStock={productFilters.AvailableStock}, 
+                    @ActiveProduct={productFilters.ActiveProduct}
                 """
                 ).ToListAsync();
             return result.First(); 
