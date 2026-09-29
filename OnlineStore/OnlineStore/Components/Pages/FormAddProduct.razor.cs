@@ -88,11 +88,6 @@ namespace OnlineStore.Components.Pages
 
             var productDTO = _mapper.Map<ProductModel>(_productModel);
 
-            Console.WriteLine("----------------------------------");
-            Console.WriteLine(productDTO.Name.Length);
-            Console.WriteLine(productDTO.Description.Length);
-            Console.WriteLine(productDTO.ImageUrl.Length);
-
             var response = await httpClient.PostAsJsonAsync("api/admin/products/add/product", productDTO);
 
             if (response.IsSuccessStatusCode)

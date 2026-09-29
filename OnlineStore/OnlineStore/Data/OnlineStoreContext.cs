@@ -326,7 +326,7 @@ public partial class OnlineStoreContext : DbContext
                 .HasColumnName("imageURL");
             entity.Property(e => e.IsActive).HasColumnName("isActive");
             entity.Property(e => e.Name)
-                .HasMaxLength(50)
+                .HasMaxLength(255)
                 .HasColumnName("name");
             entity.Property(e => e.Price)
                 .HasColumnType("decimal(10, 2)")
