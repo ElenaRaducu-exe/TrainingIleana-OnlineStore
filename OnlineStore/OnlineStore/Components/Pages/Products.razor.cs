@@ -45,6 +45,8 @@ namespace OnlineStore.Components.Pages
         private bool _isFiltered = false;
         private bool _isProductListEmpty = false;
         private string? _sortFilter { get; set; }
+        private string? _brandNameFilter { get; set; }
+        private string? _categoryNameFilter { get; set; }
 
         protected async Task LoadProducts()
         {
@@ -243,6 +245,24 @@ namespace OnlineStore.Components.Pages
             {
                 _isProductListEmpty = false;
             }
+
+            if(_filtersModel.BrandId != null)
+            {
+                _brandNameFilter = BrandList.FirstOrDefault(brand => brand.Id == _filtersModel.BrandId).BrandName;
+            }
+            else
+            {
+                _brandNameFilter = null;
+            }
+
+            if (_filtersModel.CategoryId != null)
+            {
+                _categoryNameFilter = CategoryList.FirstOrDefault(category => category.Id == _filtersModel.CategoryId).CategoryName;
+            }
+            else
+            {
+                _categoryNameFilter = null;
+            }
         }
 
         public async Task ResetFilters()
@@ -250,7 +270,10 @@ namespace OnlineStore.Components.Pages
             _isFiltered = false;
             _filtersModel = new ProductFiltersModel();
             _pageNumber = 1;
-            _sortFilter = null; 
+            _sortFilter = null;
+
+            _brandNameFilter = null;
+            _categoryNameFilter = null;
 
             await LoadProducts();
         }

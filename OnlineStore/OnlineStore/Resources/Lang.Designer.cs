@@ -322,6 +322,15 @@ namespace Res {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Products.
+        /// </summary>
+        public static string Label_Products {
+            get {
+                return ResourceManager.GetString("Label_Products", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sorting options.
         /// </summary>
         public static string Label_SortOptions {

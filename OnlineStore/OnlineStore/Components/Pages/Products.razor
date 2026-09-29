@@ -14,7 +14,21 @@
         </MudAlert>
     }
 
-    <MudStack Row ="true"
+    @if (_brandNameFilter != null || _categoryNameFilter != null)
+    {
+        <MudText Typo="Typo.h5">
+            @_categoryNameFilter @_brandNameFilter @_totalProducts @Res.Lang.Label_Products
+        </MudText>
+    }
+    else
+    {
+        <MudText Typo="Typo.h5">
+            @Res.Lang.Label_Products @_totalProducts
+        </MudText>
+    }
+    
+    <MudStack Class="mt-3"
+              Row ="true"
               Spacing="10">
         <MudNavMenu Class="mt-10">
             <MudText Typo="Typo.h6">
