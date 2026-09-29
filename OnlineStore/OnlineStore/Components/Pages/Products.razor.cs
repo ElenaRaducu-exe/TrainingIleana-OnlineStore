@@ -139,8 +139,12 @@ namespace OnlineStore.Components.Pages
 
         protected async Task DeleteProduct(int? productId)
         {
+            var token = await _tokenProvider.GetToken();
+
             var httpClient = _httpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(_navigation.BaseUri);
+
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             if (productId != null)
             {
@@ -157,8 +161,12 @@ namespace OnlineStore.Components.Pages
 
         protected async Task ChangeActiveMode(ProductModel product)
         {
+            var token = await _tokenProvider.GetToken();
+
             var httpClient = _httpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(_navigation.BaseUri);
+
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var productDTO = _mapper.Map<ProductModel>(product);
             var response = await httpClient.PutAsJsonAsync($"api/admin/products/update/product/active-status/{product.Id}", productDTO); 
