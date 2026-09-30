@@ -23,15 +23,15 @@ namespace OnlineStore.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddProduct(ProductDTO newProduct)
         {
-            var usernameClaim = User.FindFirst(ClaimTypes.Name); 
+            var userIdClaim = User.FindFirst("UserId");
 
-            if(usernameClaim == null)
+            if (userIdClaim == null)
             {
-                return BadRequest("Username not found!");
+                return BadRequest();
             }
 
-            string username = usernameClaim.Value;
-            newProduct.CreatedBy = username; 
+            int userId = int.Parse(userIdClaim.Value);
+            newProduct.CreatedBy = userId; 
 
             var result = await _productService.AddProductAsync(newProduct);
 
@@ -138,7 +138,16 @@ namespace OnlineStore.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateProductActiveMode([FromRoute] int id)
         {
-            var updatedProduct = await _productService.ChangeActiveMode(id); 
+            var userIdClaim = User.FindFirst("UserId");
+
+            if (userIdClaim == null)
+            {
+                return BadRequest("UserId not found!");
+            }
+
+            int userId = int.Parse(userIdClaim.Value);
+
+            var updatedProduct = await _productService.ChangeActiveMode(id, userId); 
 
             if (updatedProduct == null)
             {
@@ -159,6 +168,17 @@ namespace OnlineStore.Controllers
             {
                 return BadRequest("Product not found!");
             }
+
+            var userIdClaim = User.FindFirst("UserId");
+
+            if (userIdClaim == null)
+            {
+                return BadRequest("UserId not found!");
+            }
+
+            int userId = int.Parse(userIdClaim.Value);
+
+            productDetails.ModifiedBy = userId;
 
             await _productService.UpdateProduct(productDetails);
 

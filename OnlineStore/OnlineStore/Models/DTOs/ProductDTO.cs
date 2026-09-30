@@ -13,6 +13,7 @@ namespace OnlineStore.Models.DTOs
         public bool IsActive { get; set; }
         public int CategoryId {  get; set; }
         public int BrandId {  get; set; }
-        public string? CreatedBy { get; set; }
+        public int? CreatedBy { get; set; }
+        public int? ModifiedBy { get; set; }
     }
 }

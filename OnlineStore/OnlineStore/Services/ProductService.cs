@@ -126,7 +126,7 @@ namespace OnlineStore.Services
             }
         }
 
-        public async Task<ProductDTO?> ChangeActiveMode(int id)
+        public async Task<ProductDTO?> ChangeActiveMode(int id, int userId)
         { 
             var product = _dbContext.Products.FirstOrDefault(p => p.Id == id);
 
@@ -136,6 +136,7 @@ namespace OnlineStore.Services
             }
 
             product.IsActive = !product.IsActive;
+            product.ModifiedBy = userId;
 
             _dbContext.SaveChanges();
 
@@ -164,6 +165,7 @@ namespace OnlineStore.Services
             productToUpdate.IsActive = productDetails.IsActive;
             productToUpdate.BrandId = productDetails.BrandId;
             productToUpdate.CategoryId = productDetails.CategoryId;
+            productToUpdate.ModifiedBy = productDetails.ModifiedBy;
 
             await _dbContext.SaveChangesAsync();
 

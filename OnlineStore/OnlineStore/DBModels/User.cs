@@ -25,5 +25,9 @@ public partial class User
 
     public virtual Customer? Customer { get; set; }
 
+    public virtual ICollection<Product> ProductCreatedByNavigations { get; set; } = new List<Product>();
+
+    public virtual ICollection<Product> ProductModifiedByNavigations { get; set; } = new List<Product>();
+
     public virtual UserRole Role { get; set; } = null!;
 }

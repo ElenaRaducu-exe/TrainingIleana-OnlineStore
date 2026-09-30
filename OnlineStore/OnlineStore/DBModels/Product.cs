@@ -21,17 +21,25 @@ public partial class Product
 
     public DateTime CreatedAt { get; set; }
 
-    public string? CreatedBy { get; set; }
-
     public int CategoryId { get; set; }
 
     public int BrandId { get; set; }
+
+    public int? ModifiedBy { get; set; }
+
+    public int? CreatedBy { get; set; }
+
+    public DateTime ModifiedAt { get; set; }
 
     public virtual Brand Brand { get; set; } = null!;
 
     public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
 
     public virtual Category Category { get; set; } = null!;
+
+    public virtual User? CreatedByNavigation { get; set; }
+
+    public virtual User? ModifiedByNavigation { get; set; }
 
     public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 }

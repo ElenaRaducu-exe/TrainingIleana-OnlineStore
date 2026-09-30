@@ -315,9 +315,7 @@ public partial class OnlineStoreContext : DbContext
                 .HasPrecision(3)
                 .HasDefaultValueSql("(getutcdate())")
                 .HasColumnName("createdAt");
-            entity.Property(e => e.CreatedBy)
-                .HasMaxLength(50)
-                .HasColumnName("createdBy");
+            entity.Property(e => e.CreatedBy).HasColumnName("createdBy");
             entity.Property(e => e.Description)
                 .HasMaxLength(255)
                 .HasColumnName("description");
@@ -325,6 +323,11 @@ public partial class OnlineStoreContext : DbContext
                 .HasMaxLength(255)
                 .HasColumnName("imageURL");
             entity.Property(e => e.IsActive).HasColumnName("isActive");
+            entity.Property(e => e.ModifiedAt)
+                .HasPrecision(3)
+                .HasDefaultValueSql("(getutcdate())")
+                .HasColumnName("modifiedAt");
+            entity.Property(e => e.ModifiedBy).HasColumnName("modifiedBy");
             entity.Property(e => e.Name)
                 .HasMaxLength(255)
                 .HasColumnName("name");
@@ -342,6 +345,14 @@ public partial class OnlineStoreContext : DbContext
                 .HasForeignKey(d => d.CategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Product__categor__15502E78");
+
+            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ProductCreatedByNavigations)
+                .HasForeignKey(d => d.CreatedBy)
+                .HasConstraintName("FK_Product_Users_CreateById");
+
+            entity.HasOne(d => d.ModifiedByNavigation).WithMany(p => p.ProductModifiedByNavigations)
+                .HasForeignKey(d => d.ModifiedBy)
+                .HasConstraintName("FK_Product_Users_ModifiedById");
         });
 
         modelBuilder.Entity<User>(entity =>
