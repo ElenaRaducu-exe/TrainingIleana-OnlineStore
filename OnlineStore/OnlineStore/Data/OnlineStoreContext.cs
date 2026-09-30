@@ -316,7 +316,7 @@ public partial class OnlineStoreContext : DbContext
                 .HasDefaultValueSql("(getutcdate())")
                 .HasColumnName("createdAt");
             entity.Property(e => e.CreatedBy)
-                .HasMaxLength(1)
+                .HasMaxLength(50)
                 .HasColumnName("createdBy");
             entity.Property(e => e.Description)
                 .HasMaxLength(255)

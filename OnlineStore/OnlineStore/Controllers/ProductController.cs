@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using OnlineStore.Services;
-using OnlineStore.Services.Contracts;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
+using OnlineStore.Services;
+using OnlineStore.Services.Contracts;
+using System.Security.Claims;
 
 namespace OnlineStore.Controllers
 {
@@ -22,6 +23,16 @@ namespace OnlineStore.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddProduct(ProductDTO newProduct)
         {
+            var usernameClaim = User.FindFirst(ClaimTypes.Name); 
+
+            if(usernameClaim == null)
+            {
+                return BadRequest("Username not found!");
+            }
+
+            string username = usernameClaim.Value;
+            newProduct.CreatedBy = username; 
+
             var result = await _productService.AddProductAsync(newProduct);
 
             if (!result)

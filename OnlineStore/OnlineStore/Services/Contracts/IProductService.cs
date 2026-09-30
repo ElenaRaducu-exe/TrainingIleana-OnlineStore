@@ -10,6 +10,7 @@ namespace OnlineStore.Services.Contracts
         Task<ProductDTO?> GetProductDTOAsyncById(int id);
 
         Task<List<ProductDTO>> GetProductDTOListAsync(); 
+
         Task<List<ProductDTO>?> GetFilteredSortedProductDTOs(ProductFiltersModel productFilters); 
 
         Task<bool> DeleteProduct(int id);
@@ -23,6 +24,7 @@ namespace OnlineStore.Services.Contracts
         Task<List<ProductDTO>?> GetProductDTOListPagination(int pageNumber, int pageSize);
 
         Task<int?> GetProductsCount();
+
         Task<int> GetFilteredSortedProductsCount(ProductFiltersModel productFilters);
     }
 }
