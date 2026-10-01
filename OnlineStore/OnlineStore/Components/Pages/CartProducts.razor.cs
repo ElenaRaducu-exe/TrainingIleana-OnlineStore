@@ -102,5 +102,10 @@ namespace OnlineStore.Components.Pages
                 await DeleteCartItem(cartItem.CartId, cartItemId); 
             }
         }
+
+        public void RedirectToCustomerDetailsForm()
+        {
+            _navigation.NavigateTo("/place-order/CustomerDetailsForm");
+        }
     }
 }

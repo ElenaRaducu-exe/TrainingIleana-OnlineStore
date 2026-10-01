@@ -28,8 +28,6 @@ public partial class OnlineStoreContext : DbContext
 
     public virtual DbSet<Category> Categories { get; set; }
 
-    public virtual DbSet<Customer> Customers { get; set; }
-
     public virtual DbSet<Order> Orders { get; set; }
 
     public virtual DbSet<OrderItem> OrderItems { get; set; }
@@ -66,10 +64,19 @@ public partial class OnlineStoreContext : DbContext
             entity.Property(e => e.City)
                 .HasMaxLength(255)
                 .HasColumnName("city");
-            entity.Property(e => e.Entrace)
+            entity.Property(e => e.Entrance)
                 .HasMaxLength(50)
-                .HasColumnName("entrace");
+                .HasColumnName("entrance");
+            entity.Property(e => e.FirstName)
+                .HasMaxLength(50)
+                .HasColumnName("firstName");
             entity.Property(e => e.FloorNumber).HasColumnName("floorNumber");
+            entity.Property(e => e.LastName)
+                .HasMaxLength(50)
+                .HasColumnName("lastName");
+            entity.Property(e => e.Phone)
+                .HasMaxLength(24)
+                .HasColumnName("phone");
             entity.Property(e => e.Street)
                 .HasMaxLength(255)
                 .HasColumnName("street");
@@ -163,29 +170,6 @@ public partial class OnlineStoreContext : DbContext
                 .HasColumnName("categoryName");
         });
 
-        modelBuilder.Entity<Customer>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Customer__3214EC274390F093");
-
-            entity.ToTable("Customer");
-
-            entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.AddressId).HasColumnName("addressID");
-            entity.Property(e => e.FirstName)
-                .HasMaxLength(50)
-                .HasColumnName("firstName");
-            entity.Property(e => e.LastName)
-                .HasMaxLength(50)
-                .HasColumnName("lastName");
-            entity.Property(e => e.Phone)
-                .HasMaxLength(24)
-                .HasColumnName("phone");
-
-            entity.HasOne(d => d.Address).WithMany(p => p.Customers)
-                .HasForeignKey(d => d.AddressId)
-                .HasConstraintName("FK__Customer__addres__1DE57479");
-        });
-
         modelBuilder.Entity<Order>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Orders__3214EC27189C8F2B");
@@ -193,7 +177,7 @@ public partial class OnlineStoreContext : DbContext
             entity.HasIndex(e => e.OrderNumber, "UQ__Orders__6296129F7BEA039F").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.CustomerId).HasColumnName("customerID");
+            entity.Property(e => e.AddressId).HasColumnName("addressId");
             entity.Property(e => e.OrderDate)
                 .HasPrecision(3)
                 .HasDefaultValueSql("(getutcdate())")
@@ -202,16 +186,20 @@ public partial class OnlineStoreContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("orderNumber");
             entity.Property(e => e.StatusId).HasColumnName("statusID");
+            entity.Property(e => e.UserId).HasColumnName("userID");
 
-            entity.HasOne(d => d.Customer).WithMany(p => p.Orders)
-                .HasForeignKey(d => d.CustomerId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Orders__customer__300424B4");
+            entity.HasOne(d => d.Address).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.AddressId)
+                .HasConstraintName("FK_Orders_Address");
 
             entity.HasOne(d => d.Status).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.StatusId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_OrderStatus_Orders");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_Orders_Users");
         });
 
         modelBuilder.Entity<OrderItem>(entity =>
@@ -364,22 +352,31 @@ public partial class OnlineStoreContext : DbContext
             entity.HasIndex(e => e.Username, "UQ__Users__F3DBC572DDB8A982").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.CustomerId).HasColumnName("customerID");
+            entity.Property(e => e.AddressId).HasColumnName("addressId");
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
                 .HasColumnName("email");
+            entity.Property(e => e.FirstName)
+                .HasMaxLength(50)
+                .HasColumnName("firstName");
             entity.Property(e => e.IsActive).HasColumnName("isActive");
+            entity.Property(e => e.LastName)
+                .HasMaxLength(50)
+                .HasColumnName("lastName");
             entity.Property(e => e.PasswordHash)
                 .HasMaxLength(255)
                 .HasColumnName("passwordHash");
+            entity.Property(e => e.Phone)
+                .HasMaxLength(24)
+                .HasColumnName("phone");
             entity.Property(e => e.RoleId).HasColumnName("roleID");
             entity.Property(e => e.Username)
                 .HasMaxLength(50)
                 .HasColumnName("username");
 
-            entity.HasOne(d => d.Customer).WithMany(p => p.Users)
-                .HasForeignKey(d => d.CustomerId)
-                .HasConstraintName("FK__Users__customerI__22AA2996");
+            entity.HasOne(d => d.Address).WithMany(p => p.Users)
+                .HasForeignKey(d => d.AddressId)
+                .HasConstraintName("FK_Users_Address");
 
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
                 .HasForeignKey(d => d.RoleId)

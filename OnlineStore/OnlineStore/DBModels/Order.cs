@@ -11,15 +11,19 @@ public partial class Order
 
     public DateTime OrderDate { get; set; }
 
-    public int CustomerId { get; set; }
-
     public int StatusId { get; set; }
 
-    public virtual Customer Customer { get; set; } = null!;
+    public int? AddressId { get; set; }
+
+    public int? UserId { get; set; }
+
+    public virtual Address? Address { get; set; }
 
     public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
     public virtual ICollection<OrderPayment> OrderPayments { get; set; } = new List<OrderPayment>();
 
     public virtual OrderStatus Status { get; set; } = null!;
+
+    public virtual User? User { get; set; }
 }

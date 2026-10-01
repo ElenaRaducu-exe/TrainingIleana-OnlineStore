@@ -142,6 +142,15 @@ namespace Res {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Place Order.
+        /// </summary>
+        public static string Btn_PlaceOrder {
+            get {
+                return ResourceManager.GetString("Btn_PlaceOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reset Filters.
         /// </summary>
         public static string Btn_ResetFilters {

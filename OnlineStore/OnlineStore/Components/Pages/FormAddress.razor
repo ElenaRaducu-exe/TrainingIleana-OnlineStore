@@ -1,0 +1,82 @@
+﻿@page "/place-order/CustomerDetailsForm"
+
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize(Roles = "Customer")]
+
+<h3>CustomerDetailsForm</h3>
+
+@if (_addressAddedSucces != null)
+{
+    if (_addressAddedSucces.Value)
+    {
+        <MudAlert Severity="Severity.Success">@_messageAddedAddressError</MudAlert>
+    }
+    else
+    {
+        <MudAlert Severity="Severity.Error">@_messageAddedAddressError</MudAlert>
+    }
+}
+
+<MudForm>
+    <MudTextField @bind-Value="_addressModel.FirstName"
+                  Label="First Name"
+                  Required="true"
+                  RequiredError="FirstName is required!"/>
+
+    <MudTextField @bind-Value="_addressModel.LastName"
+                  Label="Last Name"
+                  Required="true"
+                  RequiredError="LastName is required!" />
+
+    <MudTextField @bind-Value="_addressModel.Phone"
+                  Label="Phone"
+                  Required="true"
+                  RequiredError="Phone is required!" />
+
+    <MudTextField @bind-Value="_addressModel.Street"
+                  Label="Street"
+                  Required="true"
+                  RequiredError="Street is required!" />
+
+    <MudTextField @bind-Value="_addressModel.StreetNumber"
+                  Label="Street Number"
+                  Required="true"
+                  RequiredError="StreetNumber is required!" />
+
+    <MudTextField @bind-Value="_addressModel.City"
+                  Label="City"
+                  Required="true"
+                  RequiredError="City is required!" />
+
+    <MudTextField @bind-Value="_addressModel.ZipCode"
+                  Label="ZipCode"
+                  Required="true"
+                  RequiredError="ZipCode is required!" />
+
+    <MudTextField @bind-Value="_addressModel.BuildingName"
+                  Label="BuildingName"
+                  Required="true"
+                  RequiredError="BuildingName is required!" />
+
+    <MudTextField @bind-Value="_addressModel.Entrance"
+                  Label="Entrance"
+                  Required="true"
+                  RequiredError="Entrance is required!" />
+
+    <MudNumericField @bind-Value="_addressModel.FloorNumber"
+                     Label="Floor Number"
+                     Required="true"
+                     RequiredError="FloorNumber is required!" />
+
+    <MudNumericField @bind-Value="_addressModel.Apartment"
+                     Label="Apartment"
+                     Required="true"
+                     RequiredError="Apartment is required!" />
+</MudForm>
+
+<MudButton Variant="Variant.Filled"
+           Style="background-color: #C998ED;"
+           OnClick="@AddAdress">
+           Save
+</MudButton>

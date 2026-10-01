@@ -80,6 +80,7 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IBrandsService, BrandsService>();
 builder.Services.AddScoped<ICategoriesService, CategoriesService>();
 builder.Services.AddScoped<ICartProductsService, CartProductsService>(); 
+builder.Services.AddScoped<IAddressService, AddressService>();
 
 //AutoMapper
 /*builder.Services.AddScoped<ILoggerFactory, LoggerFactory>();

@@ -58,6 +58,12 @@ else
 
             <MudText Typo="Typo.body1">Number products: @_totalCartItems</MudText>
 
+            <MudButton Variant="Variant.Filled"
+                       Style="background-color: #C998ED;"
+                       OnClick="@RedirectToCustomerDetailsForm">
+                    @Res.Lang.Btn_PlaceOrder
+            </MudButton>
+
         </div>
     </MudStack>
 }

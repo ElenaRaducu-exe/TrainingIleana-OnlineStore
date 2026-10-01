@@ -81,6 +81,7 @@ namespace OnlineStore.Controllers
             return Ok(result);
         }
 
+        // httpPost - FromBody
         [HttpGet("filtered")]
         public async Task<IActionResult> GetFilteredSortedProductDTOs([FromQuery] ProductFiltersModel productFilters)
         {

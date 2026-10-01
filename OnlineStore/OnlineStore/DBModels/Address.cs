@@ -17,11 +17,19 @@ public partial class Address
 
     public string? BuildingName { get; set; }
 
-    public string? Entrace { get; set; }
+    public string? Entrance { get; set; }
 
     public int? FloorNumber { get; set; }
 
     public int? Apartment { get; set; }
 
-    public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
+    public string FirstName { get; set; } = null!;
+
+    public string LastName { get; set; } = null!;
+
+    public string Phone { get; set; } = null!;
+
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
+    public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

@@ -144,6 +144,9 @@
   <data name="Btn_NavigationToProductsPage" xml:space="preserve">
     <value>Go to products page!</value>
   </data>
+  <data name="Btn_PlaceOrder" xml:space="preserve">
+    <value>Place Order</value>
+  </data>
   <data name="Btn_ResetFilters" xml:space="preserve">
     <value>Reset Filters</value>
   </data>

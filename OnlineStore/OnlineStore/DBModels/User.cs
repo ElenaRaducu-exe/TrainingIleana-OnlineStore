@@ -15,15 +15,23 @@ public partial class User
 
     public bool IsActive { get; set; }
 
-    public int? CustomerId { get; set; }
-
     public int RoleId { get; set; }
+
+    public string? FirstName { get; set; }
+
+    public string? LastName { get; set; }
+
+    public string? Phone { get; set; }
+
+    public int? AddressId { get; set; }
+
+    public virtual Address? Address { get; set; }
 
     public virtual ICollection<CardDetail> CardDetails { get; set; } = new List<CardDetail>();
 
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
-    public virtual Customer? Customer { get; set; }
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
     public virtual ICollection<Product> ProductCreatedByNavigations { get; set; } = new List<Product>();
 
