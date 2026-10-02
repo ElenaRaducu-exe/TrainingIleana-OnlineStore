@@ -1,4 +1,6 @@
-﻿namespace OnlineStore.Models.FrontendModels
+﻿using OnlineStore.Models.Enums;
+
+namespace OnlineStore.Models.FrontendModels
 {
     public class UserModel
     {

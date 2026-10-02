@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using OnlineStore.Models.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace OnlineStore.Models.DTOs
 {

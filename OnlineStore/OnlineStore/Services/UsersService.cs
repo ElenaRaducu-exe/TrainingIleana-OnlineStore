@@ -5,8 +5,8 @@ using OnlineStore.Data;
 using OnlineStore.DBModels;
 using OnlineStore.JWTAuthentication.Providers;
 using OnlineStore.JWTAuthentication.Providers.Contracts;
-using OnlineStore.Models;
 using OnlineStore.Models.DTOs;
+using OnlineStore.Models.Enums;
 using OnlineStore.Services.Contracts;
 using System.Security.Claims;
 

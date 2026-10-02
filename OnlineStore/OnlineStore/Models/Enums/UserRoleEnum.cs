@@ -1,4 +1,4 @@
-﻿namespace OnlineStore.Models
+﻿namespace OnlineStore.Models.Enums
 {
     public enum UserRoleEnum
     {
