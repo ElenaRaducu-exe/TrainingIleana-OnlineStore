@@ -10,10 +10,8 @@ namespace OnlineStore.Models.MappingProfiles
     {
         public CartItemMappingProfile() 
         {
-            CreateMap<CartItemSummaries, CartItemDTO>();
             CreateMap<CartItemSummaries, CartItemDTO>().ReverseMap();
 
-            CreateMap<CartItemDTO, CartItemModel>(); 
             CreateMap<CartItemDTO, CartItemModel>().ReverseMap();
         }
     }

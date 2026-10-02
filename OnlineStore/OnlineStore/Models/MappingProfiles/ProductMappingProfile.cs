@@ -9,16 +9,9 @@ namespace OnlineStore.Models.MappingProfiles
     {
         public ProductMappingProfile() 
         {
-            // Basic mapping - properties with matching names are mapped automatically
             CreateMap<Product, ProductDTO>();
-
-            // Reverse mapping for going both directions
             CreateMap<ProductDTO, Product>();
 
-            // Or use ReverseMap() for bidirectional mapping
-            //CreateMap<Product, ProductDTO>().ReverseMap();
-
-            CreateMap<ProductDTO, ProductModel>();
             CreateMap<ProductDTO, ProductModel>().ReverseMap();
         }
     }
