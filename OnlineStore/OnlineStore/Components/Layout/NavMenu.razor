@@ -10,9 +10,21 @@
     </MudNavLink>
 
     <AuthorizeView>
-        <MudNavLink Href="/logout">
-            Log out
-        </MudNavLink>
+        <Authorized>
+            <MudNavLink Href="/logout">
+                Log out
+            </MudNavLink>
+        </Authorized>
+        
+        <NotAuthorized>
+            <MudNavLink Href="/user/form">
+                Sign Up / Register 
+            </MudNavLink>
+
+            <MudNavLink Href="/login">
+                Log in
+            </MudNavLink>
+        </NotAuthorized>
     </AuthorizeView>
 
     <AuthorizeView Roles="Admin">
@@ -24,6 +36,10 @@
             <MudNavLink Href="/dashboard/products/add">
                 Add Product
             </MudNavLink>
+
+            <MudNavLink Href="/user/form">
+                Create User Account
+            </MudNavLink>
         </MudNavGroup>
     </AuthorizeView>
 
@@ -32,12 +48,4 @@
             Cart
         </MudNavLink>
     </AuthorizeView>
-
-    <MudNavLink Href="/user/form">
-        Sign Up
-    </MudNavLink>
-
-    <MudNavLink Href="/login">
-        Log in
-    </MudNavLink>
 </MudNavMenu>
