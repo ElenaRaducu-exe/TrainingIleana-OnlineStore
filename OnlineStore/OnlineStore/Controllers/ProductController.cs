@@ -81,9 +81,8 @@ namespace OnlineStore.Controllers
             return Ok(result);
         }
 
-        // httpPost - FromBody
-        [HttpGet("filtered")]
-        public async Task<IActionResult> GetFilteredSortedProductDTOs([FromQuery] ProductFiltersModel productFilters)
+        [HttpPost("filtered")] 
+        public async Task<IActionResult> GetFilteredSortedProductDTOs([FromBody]ProductFiltersModel productFilters)
         {
             if(productFilters.PageNumber < 1 || productFilters.PageSize < 1)
             {
@@ -100,8 +99,8 @@ namespace OnlineStore.Controllers
             return Ok(result);
         }
 
-        [HttpGet("filtered/count")]
-        public async Task<IActionResult> GetFilteredSortedProductsCount([FromQuery] ProductFiltersModel productFilters)
+        [HttpPost("filtered/count")]
+        public async Task<IActionResult> GetFilteredSortedProductsCount([FromBody]ProductFiltersModel productFilters)
         {
             var result = await _productService.GetFilteredSortedProductsCount(productFilters);
 

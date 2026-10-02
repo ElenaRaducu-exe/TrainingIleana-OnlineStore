@@ -72,42 +72,25 @@ namespace OnlineStore.Components.Pages
             var httpClient = _httpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(_navigation.BaseUri);
 
-            var parameters = new Dictionary<string, string?>
+            _filtersModel.PageNumber = _pageNumber; 
+            _filtersModel.PageSize = _pageSize;
+
+            var response = await httpClient.PostAsJsonAsync("api/admin/products/filtered", _filtersModel);
+
+            if (response.IsSuccessStatusCode)
             {
-                ["Name"] = _filtersModel.Name,
-                ["BrandId"] = _filtersModel.BrandId.ToString(),
-                ["CategoryId"] = _filtersModel.CategoryId.ToString(),
-                ["PriceFrom"] = _filtersModel.PriceFrom.ToString(),
-                ["PriceTo"] = _filtersModel.PriceTo.ToString(),
-                ["AvailableStock"] = _filtersModel.AvailableStock.ToString(),
-                ["ActiveProduct"] = _filtersModel.ActiveProduct.ToString(),
-                ["SortBy"] = _filtersModel.SortBy,
-                ["SortDirection"] = _filtersModel.SortDirection,
-                ["PageNumber"] = _pageNumber.ToString(),
-                ["PageSize"] = _pageSize.ToString()
-            };
+                var productDTOs = await response.Content.ReadFromJsonAsync<List<ProductDTO>>();
 
-            var parametersCount = new Dictionary<string, string?>
+                ProductsList = _mapper.Map<List<ProductModel>>(productDTOs);
+            }
+
+            var responseCountProducts = await httpClient.PostAsJsonAsync("api/admin/products/filtered/count", _filtersModel);
+
+            if (responseCountProducts.IsSuccessStatusCode)
             {
-                ["Name"] = _filtersModel.Name,
-                ["BrandId"] = _filtersModel.BrandId.ToString(),
-                ["CategoryId"] = _filtersModel.CategoryId.ToString(),
-                ["PriceFrom"] = _filtersModel.PriceFrom.ToString(),
-                ["PriceTo"] = _filtersModel.PriceTo.ToString(),
-                ["AvailableStock"] = _filtersModel.AvailableStock.ToString(),
-                ["ActiveProduct"] = _filtersModel.ActiveProduct.ToString(),
-            };
-
-            var urlEndpoint = QueryHelpers.AddQueryString("api/admin/products/filtered", parameters);
-            var urlEndpointCount = QueryHelpers.AddQueryString("api/admin/products/filtered/count", parametersCount);
-
-            var productDTOs = await httpClient.GetFromJsonAsync<List<ProductDTO>> (urlEndpoint);
-
-            _totalProducts = await httpClient.GetFromJsonAsync<int>(urlEndpointCount);
-
-            _totalPages = (int)Math.Ceiling((double)_totalProducts / _pageSize);
-
-            ProductsList = _mapper.Map<List<ProductModel>>(productDTOs);
+                _totalProducts = await responseCountProducts.Content.ReadFromJsonAsync<int>();
+                _totalPages = (int)Math.Ceiling((double)_totalProducts / _pageSize);
+            }
         }
 
         protected override async Task OnInitializedAsync()
