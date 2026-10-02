@@ -73,7 +73,6 @@ builder.Services.AddControllers();
 
 // Services
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<ICreateUserService, CreateUserService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IProductService, ProductService>();

@@ -1,5 +1,7 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Components;
 using OnlineStore.Models.DTOs;
+using OnlineStore.Models.FrontendModels;
 
 namespace OnlineStore.Components.Pages
 {
@@ -14,7 +16,10 @@ namespace OnlineStore.Components.Pages
         [Inject]
         private NavigationManager _navigation { get; set; }
 
-        private CreateUserDTO _newUser = new();
+        [Inject]
+        private IMapper _mapper { get; set; }
+
+        private UserModel _newUser = new();
         private string _repetedPassword = string.Empty;
         private string _apiResponse = string.Empty;
         private bool _usernameExistingError = false;
@@ -30,18 +35,19 @@ namespace OnlineStore.Components.Pages
                 _passwordMatchError = true;
                 return;
             }
-
+            
             var httpClient = _httpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(_navigation.BaseUri);
 
-            //var response = await _httpClient.PostAsJsonAsync("api/users", _newUser);
-            var response = await httpClient.PostAsJsonAsync("api/users", _newUser);
+            var userDTO = _mapper.Map<UserDTO>(_newUser);
+
+            var response = await httpClient.PostAsJsonAsync("api/users", userDTO);
 
             _apiResponse = await response.Content.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)
             {
-                _newUser = new CreateUserDTO();
+                _newUser = new UserModel();
 
                 _repetedPassword = string.Empty;
                 _passwordMatchError = false;

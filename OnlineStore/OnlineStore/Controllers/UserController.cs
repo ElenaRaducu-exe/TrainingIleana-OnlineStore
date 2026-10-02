@@ -10,17 +10,17 @@ namespace OnlineStore.Controllers
     [Route("api/users")]
     public class UserController : ControllerBase
     {
-        private readonly ICreateUserService _createUserService;
+        private readonly IUsersService _userService;
 
-        public UserController(ICreateUserService createUserService)
+        public UserController(IUsersService userService)
         {
-            _createUserService = createUserService;
+            _userService = userService;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser(CreateUserDTO newUser)
+        public async Task<IActionResult> CreateUser(UserDTO newUser)
         {
-            var result = await _createUserService.CreateUserAsync(newUser);
+            var result = await _userService.CreateUserAsync(newUser);
 
             if (!result)
             {

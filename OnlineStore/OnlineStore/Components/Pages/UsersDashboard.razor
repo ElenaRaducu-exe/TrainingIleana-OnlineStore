@@ -7,15 +7,17 @@
 
 <h1>UsersDashboard</h1>
 
-<MudTable 
-    T="User"
-    Items="@UsersList"
-    Hover="true"
-    Striped="true">
+<MudTable T="User"
+          Items="@UsersList"
+          Hover="true"
+          Striped="true">
 
     <HeaderContent>
         <MudTh>Id</MudTh>
         <MudTh>Username</MudTh>
+        <MudTh>First Name</MudTh>
+        <MudTh>Last Name</MudTh>
+        <MudTh>Phone</MudTh>
         <MudTh>Email</MudTh>
         <MudTh>Role</MudTh>
         <MudTh>Activ</MudTh>
@@ -25,6 +27,9 @@
     <RowTemplate>
         <MudTh>@context.Id</MudTh>
         <MudTh>@context.Username</MudTh>
+        <MudTh>@context.FirstName</MudTh>
+        <MudTh>@context.LastName</MudTh>
+        <MudTh>@context.Phone</MudTh>
         <MudTh>@context.Email</MudTh>
         <MudTh>@(context.RoleId == 1 ? "Customer" : "Admin")</MudTh>
         <MudTh>@(context.IsActive ? "Active" : "Inactive")</MudTh>
