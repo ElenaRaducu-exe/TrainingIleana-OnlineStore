@@ -23,9 +23,7 @@ public partial class User
 
     public string? Phone { get; set; }
 
-    public int? AddressId { get; set; }
-
-    public virtual Address? Address { get; set; }
+    public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
 
     public virtual ICollection<CardDetail> CardDetails { get; set; } = new List<CardDetail>();
 

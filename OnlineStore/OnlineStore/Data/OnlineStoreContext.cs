@@ -83,9 +83,14 @@ public partial class OnlineStoreContext : DbContext
             entity.Property(e => e.StreetNumber)
                 .HasMaxLength(50)
                 .HasColumnName("streetNumber");
+            entity.Property(e => e.UserId).HasColumnName("UserID");
             entity.Property(e => e.ZipCode)
                 .HasMaxLength(5)
                 .HasColumnName("zipCode");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Addresses)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK__Address__UserID__60A75C0F");
         });
 
         modelBuilder.Entity<Brand>(entity =>
@@ -352,7 +357,6 @@ public partial class OnlineStoreContext : DbContext
             entity.HasIndex(e => e.Username, "UQ__Users__F3DBC572DDB8A982").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.AddressId).HasColumnName("addressId");
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
                 .HasColumnName("email");
@@ -373,10 +377,6 @@ public partial class OnlineStoreContext : DbContext
             entity.Property(e => e.Username)
                 .HasMaxLength(50)
                 .HasColumnName("username");
-
-            entity.HasOne(d => d.Address).WithMany(p => p.Users)
-                .HasForeignKey(d => d.AddressId)
-                .HasConstraintName("FK_Users_Address");
 
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
                 .HasForeignKey(d => d.RoleId)
