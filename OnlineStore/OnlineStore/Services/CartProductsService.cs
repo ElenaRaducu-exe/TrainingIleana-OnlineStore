@@ -12,7 +12,6 @@ namespace OnlineStore.Services
 {
     public class CartProductsService : ICartProductsService
     {
-        private List<ProductDTO> _cartProducts = new List<ProductDTO>();
         private readonly OnlineStoreContext _dbContext;
         private readonly IMapper _mapper;
 
@@ -34,14 +33,6 @@ namespace OnlineStore.Services
             var cartItemDTOs = _mapper.Map<List<CartItemDTO>>(cartItemSummaries);
 
             return cartItemDTOs;
-        }
-
-        public async Task AddProductToCartProductsList(ProductDTO productDTO)
-        {
-            if (productDTO != null)
-            {
-                _cartProducts.Add(productDTO);
-            }
         }
 
         public async Task AddProductToCart(int productId, int userId)

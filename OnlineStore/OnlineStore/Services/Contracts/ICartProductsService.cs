@@ -5,8 +5,6 @@ namespace OnlineStore.Services.Contracts
 {
     public interface ICartProductsService
     {
-        Task AddProductToCartProductsList(ProductDTO productDTO);
-
         Task<List<CartItemSummaries>?> GetCartItems();
 
         Task AddProductToCart(int productId, int userId);

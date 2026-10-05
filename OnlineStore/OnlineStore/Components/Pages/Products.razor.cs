@@ -204,9 +204,8 @@ namespace OnlineStore.Components.Pages
 
             await httpClient.PutAsJsonAsync($"api/admin/products/update/product/{product.Id}", productDTO);
 
-            await httpClient.PostAsJsonAsync($"api/cart/add/products-list/{productDTO.Id}", productDTO);
-
             var result = await httpClient.PostAsJsonAsync($"api/cart/add/product/{productDTO.Id}", productDTO);
+
             if (result.IsSuccessStatusCode)
             {
                 _resultAddProductToCart = true;
