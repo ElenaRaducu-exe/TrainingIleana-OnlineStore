@@ -99,13 +99,39 @@ namespace OnlineStore.Components.Pages
 
             if (cartItem != null)
             {
-                await DeleteCartItem(cartItem.CartId, cartItemId); 
+                await DeleteCartItem(cartItem.CartId, cartItemId);
             }
         }
 
-        public void RedirectToCustomerDetailsForm()
+        public void RedirectToAddressForm()
         {
-            _navigation.NavigateTo("/place-order/CustomerDetailsForm");
+            _navigation.NavigateTo("/place-order/AddressForm");
+        }
+
+        public void RedirectToAddressesPage()
+        {
+            _navigation.NavigateTo("/place-order/addresses");
+        }
+
+        public async Task AvailableAdresses()
+        {
+            var token = await _tokenProvider.GetToken();
+
+            var httpClient = _httpClientFactory.CreateClient();
+            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
+
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var addressDTO = await httpClient.GetFromJsonAsync<List<AddressDTO>>("api/address");
+
+            if(addressDTO?.Any() == false)
+            {
+                RedirectToAddressForm();
+            }
+            else
+            {
+                RedirectToAddressesPage();
+            }
         }
     }
 }

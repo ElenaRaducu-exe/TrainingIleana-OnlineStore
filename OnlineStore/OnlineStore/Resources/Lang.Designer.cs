@@ -133,6 +133,15 @@ namespace Res {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add new address.
+        /// </summary>
+        public static string Btn_NavigateToAddressFrom {
+            get {
+                return ResourceManager.GetString("Btn_NavigateToAddressFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Go to products page!.
         /// </summary>
         public static string Btn_NavigationToProductsPage {

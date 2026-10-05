@@ -2,9 +2,10 @@
 
 namespace OnlineStore.Models.FrontendModels
 {
-    public class AdressModel
+    public class AddressModel
     {
         public int AddressId { get; set; }
+        public int UserId { get; set; }
 
         [Required]
         public string? FirstName { get; set; }

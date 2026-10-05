@@ -13,7 +13,7 @@ namespace OnlineStore.Models.MappingProfiles
             CreateMap<AddressDTO, Address>().ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.AddressId));
 
             //CreateMap<AddressDTO, AdressModel>(); 
-            CreateMap<AddressDTO, AdressModel>().ReverseMap(); 
+            CreateMap<AddressDTO, AddressModel>().ReverseMap(); 
         }
     }
 }

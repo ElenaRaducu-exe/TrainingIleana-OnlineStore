@@ -21,7 +21,16 @@ namespace OnlineStore.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> AddAddress(AddressDTO addressDTO)
         {
-            var result = await _addressService.AddAddressAsync(addressDTO);
+            var userIdClaim = User.FindFirst("UserId");
+
+            if (userIdClaim == null)
+            {
+                return BadRequest("User not found!");
+            }
+
+            int userId = int.Parse(userIdClaim.Value);
+
+            var result = await _addressService.AddAddressAsync(addressDTO, userId);
 
             if (!result)
             {
@@ -29,6 +38,28 @@ namespace OnlineStore.Controllers
             }
 
             return Ok(); 
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAddressByUserId()
+        {
+            var userIdClaim = User.FindFirst("UserId");
+
+            if (userIdClaim == null)
+            {
+                return BadRequest("User not found!");
+            }
+
+            int userId = int.Parse(userIdClaim.Value);
+
+            var addressDTO = await _addressService.GetAddressesByUserId(userId);
+
+            if(addressDTO == null)
+            {
+                return BadRequest("Addresses not found!");
+            }
+
+            return Ok(addressDTO);
         }
     }
 }

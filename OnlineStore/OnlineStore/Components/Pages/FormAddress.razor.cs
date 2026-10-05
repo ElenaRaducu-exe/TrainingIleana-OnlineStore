@@ -21,7 +21,7 @@ namespace OnlineStore.Components.Pages
         [Inject]
         private ITokenProvider _tokenProvider { get; set; }
 
-        private AdressModel _addressModel { get; set; } = new();
+        private AddressModel _addressModel { get; set; } = new();
         private string _messageAddedAddressError = string.Empty;
         private bool? _addressAddedSucces;
 
@@ -42,6 +42,10 @@ namespace OnlineStore.Components.Pages
             {
                 _messageAddedAddressError = "Address added successfully!";
                 _addressAddedSucces = true;
+
+                await Task.Delay(2000);
+
+                _navigation.NavigateTo("/place-order/addresses");
             }
             else
             {

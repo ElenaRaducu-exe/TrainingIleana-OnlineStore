@@ -141,6 +141,9 @@
   <data name="Btn_Edit" xml:space="preserve">
     <value>Edit</value>
   </data>
+  <data name="Btn_NavigateToAddressFrom" xml:space="preserve">
+    <value>Add new address</value>
+  </data>
   <data name="Btn_NavigationToProductsPage" xml:space="preserve">
     <value>Go to products page!</value>
   </data>

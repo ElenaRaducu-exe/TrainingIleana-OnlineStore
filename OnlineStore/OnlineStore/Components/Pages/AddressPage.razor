@@ -1,0 +1,19 @@
+﻿@page "/place-order/addresses"
+@using OnlineStore.Components.ReusableComponnets
+
+<h3>AddressPage</h3>
+
+<MudGrid Spacing="10">
+    @foreach (var address in addressList)
+    {
+        <MudItem xs="6">
+            <AddressCard addressModel="@address"/>
+        </MudItem>
+    }
+</MudGrid>
+
+<MudButton Variant="Variant.Filled"
+           Style="background-color: #C998ED;"
+           OnClick="@RedirectToAddressForm">
+    @Res.Lang.Btn_NavigateToAddressFrom
+</MudButton>
