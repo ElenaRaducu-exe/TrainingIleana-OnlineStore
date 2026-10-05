@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using OnlineStore.Data;
 using OnlineStore.DBModels;
@@ -190,6 +191,28 @@ namespace OnlineStore.Services
         public async Task<int?> GetProductsCount()
         {
             return await _dbContext.Products.CountAsync();
+        }
+
+        public async Task<int> GetAvailableStock(int productId)
+        {
+            var productIdParameter = new SqlParameter()
+            {
+                ParameterName = "@ProductId",
+                SqlDbType = System.Data.SqlDbType.Int,
+                Direction = System.Data.ParameterDirection.Input
+            };
+
+            var availableStockParameter = new SqlParameter()
+            {
+                ParameterName = "@AvailableStock",
+                SqlDbType = System.Data.SqlDbType.Int,
+                Direction = System.Data.ParameterDirection.Output
+            }; 
+
+            await _dbContext.Database.ExecuteSqlRawAsync($"exec [dbo].[GetAvailableStock] @ProductId, @AvailableStock output", 
+                        productIdParameter, availableStockParameter);
+
+            return (int)availableStockParameter.Value; 
         }
     }
 }

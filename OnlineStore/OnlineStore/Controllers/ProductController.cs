@@ -198,5 +198,19 @@ namespace OnlineStore.Controllers
 
             return Ok(productDTO);
         }
+
+        // api/admin/products/available-stock/{productId:int}
+        [HttpGet("available-stock/{productId:int}")]
+        public async Task<IActionResult> GetAvailableStock([FromRoute] int productId)
+        {
+            var result = _productService.GetAvailableStock(productId); 
+
+            if(result == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(result);
+        }
     }
 }
