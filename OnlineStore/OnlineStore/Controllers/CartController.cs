@@ -41,21 +41,6 @@ namespace OnlineStore.Controllers
             return Ok(result);
         }
 
-        [HttpPost("add/products-list/{productId:int}")]
-        public async Task<IActionResult> AddToCartProductsList(int productId)
-        {
-            var productDTO = await _productService.GetProductDTOAsyncById(productId);
-
-            if(productDTO == null)
-            {
-                return BadRequest("Product not found!");
-            }
-
-            await _cartProductsService.AddProductToCartProductsList(productDTO);
-
-            return Ok(); 
-        }
-
         [HttpPost("add/product/{productId:int}")]
         public async Task<IActionResult> AddProductToCart(int productId)
         {
