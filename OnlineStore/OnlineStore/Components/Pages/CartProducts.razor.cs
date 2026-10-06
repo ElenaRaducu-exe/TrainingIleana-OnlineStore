@@ -57,7 +57,11 @@ namespace OnlineStore.Components.Pages
         public void RedirectToProductDetailsPage(int cartItemId)
         {
             var item = _cartItems.FirstOrDefault(item => item.CartItemId == cartItemId);
-            _navigation.NavigateTo($"/dashboard/products/{item.ProductId}");
+
+            if (item != null)
+            {
+                _navigation.NavigateTo($"/dashboard/products/{item.ProductId}");
+            }
         }
 
         public void NavigateToProductsPage()
