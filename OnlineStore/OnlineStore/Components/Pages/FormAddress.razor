@@ -20,57 +20,57 @@
 
 <MudForm>
     <MudTextField @bind-Value="_addressModel.FirstName"
-                  Label="First Name"
+                  Label=@Res.Lang.Label_FirstName
                   Required="true"
                   RequiredError="FirstName is required!"/>
 
     <MudTextField @bind-Value="_addressModel.LastName"
-                  Label="Last Name"
+                  Label=@Res.Lang.Label_LastName
                   Required="true"
                   RequiredError="LastName is required!" />
 
     <MudTextField @bind-Value="_addressModel.Phone"
-                  Label="Phone"
+                  Label=@Res.Lang.Label_Phone
                   Required="true"
                   RequiredError="Phone is required!" />
 
     <MudTextField @bind-Value="_addressModel.Street"
-                  Label="Street"
+                  Label=@Res.Lang.Label_Street
                   Required="true"
                   RequiredError="Street is required!" />
 
     <MudTextField @bind-Value="_addressModel.StreetNumber"
-                  Label="Street Number"
+                  Label=@Res.Lang.Label_StreetNumber
                   Required="true"
                   RequiredError="StreetNumber is required!" />
 
     <MudTextField @bind-Value="_addressModel.City"
-                  Label="City"
+                  Label=@Res.Lang.Label_City
                   Required="true"
                   RequiredError="City is required!" />
 
     <MudTextField @bind-Value="_addressModel.ZipCode"
-                  Label="ZipCode"
+                  Label=@Res.Lang.Label_Zipcode
                   Required="true"
                   RequiredError="ZipCode is required!" />
 
     <MudTextField @bind-Value="_addressModel.BuildingName"
-                  Label="BuildingName"
+                  Label=@Res.Lang.Label_BuildingName
                   Required="true"
                   RequiredError="BuildingName is required!" />
 
     <MudTextField @bind-Value="_addressModel.Entrance"
-                  Label="Entrance"
+                  Label=@Res.Lang.Label_Entrance
                   Required="true"
                   RequiredError="Entrance is required!" />
 
     <MudNumericField @bind-Value="_addressModel.FloorNumber"
-                     Label="Floor Number"
+                     Label=@Res.Lang.Label_FloorNumber
                      Required="true"
                      RequiredError="FloorNumber is required!" />
 
     <MudNumericField @bind-Value="_addressModel.Apartment"
-                     Label="Apartment"
+                     Label=@Res.Lang.Label_Apartment
                      Required="true"
                      RequiredError="Apartment is required!" />
 </MudForm>
@@ -78,5 +78,5 @@
 <MudButton Variant="Variant.Filled"
            Style="background-color: #C998ED;"
            OnClick="@AddAdress">
-           Save
+           @Res.Lang.Btn_Save
 </MudButton>

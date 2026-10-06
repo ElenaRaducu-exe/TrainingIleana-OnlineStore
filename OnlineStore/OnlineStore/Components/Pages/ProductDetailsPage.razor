@@ -11,8 +11,8 @@
     <MudCardContent>
         <MudText Align="Align.Center" Typo="Typo.h5">@productModel.Name</MudText>
         <MudText Align="Align.Center" Typo="Typo.subtitle1">@productModel.Description</MudText>
-        <MudText Align="Align.Center" Typo="Typo.body1">Category: @_category | Brand: @_brand</MudText>
-        <MudText Align="Align.Center" Typo="Typo.body2">Stock: @productModel.Stock | Price: @productModel.Price</MudText>
+        <MudText Align="Align.Center" Typo="Typo.body1">@Res.Lang.Label_Category: @_category | @Res.Lang.Label_Brand: @_brand</MudText>
+        <MudText Align="Align.Center" Typo="Typo.body2">@Res.Lang.Label_Stock: @productModel.Stock | @Res.Lang.Label_Price: @productModel.Price</MudText>
     </MudCardContent>
 
     <AuthorizeView Roles="Admin">

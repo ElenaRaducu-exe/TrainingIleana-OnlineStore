@@ -9,39 +9,39 @@
 
 <MudForm>
     <MudTextField @bind-value="_productModel.Name"          
-                  Label="Name"
+                  Label=@Res.Lang.Label_ProductName
                   Required="true"
                   RequiredError="Name is required!" />
 
     <MudTextField @bind-value="_productModel.Description"
-                  Label="Description"
+                  Label=@Res.Lang.Label_Description
                   Required="true"
                   RequiredError="Description is required!" />
 
     <MudNumericField @bind-Value="_productModel.Price"
-                     Label="Price"
+                     Label=@Res.Lang.Label_Price
                      Required="true"
                      RequiredError="Price is required!"
                      Error="@_priceError" />
 
     <MudNumericField @bind-Value="_productModel.Stock"
-                     Label="Stock"
+                     Label=@Res.Lang.Label_Stock
                      Required="true"
                      RequiredError="Stock is required!"
                      Error="@_stockError" />
 
     <MudTextField @bind-value="_productModel.ImageUrl"
-                  Label="ImageURL"
+                  Label=@Res.Lang.Label_ImageURL
                   Required="true"
                   RequiredError="ImageURL is required!" />
 
     <MudSwitch @bind-Value="_productModel.IsActive"
-               Label="Active Mode"
+               Label=@Res.Lang.Label_ActiveStatus
                Color="Color.Success"/>
 
     <MudSelect T="int"
                @bind-value="_productModel.BrandId"
-               Label="Brand"
+               Label=@Res.Lang.Label_Brand
                Required="true"
                RequiredError="Brand is required!">
         @foreach (var brand in _brands)
@@ -54,7 +54,7 @@
 
     <MudSelect T="int"
                @bind-value="@_productModel.CategoryId"
-               Label="Category"
+               Label=@Res.Lang.Label_Category
                Required="true"
                RequiredError="Category is required!">
         @foreach (var category in _categories)
