@@ -7,6 +7,7 @@ using OnlineStore.Models.FrontendModels;
 using OnlineStore.Models.StoredProcedureModels;
 using OnlineStore.Services.Contracts;
 using System.Net.Http.Headers;
+using System.Numerics;
 
 namespace OnlineStore.Components.Pages
 {
@@ -27,6 +28,7 @@ namespace OnlineStore.Components.Pages
         private List<CartItemModel> _cartItems { get; set; }
         private decimal _totalOrderPrice { get; set; }
         private int _totalCartItems { get; set; }
+        private int _userID { get; set; }
 
         protected async Task IntializedPageLoadData()
         {
@@ -39,14 +41,16 @@ namespace OnlineStore.Components.Pages
 
             var cartItemDTO = await httpClient.GetFromJsonAsync<List<CartItemDTO>>("api/cart/items/user");
 
-            if (cartItemDTO != null)
+            if (cartItemDTO != null && cartItemDTO.Count() > 0)
             {
                 _cartItems = _mapper.Map<List<CartItemModel>>(cartItemDTO);
+
+                _userID = cartItemDTO.First().UserId;
+
+                _totalOrderPrice = _cartItems.Sum(item => item.Price * item.Quantity);
+
+                _totalCartItems = _cartItems.Count();
             }
-
-            _totalOrderPrice = _cartItems.Sum(item => item.Price * item.Quantity);
-
-            _totalCartItems = _cartItems.Count();
         }
 
         protected override async Task OnInitializedAsync()
@@ -109,12 +113,12 @@ namespace OnlineStore.Components.Pages
 
         public void RedirectToAddressForm()
         {
-            _navigation.NavigateTo("/place-order/AddressForm");
+            _navigation.NavigateTo($"place-order/AddressForm/{_userID}");
         }
 
         public void RedirectToAddressesPage()
         {
-            _navigation.NavigateTo("/place-order/addresses");
+            _navigation.NavigateTo($"/place-order/{_userID}");
         }
 
         public async Task AvailableAdresses()

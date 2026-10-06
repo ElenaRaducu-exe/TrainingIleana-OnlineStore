@@ -25,6 +25,9 @@ namespace OnlineStore.Components.Pages
         private string _messageAddedAddressError = string.Empty;
         private bool? _addressAddedSucces;
 
+        [Parameter]
+        public int? UserId { get; set; }
+
         private async Task AddAdress()
         {
             var token = await _tokenProvider.GetToken();
@@ -45,7 +48,7 @@ namespace OnlineStore.Components.Pages
 
                 await Task.Delay(2000);
 
-                _navigation.NavigateTo("/place-order/addresses");
+                _navigation.NavigateTo($"/place-order/{UserId}");
             }
             else
             {

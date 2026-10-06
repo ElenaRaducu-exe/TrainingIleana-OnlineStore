@@ -14,5 +14,7 @@ namespace OnlineStore.Services.Contracts
         Task<bool> UpdateCartItemQuantity(int cartItem, int quantity);
 
         Task<bool> DeleteCartItem(int cartItemId);
+
+        Task<bool> DeleteCart(int userId); 
     }
 }

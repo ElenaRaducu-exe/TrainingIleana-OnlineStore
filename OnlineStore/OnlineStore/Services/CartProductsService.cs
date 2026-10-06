@@ -162,5 +162,24 @@ namespace OnlineStore.Services
 
             return true; 
         }
+
+        public async Task<bool> DeleteCart(int userId)
+        {
+            var cart = await _dbContext.Carts.FirstOrDefaultAsync(cart => cart.UserId == userId);
+
+            if(cart == null)
+            {
+                return false;
+            }
+
+            var cartItems = await _dbContext.CartItems.Where(item => item.CartId == cart.Id).ToListAsync();
+
+            _dbContext.CartItems.RemoveRange(cartItems);
+            _dbContext.Carts.Remove(cart); 
+
+            await _dbContext.SaveChangesAsync();
+
+            return true; 
+        }
     }
 }
