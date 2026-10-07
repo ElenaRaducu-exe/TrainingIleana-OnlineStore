@@ -30,9 +30,23 @@
     }
 }
 
-<MudButton Class="mt-4"
-           Variant="Variant.Filled"
-           Style="background-color: #C998ED;"
-           OnClick="@PlaceOrder">
-    @Res.Lang.Btn_PlaceOrder
-</MudButton>
+@if(_cartItemsList != null)
+{
+    <MudTooltip Text="You need to chose an address!"
+                Disabled="@(AddressId == null ? false : true)">
+        <MudButton Class="mt-4"
+                   Variant="Variant.Filled"
+                   Style="background-color: #C998ED;"
+                   OnClick="@PlaceOrder"
+                   Disabled="@(AddressId == null ? true : false)">
+            @Res.Lang.Btn_PlaceOrder
+        </MudButton>
+    </MudTooltip>
+}
+
+@if (_orderPlaceSuccess == true)
+{
+    <MudAlert Severity="Severity.Success">
+        Your order has been successfully submitted!
+    </MudAlert>
+}

@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using OnlineStore.DBModels;
 using OnlineStore.JWTAuthentication.Providers.Contracts;
 using OnlineStore.Models.DTOs;
@@ -30,6 +31,7 @@ namespace OnlineStore.Components.Pages
 
         public int CartId { get; set; }
         public int? AddressId { get; set; }
+        private bool? _orderPlaceSuccess = false;
 
         protected override async Task OnInitializedAsync()
         {
@@ -70,7 +72,8 @@ namespace OnlineStore.Components.Pages
 
         public void GetSelectedAddressId(int id)
         {
-            AddressId = id; 
+            AddressId = id;
+            StateHasChanged();
         }
 
         public async Task PlaceOrder()
@@ -83,8 +86,13 @@ namespace OnlineStore.Components.Pages
             if(AddressId != null)
             {
                 var result = await httpClient.PostAsJsonAsync($"api/order/create/{AddressId}/{UserId}/{CartId}", orderItemDTO);
+
+                _cartItemsList.Clear();
+
+                StateHasChanged();
+
+                _orderPlaceSuccess = true;
             }
         }
-            
     }
 }
