@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OnlineStore.Models.DTOs;
 using OnlineStore.Services.Contracts;
 
 namespace OnlineStore.Controllers
@@ -14,11 +15,10 @@ namespace OnlineStore.Controllers
             _orderService = orderService;
         }
 
-        // api/order/create/{addressId}/{userId}/{cartId}
-        [HttpPost("create/{addressId}/{userId}/{cartId}")]
-        public async Task<IActionResult> PlaceOrder(int addressId, int userId, int cartId)
+        [HttpPost("create")]
+        public async Task<IActionResult> PlaceOrder([FromBody] CreateOrderRequestDTO createOrderRequestDTO) 
         {
-            var result = await _orderService.PlaceOrder(addressId, userId, cartId);
+            var result = await _orderService.PlaceOrder(createOrderRequestDTO);
 
             if(result == false)
             {

@@ -14,48 +14,67 @@ namespace OnlineStore.Services
     {
         private readonly OnlineStoreContext _dbContext;
         private readonly ICartProductsService _cartProductsService;
+        private readonly IProductService _productService;
 
         public OrderService(OnlineStoreContext dbContext,
-                            ICartProductsService cartProductsService)
+                            ICartProductsService cartProductsService,
+                            IProductService productService)
         {
             _dbContext = dbContext;
             _cartProductsService = cartProductsService;
+            _productService = productService;
         }
 
-        public async Task<bool> PlaceOrder(int addressId, int userId, int cartId)
+        public async Task<bool> PlaceOrder(CreateOrderRequestDTO createOrderRequestDTO)
         {
-            var order = new Order()
+            var cartItems = await _dbContext.CartItems.Where(item => item.CartId == createOrderRequestDTO.CartId).ToListAsync();
+
+            if (cartItems != null)
             {
-                AddressId = addressId,
-                UserId = userId,
-                StatusId = 1, 
-                OrderNumber = "Order_" + userId + "_" + DateTime.UtcNow.ToString("yyyy.MM.dd_HH:mm:ss")
-            };
-
-            await _dbContext.Orders.AddAsync(order);
-            await _dbContext.SaveChangesAsync();
-
-            var cartItems = await _dbContext.CartItems.Where(item => item.CartId  == cartId).ToListAsync();
-
-            if(cartItems != null)
-            {
-                foreach(var cartItem in cartItems)
+                var order = new Order()
                 {
-                    var orderItem = new OrderItem()
-                    {
-                        OrderId = order.Id,
-                        Quantity = cartItem.Quantity,
-                        ProductId = cartItem.ProductId,
-                        UnitPrice = _dbContext.Products.FirstOrDefault(p => p.Id == cartItem.ProductId).Price
-                    };
+                    AddressId = createOrderRequestDTO.AddressId,
+                    UserId = createOrderRequestDTO.UserId,
+                    StatusId = 1,
+                    OrderNumber = "Order_" + createOrderRequestDTO.UserId + "_" + DateTime.UtcNow.ToString("yyyy.MM.dd_HHmmss")
+                };
 
-                    await _dbContext.OrderItems.AddAsync(orderItem);
-                    await _dbContext.SaveChangesAsync();
+                await _dbContext.Orders.AddAsync(order);
+
+                foreach (var cartItem in cartItems)
+                {
+                    var product = _dbContext.Products.FirstOrDefault(p => p.Id == cartItem.ProductId);
+
+                    if(product != null)
+                    {
+                        var orderItem = new OrderItem()
+                        {
+                            Order = order,
+                            Quantity = cartItem.Quantity,
+                            ProductId = cartItem.ProductId,
+                            UnitPrice = product.Price
+                        };
+
+                        await _dbContext.OrderItems.AddAsync(orderItem);
+
+                        product.Stock -= cartItem.Quantity;
+
+                        product.ReservedStock -= cartItem.Quantity;
+                    }
                 }
 
-                await _cartProductsService.DeleteCart(userId);
+                var cart = await _dbContext.Carts.FirstOrDefaultAsync(cart => cart.UserId == createOrderRequestDTO.UserId);
 
-                return true;
+                if (cart == null)
+                {
+                    return false;
+                }
+
+                _dbContext.CartItems.RemoveRange(cartItems);
+
+                _dbContext.Carts.Remove(cart);
+
+                await _dbContext.SaveChangesAsync();
             }
 
             return false;
