@@ -13,6 +13,15 @@
             @Res.Lang.Alert_AddProductCartSuccessfully
         </MudAlert>
     }
+    
+    @if(_resultAddProductToCartUnsuccefully)
+    {
+        <MudAlert Severity="Severity.Error"
+                  Dense="true"
+                  Class="my-2">
+            Add Product Cart Unsuccessfully
+        </MudAlert>
+    }
 
     @if (_brandNameFilter != null || _categoryNameFilter != null)
     {
