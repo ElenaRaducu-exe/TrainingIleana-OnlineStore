@@ -249,6 +249,9 @@
   <data name="Label_Products" xml:space="preserve">
     <value>Products</value>
   </data>
+  <data name="Label_ReservedStock" xml:space="preserve">
+    <value>Reserved Stock</value>
+  </data>
   <data name="Label_SortOptions" xml:space="preserve">
     <value>Sorting options</value>
   </data>

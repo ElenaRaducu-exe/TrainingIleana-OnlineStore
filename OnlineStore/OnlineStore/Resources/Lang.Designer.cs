@@ -457,6 +457,15 @@ namespace Res {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reserved Stock.
+        /// </summary>
+        public static string Label_ReservedStock {
+            get {
+                return ResourceManager.GetString("Label_ReservedStock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sorting options.
         /// </summary>
         public static string Label_SortOptions {

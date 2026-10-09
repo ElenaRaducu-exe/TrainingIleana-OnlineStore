@@ -1,4 +1,6 @@
-﻿<MudCard Style="@($"height: 100%; background-color: {(!ProductModel.IsActive ? "#e0e0e0" : (ProductModel.Stock <= 0 ? "#F4C3CD" : ""))}")"
+﻿@using Microsoft.AspNetCore.Components.Authorization
+
+<MudCard Style="@($"height: 100%; background-color: {(!ProductModel.IsActive ? "#e0e0e0" : (ProductModel.Stock <= 0 ? "#F4C3CD" : ""))}")"
          onclick="@(() => ProductCardClicked(ProductModel.Id))">
     <MudCardMedia Image="@ProductModel.ImageUrl"
                   Height="300" 
@@ -8,8 +10,12 @@
     <MudCardContent>
         <MudText Typo="Typo.h5">@ProductModel.Name</MudText>
         <MudText Typo="Typo.body1">@ProductModel.Description</MudText>
-        <MudText Typo="Typo.body2">Category: @_category.CategoryName | Brand: @_brand.BrandName</MudText>
-        <MudText Typo="Typo.body2">Stock: @ProductModel.Stock | Price: @ProductModel.Price</MudText>
+        <MudText Typo="Typo.body2">@Res.Lang.Label_Category: @_category.CategoryName | @Res.Lang.Label_Brand: @_brand.BrandName</MudText>
+        <MudText Typo="Typo.body2">@Res.Lang.Label_Stock: @ProductModel.Stock | @Res.Lang.Label_Price: @ProductModel.Price</MudText>
+
+        <AuthorizeView Roles="Admin">
+            <MudText Typo="Typo.body2">@Res.Lang.Label_ReservedStock: @ProductModel.ReservedStock</MudText>
+        </AuthorizeView>
 
         @ChildContent
 
