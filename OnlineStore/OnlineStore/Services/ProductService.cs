@@ -31,7 +31,6 @@ namespace OnlineStore.Services
         public async Task<List<ProductDTO>?> GetProductDTOListAsync()
         {
             return await _dbContext.Database.SqlQuery<ProductDTO>($"exec dbo.spGetProducts").ToListAsync();
-
             //List<Product> productDTOs = _dbContext.Products.ToList();
             //return _mapper.Map<List<ProductDTO>>(productDTOs);
         }
@@ -167,6 +166,7 @@ namespace OnlineStore.Services
             productToUpdate.BrandId = productDetails.BrandId;
             productToUpdate.CategoryId = productDetails.CategoryId;
             productToUpdate.ModifiedBy = productDetails.ModifiedBy;
+            productToUpdate.ReservedStock = productDetails.ReservedStock;
 
             await _dbContext.SaveChangesAsync();
 
@@ -214,5 +214,6 @@ namespace OnlineStore.Services
 
             return (int)availableStockParameter.Value; 
         }
+
     }
 }
