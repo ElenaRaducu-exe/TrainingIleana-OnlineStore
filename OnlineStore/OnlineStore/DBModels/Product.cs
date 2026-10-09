@@ -31,6 +31,8 @@ public partial class Product
 
     public DateTime ModifiedAt { get; set; }
 
+    public int ReservedStock { get; set; }
+
     public virtual Brand Brand { get; set; } = null!;
 
     public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();

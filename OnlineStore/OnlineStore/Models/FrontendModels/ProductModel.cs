@@ -29,5 +29,7 @@ namespace OnlineStore.Models.FrontendModels
 
         [Required]
         public int BrandId { get; set; }
+
+        public int ReservedStock { get; set; }
     }
 }

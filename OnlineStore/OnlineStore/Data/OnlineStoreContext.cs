@@ -327,6 +327,7 @@ public partial class OnlineStoreContext : DbContext
             entity.Property(e => e.Price)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("price");
+            entity.Property(e => e.ReservedStock).HasColumnName("reservedStock");
             entity.Property(e => e.Stock).HasColumnName("stock");
 
             entity.HasOne(d => d.Brand).WithMany(p => p.Products)
