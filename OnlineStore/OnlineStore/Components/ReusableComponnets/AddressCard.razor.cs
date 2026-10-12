@@ -12,8 +12,11 @@ namespace OnlineStore.Components.ReusableComponnets
         [Parameter]
         public EventCallback<int> OnSelectedAddressId { get; set; }
 
+        [Parameter]
+        public int? SelectedAddressId { get; set; }
+
         private async Task AddressCardClicked(int addressId)
-        {
+        { 
             await OnSelectedAddressId.InvokeAsync(addressId);
         }
     }

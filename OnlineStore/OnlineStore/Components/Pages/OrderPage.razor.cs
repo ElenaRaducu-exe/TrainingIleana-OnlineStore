@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using OnlineStore.Data;
 using OnlineStore.DBModels;
 using OnlineStore.JWTAuthentication.Providers.Contracts;
 using OnlineStore.Models.DTOs;
@@ -9,7 +10,7 @@ using System.Net.Http.Headers;
 
 namespace OnlineStore.Components.Pages
 {
-    public partial class AddressPage : ComponentBase
+    public partial class OrderPage : ComponentBase
     {
         [Inject]
         private IHttpClientFactory _httpClientFactory { get; set; }
@@ -24,14 +25,13 @@ namespace OnlineStore.Components.Pages
         private IMapper _mapper { get; set; }
 
         private List<AddressModel> addressList { get; set; } = new();
-        private List<CartItemModel> _cartItemsList { get; set; }
+        private List<CartItemModel> _cartItemsList { get; set; } = new();
 
         [Parameter]
         public int? UserId { get; set; }
-
-        public int CartId { get; set; }
-        public int? AddressId { get; set; }
         private bool? _orderPlaceSuccess = false;
+
+        private CreateOrderRequestDTO _createOrderRequestDTO { get; set; } = new CreateOrderRequestDTO();
 
         protected override async Task OnInitializedAsync()
         {
@@ -50,8 +50,13 @@ namespace OnlineStore.Components.Pages
 
             if (cartItemDTO != null && cartItemDTO.Count() > 0)
             {
-                CartId = cartItemDTO.First().CartId;
+                _createOrderRequestDTO.CartId = cartItemDTO.First().CartId;
                 _cartItemsList = _mapper.Map<List<CartItemModel>>(cartItemDTO);
+            }
+
+            if (UserId != null)
+            {
+                _createOrderRequestDTO.UserId = UserId.Value;
             }
         }
 
@@ -72,20 +77,26 @@ namespace OnlineStore.Components.Pages
 
         public void GetSelectedAddressId(int id)
         {
-            AddressId = id;
+            _createOrderRequestDTO.AddressId = id;
+
             StateHasChanged();
         }
 
         public async Task PlaceOrder()
         {
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
-
-            var orderItemDTO = new OrderItemDTO();
-
-            if(AddressId != null)
+            if (_createOrderRequestDTO.AddressId != null)
             {
-                var result = await httpClient.PostAsJsonAsync($"api/order/create/{AddressId}/{UserId}/{CartId}", orderItemDTO);
+                var httpClient = _httpClientFactory.CreateClient();
+                httpClient.BaseAddress = new Uri(_navigation.BaseUri);
+
+                CreateOrderRequestDTO createOrderRequestDTO = new CreateOrderRequestDTO()
+                {
+                    AddressId = _createOrderRequestDTO.AddressId,
+                    UserId = _createOrderRequestDTO.UserId,
+                    CartId = _createOrderRequestDTO.CartId
+                };
+            
+                var result = await httpClient.PostAsJsonAsync($"api/order/create", createOrderRequestDTO);
 
                 _cartItemsList.Clear();
 

@@ -7,14 +7,12 @@ namespace OnlineStore.Services.Contracts
     {
         Task<List<CartItemSummaries>?> GetCartItems();
 
-        Task AddProductToCart(int productId, int userId);
+        Task<bool> AddProductToCart(int productId, int userId);
 
         Task<List<CartItemDTO>?> GetCartItemsByUser(int userId);
 
         Task<bool> UpdateCartItemQuantity(int cartItem, int quantity);
 
         Task<bool> DeleteCartItem(int cartItemId);
-
-        Task<bool> DeleteCart(int userId); 
     }
 }

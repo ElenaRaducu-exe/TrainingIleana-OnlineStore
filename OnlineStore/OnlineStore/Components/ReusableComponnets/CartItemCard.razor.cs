@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using OnlineStore.Data;
+using OnlineStore.DBModels;
 using OnlineStore.JWTAuthentication.Providers.Contracts;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
@@ -14,8 +15,6 @@ namespace OnlineStore.Components.ReusableComponnets
         public CartItemModel CartItemModel { get; set; } 
 
         private int _quantity { get; set; }
-
-        private int _availableStock { get; set; }
 
         [Parameter]
         public EventCallback OnQuantityUpdated { get; set; }
@@ -40,10 +39,40 @@ namespace OnlineStore.Components.ReusableComponnets
         [Inject]
         private ITokenProvider _tokenProvider { get; set; }
 
+        private ProductDTO _productDTO { get; set; } = new ProductDTO();
+
+        private bool _disabledIncreaseQuantityBtn = false;
+
         protected override async Task OnInitializedAsync()
         {
             TotalPrice = CartItemModel.Price * CartItemModel.Quantity;
             _quantity = CartItemModel.Quantity;
+
+            var httpClient = _httpClientFactory.CreateClient();
+            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
+
+            var resultProduct = httpClient.GetFromJsonAsync<ProductDTO>($"api/admin/products/get/product/{CartItemModel.ProductId}").Result;
+
+            if( resultProduct != null)
+            {
+                _productDTO = resultProduct;
+            }
+
+            if(_productDTO.ReservedStock == _productDTO.Stock)
+            {
+                _disabledIncreaseQuantityBtn = true; 
+            }
+        }
+
+        private async Task IncreaseQuantity()
+        {   
+            int increasedQuantity = _quantity + 1;
+
+            if (_productDTO.ReservedStock >= _productDTO.Stock)
+            {
+                _disabledIncreaseQuantityBtn = true;
+                return;
+            }
 
             var token = await _tokenProvider.GetToken();
 
@@ -52,29 +81,34 @@ namespace OnlineStore.Components.ReusableComponnets
 
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            // api/admin/products/{productId:int}
-            _availableStock = httpClient.GetFromJsonAsync<ProductDTO>($"api/admin/products/{CartItemModel.ProductId}").Result.Stock;
+            var responseCart = await httpClient.PutAsJsonAsync($"api/cart/update/quantity/{CartItemModel.CartItemId}", increasedQuantity);
+
+            if (responseCart.IsSuccessStatusCode)
+            {
+                _quantity = increasedQuantity;
+
+                CartItemModel.Quantity = _quantity;
+
+                TotalPrice = CartItemModel.Price * _quantity;
+
+                _disabledIncreaseQuantityBtn = _productDTO.ReservedStock >= _productDTO.Stock;
+
+                StateHasChanged();
+
+                await OnQuantityUpdated.InvokeAsync();
+            }
         }
 
-        private async Task IncreaseQuantity(int quantity)
+        private async Task DecreaseQuantity()
         {
-            quantity += 1; 
-            await UpdateQuantity(quantity);
-        }
-        private async Task DecreaseQuantity(int quantity)
-        {
-            quantity -= 1; 
-            await UpdateQuantity(quantity);
-        }
+            int decreasedQuantity = _quantity - 1;
 
-        private async Task UpdateQuantity(int newQuantity)
-        {
-            if(newQuantity < 0)
+            if (decreasedQuantity < 0)
             {
                 return;
             }
 
-            if(newQuantity == 0)
+            if (decreasedQuantity == 0)
             {
                 await OnItemDeleted.InvokeAsync(CartItemModel.CartItemId);
                 return;
@@ -87,15 +121,17 @@ namespace OnlineStore.Components.ReusableComponnets
 
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await httpClient.PutAsJsonAsync($"api/cart/update/quantity/{CartItemModel.CartItemId}", newQuantity);
+            var responseCart = await httpClient.PutAsJsonAsync($"api/cart/update/quantity/{CartItemModel.CartItemId}", decreasedQuantity);
 
-            if (response.IsSuccessStatusCode)
+            if (responseCart.IsSuccessStatusCode)
             {
-                _quantity = newQuantity;
+                _quantity = decreasedQuantity;
+
+                CartItemModel.Quantity = _quantity;
 
                 TotalPrice = CartItemModel.Price * _quantity;
 
-                _availableStock = httpClient.GetFromJsonAsync<ProductDTO>($"api/admin/products/{CartItemModel.ProductId}").Result.Stock;
+                _disabledIncreaseQuantityBtn = _productDTO.ReservedStock >= _productDTO.Stock;
 
                 StateHasChanged();
 

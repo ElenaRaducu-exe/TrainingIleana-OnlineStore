@@ -9,7 +9,8 @@
     {
         <MudItem xs="6">
             <AddressCard addressModel="@address"
-                         OnSelectedAddressId="@GetSelectedAddressId"/>
+                         OnSelectedAddressId="@GetSelectedAddressId"
+                         SelectedAddressId ="@_createOrderRequestDTO.AddressId"/>
         </MudItem>
     }
 </MudGrid>
@@ -33,12 +34,12 @@
 @if(_cartItemsList != null)
 {
     <MudTooltip Text="You need to chose an address!"
-                Disabled="@(AddressId == null ? false : true)">
+                Disabled="@(_createOrderRequestDTO.AddressId == null ? false : true)">
         <MudButton Class="mt-4"
                    Variant="Variant.Filled"
                    Style="background-color: #C998ED;"
                    OnClick="@PlaceOrder"
-                   Disabled="@(AddressId == null ? true : false)">
+                   Disabled="@(_createOrderRequestDTO.AddressId == null ? true : false)">
             @Res.Lang.Btn_PlaceOrder
         </MudButton>
     </MudTooltip>

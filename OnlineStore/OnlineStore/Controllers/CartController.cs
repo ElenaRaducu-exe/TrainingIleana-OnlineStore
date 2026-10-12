@@ -53,11 +53,16 @@ namespace OnlineStore.Controllers
 
             int userId = int.Parse(userIdClaim.Value);
 
-            Console.WriteLine($"UserId: {userId}");
+            var result = await _cartProductsService.AddProductToCart(productId, userId);
 
-            await _cartProductsService.AddProductToCart(productId, userId);
-
-            return Ok();
+            if(result == true)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
         // api/cart/update/quantity/{cartItemId:int}

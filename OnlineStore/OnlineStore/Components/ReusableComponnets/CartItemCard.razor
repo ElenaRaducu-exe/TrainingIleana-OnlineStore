@@ -30,10 +30,10 @@
         <MudStack Row="true"
                   AlignItems="AlignItems.Center"
                   Spacing="2">
-            <MudButton onclick="@(() => DecreaseQuantity(_quantity))">-</MudButton>
+            <MudButton onclick="@DecreaseQuantity">-</MudButton>
             <MudText Typo="Typo.body2">@_quantity</MudText>
-            <MudButton Disabled="@(_availableStock == 0 ? true : false)"
-                       onclick="@(() => IncreaseQuantity(_quantity))">+</MudButton>
+            <MudButton Disabled="@_disabledIncreaseQuantityBtn"
+                       onclick="@IncreaseQuantity">+</MudButton>
         </MudStack>
     </td>
 

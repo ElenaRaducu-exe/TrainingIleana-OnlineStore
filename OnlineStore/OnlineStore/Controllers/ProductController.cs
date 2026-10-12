@@ -159,7 +159,7 @@ namespace OnlineStore.Controllers
 
         //"api/admin/products/update/product/{id:int}"
         [HttpPut("update/product/{id:int}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateProduct([FromRoute] int id, [FromBody] ProductDTO productDetails)
         {
             var productDTO = await _productService.GetProductDTOAsyncById(id); 

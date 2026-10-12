@@ -6,7 +6,6 @@ using OnlineStore.DBModels;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.StoredProcedureModels;
 using OnlineStore.Services.Contracts;
-using static MudBlazor.CategoryTypes;
 
 namespace OnlineStore.Services
 {
@@ -15,7 +14,8 @@ namespace OnlineStore.Services
         private readonly OnlineStoreContext _dbContext;
         private readonly IMapper _mapper;
 
-        public CartProductsService(OnlineStoreContext onlineStoreContext, IMapper mapper)
+        public CartProductsService(OnlineStoreContext onlineStoreContext, 
+                                   IMapper mapper)
         {
             _dbContext = onlineStoreContext;
             _mapper = mapper;
@@ -35,8 +35,15 @@ namespace OnlineStore.Services
             return cartItemDTOs;
         }
 
-        public async Task AddProductToCart(int productId, int userId)
+        public async Task<bool> AddProductToCart(int productId, int userId)
         {
+            var product = await _dbContext.Products.FirstOrDefaultAsync(p => p.Id == productId);
+
+            if(product == null || product.ReservedStock >= product.Stock)
+            {
+                return false; 
+            }
+
             var existingCart = _dbContext.Carts.FirstOrDefault(c => c.UserId == userId);
 
             if(existingCart != null)
@@ -46,7 +53,6 @@ namespace OnlineStore.Services
                 if (existingCartItem != null)
                 {
                     existingCartItem.Quantity++;
-                    await _dbContext.SaveChangesAsync();
                 }
                 else
                 {
@@ -58,10 +64,6 @@ namespace OnlineStore.Services
                     };
 
                     await _dbContext.CartItems.AddAsync(cartItem);
-
-                    await _dbContext.SaveChangesAsync();
-
-                    return;
                 }
             }
             else
@@ -72,30 +74,29 @@ namespace OnlineStore.Services
                 };
 
                 await _dbContext.Carts.AddAsync(cart);
-                await _dbContext.SaveChangesAsync();
 
                 var cartItem = new CartItem()
                 {
                     Quantity = 1,
                     ProductId = productId,
-                    CartId = cart.Id
+                    Cart = cart
                 };
 
                 await _dbContext.CartItems.AddAsync(cartItem);
-                await _dbContext.SaveChangesAsync();
             }
+
+            product.ReservedStock++;
+
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> UpdateCartItemQuantity(int cartItemId, int newQuantity)
         {
-            /*
-            var cartItemSummary = await _dbContext.Database.SqlQuery<CartItemSummaries>
-                ($"exec [dbo].[spGetCartItem] @UserId = {userId}, @CartItemId = {cartItemId}").FirstOrDefaultAsync();
-
-            if( cartItemSummary == null )
+            if(newQuantity < 1)
             {
-                return false; 
-            }*/
+                return false;
+            }
 
             var cartItem = await _dbContext.CartItems.FirstOrDefaultAsync(item => item.Id == cartItemId);
 
@@ -113,14 +114,17 @@ namespace OnlineStore.Services
                 return false; 
             }
 
-            var newProductStock = product.Stock - newQuantity + initialQuantity;
+            int quantityDifference = newQuantity - initialQuantity;
+            int newReservedStock = product.ReservedStock + quantityDifference;
 
-            if(newProductStock < 0)
+            if(newReservedStock < 0 || newReservedStock > product.Stock)
             {
                 return false; 
             }
      
-            product.Stock = newProductStock;
+            product.ReservedStock = newReservedStock;
+            product.IsActive = product.ReservedStock < product.Stock;
+
             cartItem.Quantity = newQuantity;
 
             await _dbContext.SaveChangesAsync();
@@ -149,35 +153,23 @@ namespace OnlineStore.Services
             {
                 return false; 
             }
-            product.Stock += cartItem.Quantity;
 
-            _dbContext.CartItems.Remove(cartItem);
-            await _dbContext.SaveChangesAsync();
-
-            if(_dbContext.CartItems.Count() == 0)
-            {
-                _dbContext.Carts.Remove(cart);
-                await _dbContext.SaveChangesAsync();
-            }
-
-            return true; 
-        }
-
-        public async Task<bool> DeleteCart(int userId)
-        {
-            var cart = await _dbContext.Carts.FirstOrDefaultAsync(cart => cart.UserId == userId);
-
-            if(cart == null)
+            if(product.ReservedStock < cartItem.Quantity)
             {
                 return false;
             }
 
-            var cartItems = await _dbContext.CartItems.Where(item => item.CartId == cart.Id).ToListAsync();
+            product.ReservedStock -= cartItem.Quantity;
+            product.IsActive = product.ReservedStock < product.Stock;
 
-            _dbContext.CartItems.RemoveRange(cartItems);
-            _dbContext.Carts.Remove(cart); 
-
+            _dbContext.CartItems.Remove(cartItem);
             await _dbContext.SaveChangesAsync();
+
+            if(!_dbContext.CartItems.Any(item => item.CartId == cart.Id))
+            {
+                _dbContext.Carts.Remove(cart);
+                await _dbContext.SaveChangesAsync();
+            }
 
             return true; 
         }

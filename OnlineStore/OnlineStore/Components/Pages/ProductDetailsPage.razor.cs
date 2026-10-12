@@ -1,14 +1,19 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Components;
 using OnlineStore.DBModels;
+using OnlineStore.JWTAuthentication.Providers.Contracts;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
 using OnlineStore.Services.Contracts;
+using System.Net.Http.Headers;
 
 namespace OnlineStore.Components.Pages
 {
     public partial class ProductDetailsPage : ComponentBase
     {
+        [Inject]
+        private ITokenProvider _tokenProvider { get; set; }
+
         [Inject]
         private IHttpClientFactory _httpClientFactory { get; set; }
 
@@ -76,16 +81,16 @@ namespace OnlineStore.Components.Pages
 
         protected async Task AddToCart(ProductModel productModel)
         {
+            var token = await _tokenProvider.GetToken();
+
             var httpClient = _httpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(_navigation.BaseUri);
 
-            productModel.Stock--;
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var productDTO = _mapper.Map<ProductModel>(productModel);
+            var productDTO = _mapper.Map<ProductDTO>(productModel);
 
-            var response = await httpClient.PutAsJsonAsync($"api/admin/products/update/product/{productDTO.Id}", productDTO);
-
-            StateHasChanged();
+            var result = await httpClient.PostAsJsonAsync($"api/cart/add/product/{productDTO.Id}", productDTO);
         }
     }
 }

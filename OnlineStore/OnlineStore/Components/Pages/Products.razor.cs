@@ -31,13 +31,14 @@ namespace OnlineStore.Components.Pages
         [Inject]
         private ICategoriesService _categoryService { get; set; }
 
-        public List<ProductModel> ProductsList = new(); 
+        public List<ProductModel> ProductsList = new();
         public List<Brand> BrandList = new();
         public List<Category> CategoryList = new();
 
         public int SelectedProductId { get; set; }
         private bool _resultAddProductToCart { get; set; } = false;
-        private int _pageNumber = 1; 
+        private bool _resultAddProductToCartUnsuccefully { get; set; } = false;
+        private int _pageNumber = 1;
         private int _pageSize = 9;
         private int _totalProducts = 0;
         private int _totalPages = 0;
@@ -72,7 +73,7 @@ namespace OnlineStore.Components.Pages
             var httpClient = _httpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(_navigation.BaseUri);
 
-            _filtersModel.PageNumber = _pageNumber; 
+            _filtersModel.PageNumber = _pageNumber;
             _filtersModel.PageSize = _pageSize;
 
             var response = await httpClient.PostAsJsonAsync("api/admin/products/filtered", _filtersModel);
@@ -95,9 +96,9 @@ namespace OnlineStore.Components.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            await LoadProducts(); 
+            await LoadProducts();
 
-            _resultAddProductToCart = false; 
+            _resultAddProductToCart = false;
         }
 
         private async Task OnPageChanged(int page)
@@ -116,7 +117,7 @@ namespace OnlineStore.Components.Pages
 
         private async Task OnSortSelected(string sortValue)
         {
-            _sortFilter = sortValue; 
+            _sortFilter = sortValue;
 
             var sortValues = sortValue.Split(':');
 
@@ -156,17 +157,17 @@ namespace OnlineStore.Components.Pages
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var productDTO = _mapper.Map<ProductModel>(product);
-            var response = await httpClient.PutAsJsonAsync($"api/admin/products/update/product/active-status/{product.Id}", productDTO); 
+            var response = await httpClient.PutAsJsonAsync($"api/admin/products/update/product/active-status/{product.Id}", productDTO);
 
             if (response.IsSuccessStatusCode)
             {
-                var updatedProduct = await response.Content.ReadFromJsonAsync<ProductDTO>(); 
+                var updatedProduct = await response.Content.ReadFromJsonAsync<ProductDTO>();
 
-                if(updatedProduct != null)
+                if (updatedProduct != null)
                 {
                     var productList = ProductsList.FirstOrDefault(p => p.Id == product.Id);
 
-                    if(productList != null)
+                    if (productList != null)
                     {
                         productList.IsActive = updatedProduct.IsActive;
                     }
@@ -187,7 +188,7 @@ namespace OnlineStore.Components.Pages
             _navigation.NavigateTo($"/dashboard/products/{SelectedProductId}");
         }
 
-        protected async Task AddToCart(ProductModel product)
+        protected async Task AddToCart(ProductModel productModel)
         {
             var token = await _tokenProvider.GetToken();
 
@@ -196,19 +197,19 @@ namespace OnlineStore.Components.Pages
 
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            product.Stock--;
-
-            StateHasChanged();
-
-            var productDTO = _mapper.Map<ProductDTO>(product);
-
-            await httpClient.PutAsJsonAsync($"api/admin/products/update/product/{product.Id}", productDTO);
+            var productDTO = _mapper.Map<ProductDTO>(productModel);
 
             var result = await httpClient.PostAsJsonAsync($"api/cart/add/product/{productDTO.Id}", productDTO);
 
             if (result.IsSuccessStatusCode)
             {
+                productModel.ReservedStock++; // nu ar fi necesar, userul nu vede stocul rezervat
+
                 _resultAddProductToCart = true;
+            }
+            else
+            {
+                _resultAddProductToCartUnsuccefully = true;
             }
         }
 
@@ -219,7 +220,7 @@ namespace OnlineStore.Components.Pages
 
             await LoadFilteredProducts();
 
-            if(_totalProducts == 0)
+            if (_totalProducts == 0)
             {
                 _isProductListEmpty = true;
             }
@@ -228,7 +229,7 @@ namespace OnlineStore.Components.Pages
                 _isProductListEmpty = false;
             }
 
-            if(_filtersModel.BrandId != null)
+            if (_filtersModel.BrandId != null)
             {
                 _brandNameFilter = BrandList.FirstOrDefault(brand => brand.Id == _filtersModel.BrandId).BrandName;
             }
