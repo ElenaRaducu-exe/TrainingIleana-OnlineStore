@@ -126,12 +126,15 @@ namespace OnlineStore.Controllers
         {
             var result = await _productService.DeleteProduct(id); 
 
-            if(result == false)
+            if(result == null)
             {
-                return BadRequest();
+                return NotFound("Product not found!");
+            }else if(result == false)
+            {
+                return BadRequest("Product is existent in at least one cart or order! The product can not be deleted, it will be deactivated instead.");
             }
 
-            return Ok(); 
+            return Ok("Product deleted successfully!"); 
         }
 
         [HttpPut("update/product/active-status/{id:int}")]

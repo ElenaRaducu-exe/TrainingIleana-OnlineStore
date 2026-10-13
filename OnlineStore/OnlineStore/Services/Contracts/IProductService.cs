@@ -13,7 +13,7 @@ namespace OnlineStore.Services.Contracts
 
         Task<List<ProductDTO>?> GetFilteredSortedProductDTOs(ProductFiltersModel productFilters); 
 
-        Task<bool> DeleteProduct(int id);
+        Task<bool?> DeleteProduct(int id);
 
         Task<ProductDTO> ChangeActiveMode(int id, int userId);
 

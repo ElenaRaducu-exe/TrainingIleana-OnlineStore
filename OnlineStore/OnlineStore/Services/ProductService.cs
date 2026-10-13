@@ -108,22 +108,30 @@ namespace OnlineStore.Services
             return productDTO;
         }
 
-        public async Task<bool> DeleteProduct(int id)
+        public async Task<bool?> DeleteProduct(int id)
         {
             var product = _dbContext.Products.FirstOrDefault(p => p.Id == id);
 
             if(product == null)
             {
+                return null;
+            }
+
+            var productInCart = _dbContext.CartItems.FirstOrDefault(item => item.ProductId == id);
+            var productInOrder = _dbContext.OrderItems.FirstOrDefault(item => item.ProductId == id);
+
+            if(productInCart != null || productInOrder != null)
+            {
+                product.IsActive = false;
+
                 return false;
             }
-            else
-            {
-                _dbContext.Products.Remove(product);
 
-                _dbContext.SaveChanges();
+            _dbContext.Products.Remove(product);
 
-                return true;
-            }
+            _dbContext.SaveChanges();
+
+            return true;
         }
 
         public async Task<ProductDTO?> ChangeActiveMode(int id, int userId)

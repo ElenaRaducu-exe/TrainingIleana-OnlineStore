@@ -139,9 +139,18 @@ namespace OnlineStore.Components.Pages
                 var product = ProductsList.FirstOrDefault(p => p.Id == productId);
                 var response = await httpClient.DeleteAsync($"api/admin/products/delete/product/{productId}");
 
-                if (response.IsSuccessStatusCode && product != null)
+                if(product != null)
                 {
-                    ProductsList.Remove(product);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        ProductsList.Remove(product);
+                    }
+
+                    if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                    {
+                        product.IsActive = false;
+                    }
+
                     StateHasChanged();
                 }
             }
