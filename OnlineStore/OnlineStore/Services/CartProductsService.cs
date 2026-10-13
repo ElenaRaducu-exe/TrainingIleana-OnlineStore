@@ -86,6 +86,7 @@ namespace OnlineStore.Services
             }
 
             product.ReservedStock++;
+            product.IsActive = product.ReservedStock < product.Stock;
 
             await _dbContext.SaveChangesAsync();
             return true;

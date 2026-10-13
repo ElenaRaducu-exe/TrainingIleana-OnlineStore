@@ -203,7 +203,8 @@ namespace OnlineStore.Components.Pages
 
             if (result.IsSuccessStatusCode)
             {
-                productModel.ReservedStock++; // nu ar fi necesar, userul nu vede stocul rezervat
+                productModel.ReservedStock++; 
+                productModel.IsActive = productModel.ReservedStock < productModel.Stock; 
 
                 _resultAddProductToCart = true;
             }
