@@ -173,5 +173,42 @@ namespace OnlineStore.Services
 
             return true; 
         }
+
+        public async Task<bool> DeleteCart(int cartId)
+        {
+            var cart = _dbContext.Carts.FirstOrDefault(cart => cart.Id == cartId);
+
+            if(cart == null)
+            {
+                return false; 
+            }
+
+            var cartItems = _dbContext.CartItems.Where(item => item.CartId == cartId).ToList();
+
+            if(cartItems == null)
+            {
+                return false; 
+            }
+
+            foreach(var cartItem in cartItems)
+            {
+                var product = _dbContext.Products.FirstOrDefault(product => product.Id == cartItem.ProductId);
+
+                if (product == null)
+                {
+                    return false; 
+                }
+
+                product.ReservedStock -= cartItem.Quantity;
+                product.IsActive = product.ReservedStock < product.Stock;
+
+                _dbContext.CartItems.Remove(cartItem);
+            }
+
+            _dbContext.Carts.Remove(cart);
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
     }
 }

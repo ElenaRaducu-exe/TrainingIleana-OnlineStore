@@ -29,6 +29,7 @@ namespace OnlineStore.Components.Pages
         private decimal _totalOrderPrice { get; set; }
         private int _totalCartItems { get; set; }
         private int _userID { get; set; }
+        private int _cartId { get; set; }
 
         protected async Task IntializedPageLoadData()
         {
@@ -46,6 +47,8 @@ namespace OnlineStore.Components.Pages
                 _cartItems = _mapper.Map<List<CartItemModel>>(cartItemDTO);
 
                 _userID = cartItemDTO.First().UserId;
+
+                _cartId = cartItemDTO.First().CartId;
 
                 _totalOrderPrice = _cartItems.Sum(item => item.Price * item.Quantity);
 
@@ -139,6 +142,23 @@ namespace OnlineStore.Components.Pages
             else
             {
                 RedirectToAddressesPage();
+            }
+        }
+
+        public async Task DeleteCart()
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
+            
+            var result = await httpClient.DeleteAsync($"api/cart/delete/cart/{_cartId}");
+
+            if(result.IsSuccessStatusCode)
+            {
+                _cartItems.Clear();
+                _totalCartItems = 0;
+                _totalOrderPrice = 0;
+
+                StateHasChanged();
             }
         }
     }
