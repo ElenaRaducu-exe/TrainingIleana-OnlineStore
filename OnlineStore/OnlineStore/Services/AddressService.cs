@@ -31,7 +31,6 @@ namespace OnlineStore.Services
             return true;
         }
 
-        
         public async Task<List<AddressDTO>?> GetAddressesByUserId(int userId)
         {
             var addressListByUserId = await _dbContext.Addresses.Where(a => a.UserId == userId).ToListAsync();
@@ -39,6 +38,19 @@ namespace OnlineStore.Services
             var addressListDTO = _mapper.Map<List<AddressDTO>>(addressListByUserId);
 
             return addressListDTO;
+        }
+
+        public async Task<AddressDTO?> GetAddressById(int addressId)
+        {
+            var address = await _dbContext.Addresses.FirstOrDefaultAsync(a => a.Id == addressId);
+
+            if (address == null)
+            {
+                return null;
+            }
+
+            var addressDTO = _mapper.Map<AddressDTO>(address);
+            return addressDTO;
         }
     }
 }

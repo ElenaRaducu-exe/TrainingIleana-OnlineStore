@@ -41,6 +41,19 @@ namespace OnlineStore.Controllers
             return Ok(result);
         }
 
+        // api/cart/items/user/{userId:int}
+        [HttpGet("items/user/{userId:int}")]
+        public async Task<IActionResult> GetCartItemsByUser(int userId)
+        {
+            var result = await _cartProductsService.GetCartItemsByUser(userId);
+
+            if (result == null)
+            {
+                return BadRequest();
+            }
+            return Ok(result);
+        }
+
         [HttpPost("add/product/{productId:int}")]
         public async Task<IActionResult> AddProductToCart(int productId)
         {

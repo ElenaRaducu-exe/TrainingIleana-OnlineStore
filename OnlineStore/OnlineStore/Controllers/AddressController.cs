@@ -61,5 +61,19 @@ namespace OnlineStore.Controllers
 
             return Ok(addressDTO);
         }
+
+        // api/address/get/{addressId:int}
+        [HttpGet("get/{addressId:int}")]
+        public async Task<IActionResult> GetAddressDTOById([FromRoute] int addressId)
+        {
+            var addressDTO = await _addressService.GetAddressById(addressId);
+
+            if(addressDTO == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(addressDTO);
+        }
     }
 }

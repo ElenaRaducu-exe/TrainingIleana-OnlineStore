@@ -96,5 +96,43 @@ namespace OnlineStore.Services
 
             return null;
         }
+
+        public async Task<Order?> GetOrderById(int orderId)
+        {
+            var order = _dbContext.Orders.FirstOrDefault(o => o.Id == orderId);
+
+            if (order == null)
+            {
+                return null;
+            }
+
+            return order;
+        }
+
+        public async Task<List<OrderItemDetailsDTO>?> GetOrderItemsDTOListById(int orderId)
+        {
+            var orderItems = await _dbContext.Database.SqlQuery<OrderItemDetailsSP>($"exec dbo.GetOrderItemsDetails @OrderId={orderId}").ToListAsync();
+
+            if (orderItems != null)
+            {
+                return _mapper.Map<List<OrderItemDetailsDTO>>(orderItems);
+            }
+
+            return null;
+        }
+
+        public async Task<OrderDetailsDTO?> GetOrderDetailsById(int orderId)
+        {
+            var orders = await _dbContext.Database.SqlQuery<OrderDetailsSP>($"exec dbo.GetOrders").ToListAsync();
+
+            if (orders != null)
+            {
+                var orderById = orders.FirstOrDefault(o => o.OrderId == orderId);
+
+                return _mapper.Map<OrderDetailsDTO>(orderById);
+            }
+
+            return null;
+        }
     }
 }

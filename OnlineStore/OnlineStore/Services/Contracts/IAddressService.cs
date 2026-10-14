@@ -7,5 +7,7 @@ namespace OnlineStore.Services.Contracts
         Task<bool> AddAddressAsync(AddressDTO adressDTO, int userId);
 
         Task<List<AddressDTO>?> GetAddressesByUserId(int userId);
+
+        Task<AddressDTO?> GetAddressById(int addressId);
     }
 }

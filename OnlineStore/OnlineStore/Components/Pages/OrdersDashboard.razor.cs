@@ -6,6 +6,7 @@ using OnlineStore.Services.Contracts;
 using System.Net.Http.Headers;
 
 using OnlineStore.Models.DTOs;
+using MudBlazor;
 
 namespace OnlineStore.Components.Pages
 {
@@ -34,11 +35,19 @@ namespace OnlineStore.Components.Pages
 
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var ordersDTO = await httpClient.GetFromJsonAsync<List<OrderDetailsDTO>>("api/order/get");
+            var ordersDTO = await httpClient.GetFromJsonAsync<List<OrderDetailsDTO>>("api/order/get/list");
 
             if (ordersDTO != null)
             {
                 ordersList = _mapper.Map<List<OrderModel>>(ordersDTO);
+            }
+        }
+
+        private void OrderRowClicked(TableRowClickEventArgs<OrderModel> orderClicked)
+        {
+            if (orderClicked.Item != null)
+            {
+                _navigation.NavigateTo($"/order-details-dashboard/{orderClicked.Item.OrderId}");
             }
         }
 
