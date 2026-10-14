@@ -1,0 +1,50 @@
+﻿@if(OrderModel != null)
+{
+    <MudTd>
+        <MudText Typo="Typo.body2">
+            @OrderModel.Status
+        </MudText>
+    </MudTd>
+
+    <MudTd>
+        <MudText Typo="Typo.body2">
+            @OrderModel.OrderNumber
+        </MudText>
+    </MudTd>
+
+    <MudTd>
+        <MudText Typo="Typo.body2">
+            @OrderModel.OrderDate.ToString("dd/MM/yyyy")
+        </MudText>
+    </MudTd>
+
+    <MudTd>
+        <MudText Typo="Typo.body2">
+            @OrderModel.ProductsNumber
+        </MudText>
+    </MudTd>
+
+    <MudTd>
+        <MudText Typo="Typo.body2">
+            @OrderModel.TotalQuantityItems
+        </MudText>
+    </MudTd>
+
+    <MudTd>
+        <MudText Typo="Typo.body2">
+            @OrderModel.TotalPrice
+        </MudText>
+    </MudTd>
+
+    <MudTd>
+        <MudText Typo="Typo.body2">
+            @OrderModel.Username
+        </MudText>
+    </MudTd>
+
+    <MudTd>
+        <MudText Typo="Typo.body2">
+            @OrderModel.FullName
+        </MudText>
+    </MudTd>
+}

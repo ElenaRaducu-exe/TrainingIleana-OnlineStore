@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using OnlineStore.Data;
 using OnlineStore.DBModels;
 using OnlineStore.JWTAuthentication.Providers.Contracts;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
+using OnlineStore.Models.StoredProcedureModels;
 using OnlineStore.Services.Contracts;
 using System.Net.Http.Headers;
 
@@ -15,14 +17,17 @@ namespace OnlineStore.Services
         private readonly OnlineStoreContext _dbContext;
         private readonly ICartProductsService _cartProductsService;
         private readonly IProductService _productService;
+        private readonly IMapper _mapper; 
 
         public OrderService(OnlineStoreContext dbContext,
                             ICartProductsService cartProductsService,
-                            IProductService productService)
+                            IProductService productService,
+                            IMapper mapper)
         {
             _dbContext = dbContext;
             _cartProductsService = cartProductsService;
             _productService = productService;
+            _mapper = mapper;
         }
 
         public async Task<bool> PlaceOrder(CreateOrderRequestDTO createOrderRequestDTO)
@@ -78,6 +83,18 @@ namespace OnlineStore.Services
             }
 
             return false;
+        }
+
+        public async Task<List<OrderDetailsDTO>?> GetOrdersDTO()
+        {
+            var orders = await _dbContext.Database.SqlQuery<OrderDetailsSP>($"exec dbo.GetOrders").ToListAsync();
+
+            if(orders != null)
+            {
+                return _mapper.Map<List<OrderDetailsDTO>>(orders);
+            }
+
+            return null;
         }
     }
 }

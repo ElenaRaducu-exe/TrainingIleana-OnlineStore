@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Services.Contracts;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OnlineStore.Controllers
 {
@@ -26,6 +27,20 @@ namespace OnlineStore.Controllers
             }
 
             return Ok(); 
+        }
+
+        [HttpGet("get")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetOrdersDTO()
+        {
+            var result = await _orderService.GetOrdersDTO();
+
+            if (result == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(result);
         }
     }
 }
