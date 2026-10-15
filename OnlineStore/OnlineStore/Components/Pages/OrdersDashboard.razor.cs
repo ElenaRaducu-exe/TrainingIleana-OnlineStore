@@ -24,7 +24,7 @@ namespace OnlineStore.Components.Pages
         [Inject]
         private IMapper _mapper { get; set; }
 
-        private List<OrderModel> ordersList { get; set; } = new();
+        private List<OrderDetailsModel> ordersList { get; set; } = new();
 
         protected override async Task OnInitializedAsync()
         {
@@ -39,11 +39,11 @@ namespace OnlineStore.Components.Pages
 
             if (ordersDTO != null)
             {
-                ordersList = _mapper.Map<List<OrderModel>>(ordersDTO);
+                ordersList = _mapper.Map<List<OrderDetailsModel>>(ordersDTO);
             }
         }
 
-        private void OrderRowClicked(TableRowClickEventArgs<OrderModel> orderClicked)
+        private void OrderRowClicked(TableRowClickEventArgs<OrderDetailsModel> orderClicked)
         {
             if (orderClicked.Item != null)
             {

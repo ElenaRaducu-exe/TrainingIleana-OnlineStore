@@ -349,6 +349,15 @@ namespace Res {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Email.
+        /// </summary>
+        public static string Label_Email {
+            get {
+                return ResourceManager.GetString("Label_Email", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Entrance.
         /// </summary>
         public static string Label_Entrance {
@@ -385,6 +394,15 @@ namespace Res {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to FullName.
+        /// </summary>
+        public static string Label_FullName {
+            get {
+                return ResourceManager.GetString("Label_FullName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ImageURL.
         /// </summary>
         public static string Label_ImageURL {
@@ -399,6 +417,24 @@ namespace Res {
         public static string Label_LastName {
             get {
                 return ResourceManager.GetString("Label_LastName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Order Date.
+        /// </summary>
+        public static string Label_OrderDate {
+            get {
+                return ResourceManager.GetString("Label_OrderDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Order Number.
+        /// </summary>
+        public static string Label_OrderNumber {
+            get {
+                return ResourceManager.GetString("Label_OrderNumber", resourceCulture);
             }
         }
         
@@ -457,6 +493,15 @@ namespace Res {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Products Number.
+        /// </summary>
+        public static string Label_ProductsNumber {
+            get {
+                return ResourceManager.GetString("Label_ProductsNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reserved Stock.
         /// </summary>
         public static string Label_ReservedStock {
@@ -471,6 +516,15 @@ namespace Res {
         public static string Label_SortOptions {
             get {
                 return ResourceManager.GetString("Label_SortOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status.
+        /// </summary>
+        public static string Label_Status {
+            get {
+                return ResourceManager.GetString("Label_Status", resourceCulture);
             }
         }
         
@@ -507,6 +561,33 @@ namespace Res {
         public static string Label_Test {
             get {
                 return ResourceManager.GetString("Label_Test", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total Price.
+        /// </summary>
+        public static string Label_TotalPrice {
+            get {
+                return ResourceManager.GetString("Label_TotalPrice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total Quantity Items Number.
+        /// </summary>
+        public static string Label_TotalQuantityItemsNumber {
+            get {
+                return ResourceManager.GetString("Label_TotalQuantityItemsNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username.
+        /// </summary>
+        public static string Label_Username {
+            get {
+                return ResourceManager.GetString("Label_Username", resourceCulture);
             }
         }
         

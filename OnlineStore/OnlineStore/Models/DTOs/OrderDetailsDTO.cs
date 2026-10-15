@@ -5,6 +5,8 @@ namespace OnlineStore.Models.DTOs
     public class OrderDetailsDTO
     {
         public int OrderId { get; set; }
+        public int UserId { get; set; }
+        public int AddressId { get; set; }
         public string OrderNumber { get; set; } = string.Empty;
         public DateTime OrderDate { get; set; }
         public int ProductsNumber { get; set; }
@@ -13,5 +15,6 @@ namespace OnlineStore.Models.DTOs
         public string Username { get; set; } = string.Empty;
         public string FullName { get; set; } = string.Empty;
         public OrderStatusEnum Status { get; set; }
+        public string Email { get; set; } = string.Empty;
     }
 }

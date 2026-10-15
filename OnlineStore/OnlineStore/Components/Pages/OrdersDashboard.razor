@@ -8,7 +8,7 @@
 
 @if(ordersList != null)
 {
-    <MudTable T="OrderModel"
+    <MudTable T="OrderDetailsModel"
               Items="@ordersList"
               Hover="true"
               Striped="true" 
@@ -28,6 +28,7 @@
             <MudTh>TotalPrice</MudTh>
             <MudTh>Username</MudTh>
             <MudTh>FullName</MudTh>
+            <MudTh>Email</MudTh>
         </HeaderContent>
 
         <RowTemplate>

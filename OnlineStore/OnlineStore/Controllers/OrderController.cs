@@ -87,5 +87,20 @@ namespace OnlineStore.Controllers
 
             return Ok(result);
         }
+
+        // api/order/get/details-page/{orderId:int}
+        [HttpGet("get/details-page/{orderId:int}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetOrderDetailsPage([FromRoute]int orderId)
+        {
+            var result = await _orderService.GetOrderDetailsPageDTO(orderId);
+
+            if(result == null)
+            {
+                return NotFound(); 
+            }
+
+            return Ok(result); 
+        }
     }
 }

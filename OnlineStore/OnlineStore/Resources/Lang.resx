@@ -213,6 +213,9 @@
   <data name="Label_Description" xml:space="preserve">
     <value>Description</value>
   </data>
+  <data name="Label_Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
   <data name="Label_Entrance" xml:space="preserve">
     <value>Entrance</value>
   </data>
@@ -225,11 +228,20 @@
   <data name="Label_FloorNumber" xml:space="preserve">
     <value>Floor Number</value>
   </data>
+  <data name="Label_FullName" xml:space="preserve">
+    <value>FullName</value>
+  </data>
   <data name="Label_ImageURL" xml:space="preserve">
     <value>ImageURL</value>
   </data>
   <data name="Label_LastName" xml:space="preserve">
     <value>Last Name</value>
+  </data>
+  <data name="Label_OrderDate" xml:space="preserve">
+    <value>Order Date</value>
+  </data>
+  <data name="Label_OrderNumber" xml:space="preserve">
+    <value>Order Number</value>
   </data>
   <data name="Label_Phone" xml:space="preserve">
     <value>Phone</value>
@@ -249,11 +261,17 @@
   <data name="Label_Products" xml:space="preserve">
     <value>Products</value>
   </data>
+  <data name="Label_ProductsNumber" xml:space="preserve">
+    <value>Products Number</value>
+  </data>
   <data name="Label_ReservedStock" xml:space="preserve">
     <value>Reserved Stock</value>
   </data>
   <data name="Label_SortOptions" xml:space="preserve">
     <value>Sorting options</value>
+  </data>
+  <data name="Label_Status" xml:space="preserve">
+    <value>Status</value>
   </data>
   <data name="Label_Stock" xml:space="preserve">
     <value>Stock</value>
@@ -266,6 +284,15 @@
   </data>
   <data name="Label_Test" xml:space="preserve">
     <value>Test</value>
+  </data>
+  <data name="Label_TotalPrice" xml:space="preserve">
+    <value>Total Price</value>
+  </data>
+  <data name="Label_TotalQuantityItemsNumber" xml:space="preserve">
+    <value>Total Quantity Items Number</value>
+  </data>
+  <data name="Label_Username" xml:space="preserve">
+    <value>Username</value>
   </data>
   <data name="Label_Zipcode" xml:space="preserve">
     <value>Zipcode</value>

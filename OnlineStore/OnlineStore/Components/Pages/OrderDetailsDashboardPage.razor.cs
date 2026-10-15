@@ -25,38 +25,24 @@ namespace OnlineStore.Components.Pages
         [Inject]
         private IMapper _mapper { get; set; }
 
-        private OrderModel? _orderModel { get; set; }
-        private AddressModel? _addressModel { get; set; }
-        private List<OrderItemDetailsModel> _orderItemsList { get; set; } = new();
+        private OrderDetailsPageModel? _orderDetailsPageModel { get; set; } = new();
 
         protected override async Task OnInitializedAsync()
         {
             var token = await _tokenProvider.GetToken();
+
             var httpClient = _httpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(_navigation.BaseUri);
+
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var orderItemsDTO = await httpClient.GetFromJsonAsync<List<OrderItemDetailsDTO>>($"api/order/get/items/{OrderId}");
+            // api/order/get/details-page/{orderId:int}
 
-            if(orderItemsDTO != null)
+            var orderDetailsPageDTO = await httpClient.GetFromJsonAsync<OrderDetailsPageDTO>($"api/order/get/details-page/{OrderId}"); 
+
+            if(orderDetailsPageDTO != null)
             {
-                _orderItemsList = _mapper.Map<List<OrderItemDetailsModel>>(orderItemsDTO);
-
-                int addressId = _orderItemsList.First().AddressId;
-
-                var addressDTO = await httpClient.GetFromJsonAsync<AddressDTO>($"api/address/get/{addressId}");
-
-                if (addressDTO != null)
-                {
-                    _addressModel = _mapper.Map<AddressModel>(addressDTO);
-                }
-            }
-
-            var orderDetailsDTO = await httpClient.GetFromJsonAsync<OrderDetailsDTO>($"api/order/get/details/{OrderId}");
-
-            if (orderDetailsDTO != null)
-            {
-                _orderModel = _mapper.Map<OrderModel>(orderDetailsDTO);
+                _orderDetailsPageModel = _mapper.Map<OrderDetailsPageModel>(orderDetailsPageDTO); 
             }
         }
     }

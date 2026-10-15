@@ -7,6 +7,6 @@ namespace OnlineStore.Components.ReusableComponnets
     public partial class OrderDashboardCard : ComponentBase
     {
         [Parameter]
-        public OrderModel? OrderModel { get; set; }
+        public OrderDetailsModel? OrderModel { get; set; }
     }
 }

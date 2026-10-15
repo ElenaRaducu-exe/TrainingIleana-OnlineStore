@@ -15,17 +15,15 @@ namespace OnlineStore.Models.MappingProfiles
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => (OrderStatusEnum)src.StatusId))
                 .ReverseMap();
 
-            CreateMap<OrderDetailsDTO, OrderModel>()
+            CreateMap<OrderDetailsDTO, OrderDetailsModel>()
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
                 .ReverseMap();
 
-            CreateMap<OrderItemDetailsSP, OrderItemDetailsDTO>()
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => (OrderStatusEnum)src.StatusId))
-                .ReverseMap(); 
+            CreateMap<OrderItemDetailsSP, OrderItemDetailsDTO>().ReverseMap(); 
 
-            CreateMap<OrderItemDetailsDTO, OrderItemDetailsModel>()
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
-                .ReverseMap();
+            CreateMap<OrderItemDetailsDTO, OrderItemDetailsModel>().ReverseMap();
+
+            CreateMap<OrderDetailsPageDTO, OrderDetailsPageModel>().ReverseMap();
         }   
     }
 }

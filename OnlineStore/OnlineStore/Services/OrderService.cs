@@ -15,18 +15,15 @@ namespace OnlineStore.Services
     public class OrderService : IOrderService
     {
         private readonly OnlineStoreContext _dbContext;
-        private readonly ICartProductsService _cartProductsService;
-        private readonly IProductService _productService;
+        private readonly IAddressService _addressService;
         private readonly IMapper _mapper; 
 
         public OrderService(OnlineStoreContext dbContext,
-                            ICartProductsService cartProductsService,
-                            IProductService productService,
+                            IAddressService addressService,
                             IMapper mapper)
         {
             _dbContext = dbContext;
-            _cartProductsService = cartProductsService;
-            _productService = productService;
+            _addressService = addressService; 
             _mapper = mapper;
         }
 
@@ -133,6 +130,37 @@ namespace OnlineStore.Services
             }
 
             return null;
+        }
+
+        public async Task<OrderDetailsPageDTO?> GetOrderDetailsPageDTO(int orderId)
+        {
+            var orderDetails = await GetOrderDetailsById(orderId); 
+
+            if(orderDetails == null)
+            {
+                return null; 
+            }
+
+            var address = await _addressService.GetAddressById(orderDetails.AddressId);
+
+            if(address == null)
+            {
+                return null; 
+            }
+
+            var orderItems = await GetOrderItemsDTOListById(orderId); 
+
+            if(orderItems == null)
+            {
+                return null; 
+            }
+
+            return new OrderDetailsPageDTO()
+            {
+                OrderDetails = orderDetails,
+                Address = address,
+                OrderItems = orderItems
+            };
         }
     }
 }

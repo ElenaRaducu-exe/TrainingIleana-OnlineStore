@@ -5,41 +5,108 @@
 
 <h3>Order Details Dashboard</h3>
 
-@if(_orderModel != null)
+@if(_orderDetailsPageModel != null)
 {
-    <MudText>
-        @_orderModel.OrderNumber
-    </MudText>
-}
+    <MudStack Row="true">
 
-@if(_addressModel != null)
-{
-    <AddressCard addressModel="@_addressModel" />
-}
+        <div style="flex: 1; min-width: 0;">
+            @if (_orderDetailsPageModel.OrderDetails != null)
+            {
+                <MudCard>
+                    <MudCardHeader>
+                        <MudText Typo="Typo.h5">Order Details</MudText>
+                    </MudCardHeader>
 
-@if (_orderItemsList != null)
-{
-    <MudTable T="OrderItemDetailsModel" 
-              Items="@_orderItemsList"
-              Hover="true"
-              Striped="true">
+                    <hr />
 
-        <HeaderContent>
-            <MudTh>ProductName</MudTh>
-            <MudTh>ProductDescription</MudTh>
-            <MudTh>BrandName</MudTh>
-            <MudTh>CategoryName</MudTh>
-            <MudTh>Quantity</MudTh>
-            <MudTh>UnitPrice</MudTh>
-        </HeaderContent>
-        
-        <RowTemplate>
-            <MudTd>@context.ProductName</MudTd>
-            <MudTd>@context.ProductDescription</MudTd>
-            <MudTd>@context.BrandName</MudTd>
-            <MudTd>@context.CategoryName</MudTd>
-            <MudTd>@context.Quantity</MudTd>
-            <MudTd>@context.UnitPrice</MudTd>
-        </RowTemplate>
-    </MudTable>
+                    <MudCardContent>
+                        <MudText Typo="Typo.h6">@Res.Lang.Label_OrderNumber: @_orderDetailsPageModel.OrderDetails.OrderNumber</MudText>
+
+                        <hr />
+
+                        <MudGrid Spacing="2">
+                            <MudItem xs="5">
+                                <MudText Typo="Typo.body1">@Res.Lang.Label_OrderDate: </MudText>
+                                <MudText Typo="Typo.body1">@Res.Lang.Label_ProductsNumber: </MudText>
+                                <MudText Typo="Typo.body1">@Res.Lang.Label_TotalPrice: </MudText>
+                                <MudText Typo="Typo.body1">@Res.Lang.Label_Status: </MudText>
+                                <MudText Typo="Typo.body1">@Res.Lang.Label_Username: </MudText>
+                                <MudText Typo="Typo.body1">@Res.Lang.Label_Email: </MudText>
+                                <MudText Typo="Typo.body1">@Res.Lang.Label_FullName: </MudText>
+                            </MudItem>
+
+                            <MudItem xs="7"
+                                     Class="text-end">
+                                <MudText Class="text-end"
+                                         Typo="Typo.body1">
+                                    @_orderDetailsPageModel.OrderDetails.OrderDate.ToString("dd MMM, yyyy")
+                                </MudText>
+                                <MudText Class="text-end"
+                                         Typo="Typo.body1">
+                                    @_orderDetailsPageModel.OrderDetails.ProductsNumber
+                                </MudText>
+                                <MudText Class="text-end"
+                                         Typo="Typo.body1">
+                                    @_orderDetailsPageModel.OrderDetails.TotalPrice
+                                </MudText>
+                                <MudText Class="text-end"
+                                         Typo="Typo.body1">
+                                    @_orderDetailsPageModel.OrderDetails.Status
+                                </MudText>
+                                <MudText Class="text-end"
+                                         Typo="Typo.body1">
+                                    @_orderDetailsPageModel.OrderDetails.Username
+                                </MudText>
+                                <MudText Class="text-end"
+                                         Typo="Typo.body1">
+                                    @_orderDetailsPageModel.OrderDetails.Email
+                                </MudText>
+                                <MudText Class="text-end"
+                                         Typo="Typo.body1">
+                                    @_orderDetailsPageModel.OrderDetails.FullName
+                                </MudText>
+                            </MudItem>
+                        </MudGrid>
+
+                    </MudCardContent>
+                </MudCard>
+            }
+        </div>
+
+        <div style="flex: 1; min-width: 0;">
+            @if (_orderDetailsPageModel.Address != null)
+            {
+                <AddressCard addressModel="@_orderDetailsPageModel.Address" />
+            }
+        </div>
+    </MudStack>
+
+    @if (_orderDetailsPageModel.OrderItems != null)
+    {
+        <MudTable T="OrderItemDetailsModel"
+                  Items="@_orderDetailsPageModel.OrderItems"
+                  Hover="true"
+                  Striped="true">
+
+            <HeaderContent>
+                <MudTh>ProductName</MudTh>
+                <MudTh>ProductDescription</MudTh>
+                <MudTh>BrandName</MudTh>
+                <MudTh>CategoryName</MudTh>
+                <MudTh>Quantity</MudTh>
+                <MudTh>UnitPrice</MudTh>
+                <MudTh>TotalPrice</MudTh>
+            </HeaderContent>
+
+            <RowTemplate>
+                <MudTd>@context.ProductName</MudTd>
+                <MudTd>@context.ProductDescription</MudTd>
+                <MudTd>@context.BrandName</MudTd>
+                <MudTd>@context.CategoryName</MudTd>
+                <MudTd>@context.Quantity</MudTd>
+                <MudTd>@context.UnitPrice</MudTd>
+                <MudTd>@context.TotalPrice</MudTd>
+            </RowTemplate>
+        </MudTable>
+    }
 }
