@@ -502,6 +502,15 @@ namespace Res {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Quantity.
+        /// </summary>
+        public static string Label_Quantity {
+            get {
+                return ResourceManager.GetString("Label_Quantity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reserved Stock.
         /// </summary>
         public static string Label_ReservedStock {
@@ -579,6 +588,15 @@ namespace Res {
         public static string Label_TotalQuantityItemsNumber {
             get {
                 return ResourceManager.GetString("Label_TotalQuantityItemsNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unit Price.
+        /// </summary>
+        public static string Label_UnitPrice {
+            get {
+                return ResourceManager.GetString("Label_UnitPrice", resourceCulture);
             }
         }
         

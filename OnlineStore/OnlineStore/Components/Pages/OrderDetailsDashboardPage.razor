@@ -110,3 +110,222 @@
         </MudTable>
     }
 }
+
+<br />
+
+<hr />
+
+<br />
+
+@if (_orderDetailsPageModel != null)
+{
+    <div class="order-details-container">
+
+        <h3>Order Details Dashboard</h3>
+
+        <div class="order-details-cards">
+            @if (_orderDetailsPageModel.OrderDetails != null)
+            {
+                <div class="order-details-card">
+                    <div class="order-details-card-header">
+                        <h4>Order Details</h4>
+                    </div>
+
+                    <hr />
+
+                    <div class="order-details-card-title">
+                        <h6>@Res.Lang.Label_OrderNumber: @_orderDetailsPageModel.OrderDetails.OrderNumber</h6>
+                    </div>
+
+                    <div class="order-details-card-body">
+                        <div class="order-details-card-body-row">
+                            <span class="label">@Res.Lang.Label_OrderDate: </span>
+                            <span class="label-value">@_orderDetailsPageModel.OrderDetails.OrderDate.ToString("dd MMM, yyyy")</span>
+                        </div>
+
+                        <div class="order-details-card-body-row">
+                            <span class="label">@Res.Lang.Label_ProductsNumber: </span>
+                            <span class="label-value">@_orderDetailsPageModel.OrderDetails.ProductsNumber</span>
+                        </div>
+
+                        <div class="order-details-card-body-row">
+                            <span class="label">@Res.Lang.Label_TotalPrice: </span>
+                            <span class="label-value">@_orderDetailsPageModel.OrderDetails.TotalPrice</span>
+                        </div>
+
+                        <div class="order-details-card-body-row">
+                            <span class="label">@Res.Lang.Label_Status: </span>
+                            <span class="label-value">@_orderDetailsPageModel.OrderDetails.Status</span>
+                        </div>
+
+                        <div class="order-details-card-body-row">
+                            <span class="label">@Res.Lang.Label_Username: </span>
+                            <span class="label-value">@_orderDetailsPageModel.OrderDetails.Username</span>
+                        </div>
+                        <div class="order-details-card-body-row">
+                            <span class="label">@Res.Lang.Label_Email: </span>
+                            <span class="label-value">@_orderDetailsPageModel.OrderDetails.Email</span>
+                        </div>
+                        <div class="order-details-card-body-row">
+                            <span class="label">@Res.Lang.Label_FullName: </span>
+                            <span class="label-value">@_orderDetailsPageModel.OrderDetails.FullName</span>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if(_orderDetailsPageModel.Address != null)
+            {
+                <div class="address-details-card">
+                    <div class="address-details-card-header">
+                        <h4>Address Details</h4>
+                    </div>
+
+                    <hr/>
+
+                    <div class="address-details-card-title">
+                        <h6>@_orderDetailsPageModel.Address.LastName @_orderDetailsPageModel.Address.FirstName - @_orderDetailsPageModel.Address.Phone</h6>
+                    </div>
+
+                    <div class="address-details-card-body">
+                        <div class="address-details-card-body-row">
+                            <span class="label">@Res.Lang.Label_City: </span>
+                            <span class="label-value">@_orderDetailsPageModel.Address.City</span>
+                        </div>
+                        <div class="address-details-card-body-row">
+                            <span class="label">@Res.Lang.Label_Street: </span>
+                            <span class="label-value">@_orderDetailsPageModel.Address.Street</span>
+                        </div>
+                        <div class="address-details-card-body-row">
+                            <span class="label">@Res.Lang.Label_StreetNumber: </span>
+                            <span class="label-value">@_orderDetailsPageModel.Address.StreetNumber</span>
+                        </div>
+                        <div class="address-details-card-body-row">
+                            <span class="label">@Res.Lang.Label_BuildingName: </span>
+                            <span class="label-value">@_orderDetailsPageModel.Address.BuildingName</span>
+                        </div>
+                        <div class="address-details-card-body-row">
+                            <span class="label">@Res.Lang.Label_Entrance: </span>
+                            <span class="label-value">@_orderDetailsPageModel.Address.Entrance</span>
+                        </div>
+                        <div class="address-details-card-body-row">
+                            <span class="label">@Res.Lang.Label_FloorNumber: </span>
+                            <span class="label-value">@_orderDetailsPageModel.Address.FloorNumber</span>
+                        </div>
+                        <div class="address-details-card-body-row">
+                            <span class="label">@Res.Lang.Label_Apartment: </span>
+                            <span class="label-value">@_orderDetailsPageModel.Address.Apartment</span>
+                        </div>
+                    </div>
+                </div>
+            }
+            
+        </div>
+
+        @if(_orderDetailsPageModel.OrderItems != null)
+        {
+            <div class="order-items-table-container">
+                <table class="order-items-table">
+                    <thead>
+                        <tr>
+                            <th>@Res.Lang.Label_ProductName</th>
+                            <th>@Res.Lang.Label_Description</th>
+                            <th>@Res.Lang.Label_Brand</th>
+                            <th>@Res.Lang.Label_Category</th>
+                            <th>@Res.Lang.Label_Quantity</th>
+                            <th>@Res.Lang.Label_UnitPrice</th>
+                            <th>@Res.Lang.Label_TotalPrice</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach(var item in _orderDetailsPageModel.OrderItems)
+                        {
+                            <tr>
+                                <td>@item.ProductName</td>
+                                <td>@item.ProductDescription</td>
+                                <td>@item.BrandName</td>
+                                <td>@item.CategoryName</td>
+                                <td>@item.Quantity</td>
+                                <td>@item.UnitPrice</td>
+                                <td>@item.TotalPrice</td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        }
+    </div>
+}
+
+<style>
+    .order-details-container{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 20px; 
+    }
+
+    .order-details-cards{
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        gap: 20px;
+        width: 100%;
+    }
+
+    .address-details-card, 
+    .order-details-card{
+        flex: 1; 
+        border: solid 1px;
+        border-color: darkgray;
+        padding: 20px;
+        border-radius: 6px;
+    }
+
+    .order-details-card-body-row, 
+    .address-details-card-body-row {
+        display: flex;
+        align-items:flex-start;
+        justify-content: space-between;
+        gap: 15px;
+    }
+
+    .label{
+        font-weight: bold;
+    }
+
+    .label-value {
+        text-align: right;
+    }
+
+    .order-items-table-container{
+        width:100%;
+        border: solid 1px;
+        border-color: darkgray;
+        padding: 20px;
+        border-radius: 6px;
+    }
+
+    .order-items-table{
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .order-items-table th, 
+    .order-items-table td{
+        padding: 15px; 
+        text-align: left; 
+        border-bottom: 1px solid darkgray; 
+    }
+
+    .order-items-table th{
+        font-weight: bold; 
+        background-color: lightsteelblue;
+    }
+
+    .order-items-table tbody tr:hover {
+       background-color: #BFCFE4
+    }
+</style>
