@@ -2,126 +2,162 @@
 
 @using OnlineStore.Models.FrontendModels
 @using OnlineStore.Components.ReusableComponnets
+@using OnlineStore.Models.Enums
 
-<h3>Order Details Dashboard</h3>
+<div style="display:none">
+    <h3>Order Details Dashboard</h3>
 
-@if(_orderDetailsPageModel != null)
-{
-    <MudStack Row="true">
+    <br />
 
-        <div style="flex: 1; min-width: 0;">
-            @if (_orderDetailsPageModel.OrderDetails != null)
-            {
-                <MudCard>
-                    <MudCardHeader>
-                        <MudText Typo="Typo.h5">Order Details</MudText>
-                    </MudCardHeader>
+    @if (_orderDetailsPageModel != null)
+    {
+        <MudStack Row="true">
 
-                    <hr />
-
-                    <MudCardContent>
-                        <MudText Typo="Typo.h6">@Res.Lang.Label_OrderNumber: @_orderDetailsPageModel.OrderDetails.OrderNumber</MudText>
+            <div style="flex: 1; min-width: 0;">
+                @if (_orderDetailsPageModel.OrderDetails != null)
+                {
+                    <MudCard>
+                        <MudCardHeader>
+                            <MudText Typo="Typo.h5">Order Details</MudText>
+                        </MudCardHeader>
 
                         <hr />
 
-                        <MudGrid Spacing="2">
-                            <MudItem xs="5">
-                                <MudText Typo="Typo.body1">@Res.Lang.Label_OrderDate: </MudText>
-                                <MudText Typo="Typo.body1">@Res.Lang.Label_ProductsNumber: </MudText>
-                                <MudText Typo="Typo.body1">@Res.Lang.Label_TotalPrice: </MudText>
-                                <MudText Typo="Typo.body1">@Res.Lang.Label_Status: </MudText>
-                                <MudText Typo="Typo.body1">@Res.Lang.Label_Username: </MudText>
-                                <MudText Typo="Typo.body1">@Res.Lang.Label_Email: </MudText>
-                                <MudText Typo="Typo.body1">@Res.Lang.Label_FullName: </MudText>
-                            </MudItem>
+                        <MudCardContent>
+                            <MudText Typo="Typo.h6">@Res.Lang.Label_OrderNumber: @_orderDetailsPageModel.OrderDetails.OrderNumber</MudText>
 
-                            <MudItem xs="7"
-                                     Class="text-end">
-                                <MudText Class="text-end"
-                                         Typo="Typo.body1">
-                                    @_orderDetailsPageModel.OrderDetails.OrderDate.ToString("dd MMM, yyyy")
-                                </MudText>
-                                <MudText Class="text-end"
-                                         Typo="Typo.body1">
-                                    @_orderDetailsPageModel.OrderDetails.ProductsNumber
-                                </MudText>
-                                <MudText Class="text-end"
-                                         Typo="Typo.body1">
-                                    @_orderDetailsPageModel.OrderDetails.TotalPrice
-                                </MudText>
-                                <MudText Class="text-end"
-                                         Typo="Typo.body1">
-                                    @_orderDetailsPageModel.OrderDetails.Status
-                                </MudText>
-                                <MudText Class="text-end"
-                                         Typo="Typo.body1">
-                                    @_orderDetailsPageModel.OrderDetails.Username
-                                </MudText>
-                                <MudText Class="text-end"
-                                         Typo="Typo.body1">
-                                    @_orderDetailsPageModel.OrderDetails.Email
-                                </MudText>
-                                <MudText Class="text-end"
-                                         Typo="Typo.body1">
-                                    @_orderDetailsPageModel.OrderDetails.FullName
-                                </MudText>
-                            </MudItem>
-                        </MudGrid>
+                            <hr />
 
-                    </MudCardContent>
-                </MudCard>
-            }
-        </div>
+                            <MudGrid Spacing="2">
+                                <MudItem xs="5">
+                                    <MudText Typo="Typo.body1">@Res.Lang.Label_OrderDate: </MudText>
+                                    <MudText Typo="Typo.body1">@Res.Lang.Label_ProductsNumber: </MudText>
+                                    <MudText Typo="Typo.body1">@Res.Lang.Label_TotalPrice: </MudText>
+                                    <MudText Typo="Typo.body1">@Res.Lang.Label_Status: </MudText>
+                                    <MudText Typo="Typo.body1">@Res.Lang.Label_Username: </MudText>
+                                    <MudText Typo="Typo.body1">@Res.Lang.Label_Email: </MudText>
+                                    <MudText Typo="Typo.body1">@Res.Lang.Label_FullName: </MudText>
+                                </MudItem>
 
-        <div style="flex: 1; min-width: 0;">
-            @if (_orderDetailsPageModel.Address != null)
-            {
-                <AddressCard addressModel="@_orderDetailsPageModel.Address" />
-            }
-        </div>
-    </MudStack>
+                                <MudItem xs="7"
+                                         Class="text-end">
+                                    <MudText Class="text-end"
+                                             Typo="Typo.body1">
+                                        @_orderDetailsPageModel.OrderDetails.OrderDate.ToString("dd MMM, yyyy")
+                                    </MudText>
+                                    <MudText Class="text-end"
+                                             Typo="Typo.body1">
+                                        @_orderDetailsPageModel.OrderDetails.ProductsNumber
+                                    </MudText>
+                                    <MudText Class="text-end"
+                                             Typo="Typo.body1">
+                                        @_orderDetailsPageModel.OrderDetails.TotalPrice
+                                    </MudText>
+                                    <MudText Class="text-end"
+                                             Typo="Typo.body1">
+                                        @_orderDetailsPageModel.OrderDetails.Status
+                                    </MudText>
+                                    <MudText Class="text-end"
+                                             Typo="Typo.body1">
+                                        @_orderDetailsPageModel.OrderDetails.Username
+                                    </MudText>
+                                    <MudText Class="text-end"
+                                             Typo="Typo.body1">
+                                        @_orderDetailsPageModel.OrderDetails.Email
+                                    </MudText>
+                                    <MudText Class="text-end"
+                                             Typo="Typo.body1">
+                                        @_orderDetailsPageModel.OrderDetails.FullName
+                                    </MudText>
+                                </MudItem>
+                            </MudGrid>
 
-    @if (_orderDetailsPageModel.OrderItems != null)
-    {
-        <MudTable T="OrderItemDetailsModel"
-                  Items="@_orderDetailsPageModel.OrderItems"
-                  Hover="true"
-                  Striped="true">
+                        </MudCardContent>
+                    </MudCard>
+                }
+            </div>
 
-            <HeaderContent>
-                <MudTh>ProductName</MudTh>
-                <MudTh>ProductDescription</MudTh>
-                <MudTh>BrandName</MudTh>
-                <MudTh>CategoryName</MudTh>
-                <MudTh>Quantity</MudTh>
-                <MudTh>UnitPrice</MudTh>
-                <MudTh>TotalPrice</MudTh>
-            </HeaderContent>
+            <div style="flex: 1; min-width: 0;">
+                @if (_orderDetailsPageModel.Address != null)
+                {
+                    <AddressCard addressModel="@_orderDetailsPageModel.Address" />
+                }
+            </div>
+        </MudStack>
 
-            <RowTemplate>
-                <MudTd>@context.ProductName</MudTd>
-                <MudTd>@context.ProductDescription</MudTd>
-                <MudTd>@context.BrandName</MudTd>
-                <MudTd>@context.CategoryName</MudTd>
-                <MudTd>@context.Quantity</MudTd>
-                <MudTd>@context.UnitPrice</MudTd>
-                <MudTd>@context.TotalPrice</MudTd>
-            </RowTemplate>
-        </MudTable>
+        @if (_orderDetailsPageModel.OrderItems != null)
+        {
+            <MudTable T="OrderItemDetailsModel"
+                      Items="@_orderDetailsPageModel.OrderItems"
+                      Hover="true"
+                      Striped="true">
+
+                <HeaderContent>
+                    <MudTh>ProductName</MudTh>
+                    <MudTh>ProductDescription</MudTh>
+                    <MudTh>BrandName</MudTh>
+                    <MudTh>CategoryName</MudTh>
+                    <MudTh>Quantity</MudTh>
+                    <MudTh>UnitPrice</MudTh>
+                    <MudTh>TotalPrice</MudTh>
+                </HeaderContent>
+
+                <RowTemplate>
+                    <MudTd>@context.ProductName</MudTd>
+                    <MudTd>@context.ProductDescription</MudTd>
+                    <MudTd>@context.BrandName</MudTd>
+                    <MudTd>@context.CategoryName</MudTd>
+                    <MudTd>@context.Quantity</MudTd>
+                    <MudTd>@context.UnitPrice</MudTd>
+                    <MudTd>@context.TotalPrice</MudTd>
+                </RowTemplate>
+            </MudTable>
+        }
     }
-}
-
-<br />
-
-<hr />
-
-<br />
+</div>
 
 @if (_orderDetailsPageModel != null)
 {
     <div class="order-details-container">
 
         <h3>Order Details Dashboard</h3>
+
+        @if (_orderDetailsPageModel.OrderDetails != null)
+        {
+            <div class="order-status-container">
+                <div class="label-status">
+                    <MudTooltip Text="@OrderStatusExtension.GetDescription(_orderDetailsPageModel.OrderDetails.StatusEnum)">
+                        <MudChip T="string"
+                                 Variant="Variant.Filled"
+                                 Style="@( $"background-color: {OrderStatusExtension.GetColor(_orderDetailsPageModel.OrderDetails.StatusEnum)}; color: white")">
+                            @OrderStatusExtension.GetLabel(_orderDetailsPageModel.OrderDetails.StatusEnum)
+                        </MudChip>
+                    </MudTooltip>
+                </div>
+
+                <div class="order-status-container-buttons">
+                    @if (String.IsNullOrEmpty(OrderActionButtonText) == false)
+                    {
+                        <MudButton Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.Check"
+                                   onclick="@(() => ChangeStatus(_orderDetailsPageModel.OrderDetails.OrderId, OrderNewStatusId))">
+                            @OrderActionButtonText
+                        </MudButton>
+                    }
+
+                    @if (_orderDetailsPageModel.OrderDetails.StatusEnum == OrderStatusEnum.Pending
+                                                        || _orderDetailsPageModel.OrderDetails.StatusEnum == OrderStatusEnum.Confirmed
+                                                        || _orderDetailsPageModel.OrderDetails.StatusEnum == OrderStatusEnum.Processing)
+                    {
+                        <MudButton Color="Color.Error" 
+                                   StartIcon="@Icons.Material.Filled.Cancel"
+                                   onclick="@(() => ChangeStatus(_orderDetailsPageModel.OrderDetails.OrderId, (int)OrderStatusEnum.Cancelled))">
+                            @Res.Lang.Btn_CancelOrder
+                        </MudButton>
+                    }
+                </div>
+            </div>
+        }
 
         <div class="order-details-cards">
             @if (_orderDetailsPageModel.OrderDetails != null)
@@ -219,14 +255,13 @@
                     </div>
                 </div>
             }
-            
         </div>
 
         @if(_orderDetailsPageModel.OrderItems != null)
         {
             <div class="order-items-table-container">
                 <table class="order-items-table">
-                    <thead>
+                    <thead class="order-items-table-thead">
                         <tr>
                             <th>@Res.Lang.Label_ProductName</th>
                             <th>@Res.Lang.Label_Description</th>
@@ -267,7 +302,8 @@
         gap: 20px; 
     }
 
-    .order-details-cards{
+    .order-details-cards, 
+    .order-details-card-header {
         display: flex;
         flex-direction: row;
         align-items: stretch;
@@ -292,20 +328,34 @@
         gap: 15px;
     }
 
-    .label{
+    .label, 
+    .order-items-table-thead {
         font-weight: bold;
     }
 
-    .label-value {
+    .label-value{
         text-align: right;
     }
 
-    .order-items-table-container{
+    .order-items-table-container, 
+    .order-status-container{
         width:100%;
         border: solid 1px;
         border-color: darkgray;
         padding: 20px;
         border-radius: 6px;
+    }
+
+    .order-status-container{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .order-status-container-buttons{
+        display: flex;
+        gap: 10px;
+        align-items: center;
     }
 
     .order-items-table{
@@ -317,7 +367,7 @@
     .order-items-table td{
         padding: 15px; 
         text-align: left; 
-        border-bottom: 1px solid darkgray; 
+        border-bottom: 1px solid darkgray;   
     }
 
     .order-items-table th{
@@ -326,6 +376,6 @@
     }
 
     .order-items-table tbody tr:hover {
-       background-color: #BFCFE4
+        background-color: #D7E1EE;
     }
 </style>

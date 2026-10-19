@@ -1,9 +1,15 @@
-﻿@if(OrderModel != null)
+﻿@using OnlineStore.Models.Enums
+
+@if(OrderModel != null)
 {
     <MudTd>
-        <MudText Typo="Typo.body2">
-            @OrderModel.Status
-        </MudText>
+        <MudTooltip Text="@OrderStatusExtension.GetDescription(OrderModel.StatusEnum)">
+            <MudChip T="string"
+                     Variant="Variant.Filled"
+                     Style="@( $"background-color: {OrderStatusExtension.GetColor(OrderModel.StatusEnum)}; color: white")">
+                @OrderStatusExtension.GetLabel(OrderModel.StatusEnum) 
+            </MudChip>
+        </MudTooltip>
     </MudTd>
 
     <MudTd>

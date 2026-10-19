@@ -13,6 +13,7 @@ namespace OnlineStore.Models.FrontendModels
         public int TotalQuantityItems { get; set; }
         public decimal TotalPrice { get; set; }
         public string Status { get; set; } = string.Empty;
+        public OrderStatusEnum StatusEnum { get; set; }
         public string Username { get; set; } = string.Empty;
         public string FullName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;

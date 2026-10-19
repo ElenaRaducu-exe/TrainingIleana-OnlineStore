@@ -132,6 +132,18 @@
   <data name="Btn_ApplyFilters" xml:space="preserve">
     <value>Apply Filters</value>
   </data>
+  <data name="Btn_CancelOrder" xml:space="preserve">
+    <value>Cancel Order</value>
+  </data>
+  <data name="Btn_ConfirmCourierPickup" xml:space="preserve">
+    <value>Confirm Courier PickUp</value>
+  </data>
+  <data name="Btn_ConfirmOrder" xml:space="preserve">
+    <value>Confirm Order</value>
+  </data>
+  <data name="Btn_ConfirmShipment" xml:space="preserve">
+    <value>Confirm Shipment</value>
+  </data>
   <data name="Btn_Deactivate" xml:space="preserve">
     <value>Deactivate</value>
   </data>
@@ -155,6 +167,12 @@
   </data>
   <data name="Btn_Save" xml:space="preserve">
     <value>Save</value>
+  </data>
+  <data name="Btn_StartDelivering" xml:space="preserve">
+    <value>Start Delivering</value>
+  </data>
+  <data name="Btn_StartProcessing" xml:space="preserve">
+    <value>Start Processing</value>
   </data>
   <data name="DropdownValue_Active" xml:space="preserve">
     <value>Active</value>

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 
 using OnlineStore.Models.FrontendModels;
+using OnlineStore.Models.Enums;
 
 namespace OnlineStore.Components.ReusableComponnets
 {

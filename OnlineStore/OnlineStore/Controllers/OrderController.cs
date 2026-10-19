@@ -102,5 +102,25 @@ namespace OnlineStore.Controllers
 
             return Ok(result); 
         }
+
+        // api/order/update/status/{orderId:int}/{newStatusId:int}
+        [HttpPut("update/status/{orderId:int}/{newStatusId:int}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateOrderStatus([FromRoute] int orderId, [FromRoute] int newStatusId)
+        {
+            var result = await _orderService.UpdateOrderState(orderId, newStatusId);
+
+            if(result == false)
+            {
+                return NotFound();
+            }
+
+            if(result == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
+        }
     }
 }

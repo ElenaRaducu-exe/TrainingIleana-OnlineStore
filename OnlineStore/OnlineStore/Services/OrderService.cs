@@ -16,14 +16,14 @@ namespace OnlineStore.Services
     {
         private readonly OnlineStoreContext _dbContext;
         private readonly IAddressService _addressService;
-        private readonly IMapper _mapper; 
+        private readonly IMapper _mapper;
 
         public OrderService(OnlineStoreContext dbContext,
                             IAddressService addressService,
                             IMapper mapper)
         {
             _dbContext = dbContext;
-            _addressService = addressService; 
+            _addressService = addressService;
             _mapper = mapper;
         }
 
@@ -38,7 +38,7 @@ namespace OnlineStore.Services
                     AddressId = createOrderRequestDTO.AddressId,
                     UserId = createOrderRequestDTO.UserId,
                     StatusId = 1,
-                    OrderNumber = "Order_" + createOrderRequestDTO.UserId + "_" + DateTime.UtcNow.ToString("yyyy.MM.dd_HHmmss")
+                    OrderNumber = "#ORD-" + createOrderRequestDTO.UserId + createOrderRequestDTO.AddressId + "-" + DateTime.UtcNow.ToString("yyyyMMddHHmmss")
                 };
 
                 await _dbContext.Orders.AddAsync(order);
@@ -47,7 +47,7 @@ namespace OnlineStore.Services
                 {
                     var product = _dbContext.Products.FirstOrDefault(p => p.Id == cartItem.ProductId);
 
-                    if(product != null)
+                    if (product != null)
                     {
                         var orderItem = new OrderItem()
                         {
@@ -86,7 +86,7 @@ namespace OnlineStore.Services
         {
             var orders = await _dbContext.Database.SqlQuery<OrderDetailsSP>($"exec dbo.GetOrders").ToListAsync();
 
-            if(orders != null)
+            if (orders != null)
             {
                 return _mapper.Map<List<OrderDetailsDTO>>(orders);
             }
@@ -134,25 +134,25 @@ namespace OnlineStore.Services
 
         public async Task<OrderDetailsPageDTO?> GetOrderDetailsPageDTO(int orderId)
         {
-            var orderDetails = await GetOrderDetailsById(orderId); 
+            var orderDetails = await GetOrderDetailsById(orderId);
 
-            if(orderDetails == null)
+            if (orderDetails == null)
             {
-                return null; 
+                return null;
             }
 
             var address = await _addressService.GetAddressById(orderDetails.AddressId);
 
-            if(address == null)
+            if (address == null)
             {
-                return null; 
+                return null;
             }
 
-            var orderItems = await GetOrderItemsDTOListById(orderId); 
+            var orderItems = await GetOrderItemsDTOListById(orderId);
 
-            if(orderItems == null)
+            if (orderItems == null)
             {
-                return null; 
+                return null;
             }
 
             return new OrderDetailsPageDTO()
@@ -161,6 +161,61 @@ namespace OnlineStore.Services
                 Address = address,
                 OrderItems = orderItems
             };
+        }
+
+        public async Task<bool?> UpdateOrderState(int orderId, int newStatusId)
+        {
+            var order = await _dbContext.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
+
+            if (order == null)
+            {
+                return false; 
+            }
+
+            if((await IsValidStatusTransiton(order.StatusId, newStatusId)) == false)
+            {
+                return null;
+            }
+
+            order.StatusId = newStatusId;
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> IsValidStatusTransiton(int statusId, int newStatusId)
+        {
+            if((statusId == 1 && newStatusId == 2) || (statusId == 1 && newStatusId == 6))
+            {
+                return true; 
+            }
+
+            if((statusId == 2 && newStatusId == 3) || (statusId == 2 && newStatusId == 6))
+            {
+                return true; 
+            }
+
+            if((statusId == 3 && newStatusId == 8) || (statusId == 3 && newStatusId == 6))
+            {
+                return true; 
+            }
+
+            if(statusId == 8 && newStatusId == 4)
+            {
+                return true;
+            }
+
+            if(statusId == 4 && newStatusId == 5)
+            {
+                return true;
+            }
+
+            if(statusId == 5 && newStatusId == 7)
+            {
+                return true;
+            }
+
+            return false; 
         }
     }
 }

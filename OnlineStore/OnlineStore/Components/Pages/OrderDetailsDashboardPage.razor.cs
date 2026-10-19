@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using OnlineStore.DBModels;
 using OnlineStore.JWTAuthentication.Providers.Contracts;
 using OnlineStore.Models.DTOs;
+using OnlineStore.Models.Enums;
 using OnlineStore.Models.FrontendModels;
 using System.Net.Http.Headers;
 
@@ -27,6 +28,26 @@ namespace OnlineStore.Components.Pages
 
         private OrderDetailsPageModel? _orderDetailsPageModel { get; set; } = new();
 
+        private string OrderActionButtonText => _orderDetailsPageModel?.OrderDetails?.StatusEnum switch
+        {
+            OrderStatusEnum.Pending => Res.Lang.Btn_ConfirmOrder, 
+            OrderStatusEnum.Confirmed => Res.Lang.Btn_StartProcessing,
+            OrderStatusEnum.Processing => Res.Lang.Btn_ConfirmCourierPickup,
+            OrderStatusEnum.PickedUp => Res.Lang.Btn_ConfirmShipment,
+            OrderStatusEnum.Shipped => Res.Lang.Btn_StartDelivering,
+            _ => string.Empty
+        };
+
+        private int OrderNewStatusId => _orderDetailsPageModel?.OrderDetails?.StatusEnum switch
+        {
+            OrderStatusEnum.Pending => (int)OrderStatusEnum.Confirmed,
+            OrderStatusEnum.Confirmed => (int)OrderStatusEnum.Processing,
+            OrderStatusEnum.Processing => (int)OrderStatusEnum.PickedUp,
+            OrderStatusEnum.PickedUp => (int)OrderStatusEnum.Shipped,
+            OrderStatusEnum.Shipped => (int)OrderStatusEnum.Delivered,
+            _ => 0
+        };
+
         protected override async Task OnInitializedAsync()
         {
             var token = await _tokenProvider.GetToken();
@@ -36,13 +57,31 @@ namespace OnlineStore.Components.Pages
 
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            // api/order/get/details-page/{orderId:int}
-
             var orderDetailsPageDTO = await httpClient.GetFromJsonAsync<OrderDetailsPageDTO>($"api/order/get/details-page/{OrderId}"); 
 
             if(orderDetailsPageDTO != null)
             {
                 _orderDetailsPageModel = _mapper.Map<OrderDetailsPageModel>(orderDetailsPageDTO); 
+            }
+        }
+
+        public async Task ChangeStatus(int orderId, int newStatusId)
+        {
+            var token = await _tokenProvider.GetToken();
+
+            var httpClient = _httpClientFactory.CreateClient();
+            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
+
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var responseChangeStatus = await httpClient.PutAsJsonAsync($"api/order/update/status/{orderId}/{newStatusId}", _orderDetailsPageModel);
+
+            if (responseChangeStatus.IsSuccessStatusCode)
+            {
+                _orderDetailsPageModel.OrderDetails.StatusEnum = (OrderStatusEnum)newStatusId;
+                _orderDetailsPageModel.OrderDetails.Status = _orderDetailsPageModel.OrderDetails.StatusEnum.ToString();
+
+                StateHasChanged();
             }
         }
     }

@@ -106,6 +106,42 @@ namespace Res {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel Order.
+        /// </summary>
+        public static string Btn_CancelOrder {
+            get {
+                return ResourceManager.GetString("Btn_CancelOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm Courier PickUp.
+        /// </summary>
+        public static string Btn_ConfirmCourierPickup {
+            get {
+                return ResourceManager.GetString("Btn_ConfirmCourierPickup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm Order.
+        /// </summary>
+        public static string Btn_ConfirmOrder {
+            get {
+                return ResourceManager.GetString("Btn_ConfirmOrder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm Shipment.
+        /// </summary>
+        public static string Btn_ConfirmShipment {
+            get {
+                return ResourceManager.GetString("Btn_ConfirmShipment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deactivate.
         /// </summary>
         public static string Btn_Deactivate {
@@ -174,6 +210,24 @@ namespace Res {
         public static string Btn_Save {
             get {
                 return ResourceManager.GetString("Btn_Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start Delivering.
+        /// </summary>
+        public static string Btn_StartDelivering {
+            get {
+                return ResourceManager.GetString("Btn_StartDelivering", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start Processing.
+        /// </summary>
+        public static string Btn_StartProcessing {
+            get {
+                return ResourceManager.GetString("Btn_StartProcessing", resourceCulture);
             }
         }
         

@@ -15,6 +15,8 @@ namespace OnlineStore.Services.Contracts
 
         Task<OrderDetailsDTO?> GetOrderDetailsById(int orderId);
 
-        Task<OrderDetailsPageDTO?> GetOrderDetailsPageDTO(int orderId); 
+        Task<OrderDetailsPageDTO?> GetOrderDetailsPageDTO(int orderId);
+
+        Task<bool?> UpdateOrderState(int orderId, int newStatusId);
     }
 }
