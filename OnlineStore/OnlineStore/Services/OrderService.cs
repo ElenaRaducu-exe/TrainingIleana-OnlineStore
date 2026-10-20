@@ -94,6 +94,18 @@ namespace OnlineStore.Services
             return null;
         }
 
+        public async Task<List<OrderDetailsDTO>?> GetOrdersDTOsCustomer(int customerId)
+        {
+            var customerOrders = await _dbContext.Database.SqlQuery<OrderDetailsSP>($"exec dbo.GetOrdersCustomer @CustomerId = {customerId}").ToListAsync();
+
+            if (customerOrders != null)
+            {
+                return _mapper.Map<List<OrderDetailsDTO>>(customerOrders);
+            }
+
+            return null;
+        }
+
         public async Task<Order?> GetOrderById(int orderId)
         {
             var order = _dbContext.Orders.FirstOrDefault(o => o.Id == orderId);

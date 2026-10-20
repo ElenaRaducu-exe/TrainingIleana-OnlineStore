@@ -1,12 +1,13 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using MudBlazor;
+using OnlineStore.DBModels;
 using OnlineStore.JWTAuthentication.Providers.Contracts;
+using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
 using OnlineStore.Services.Contracts;
 using System.Net.Http.Headers;
-
-using OnlineStore.Models.DTOs;
-using MudBlazor;
 
 namespace OnlineStore.Components.Pages
 {
@@ -24,10 +25,20 @@ namespace OnlineStore.Components.Pages
         [Inject]
         private IMapper _mapper { get; set; }
 
+        [Inject]
+        private AuthenticationStateProvider _authStateProvider { get; set; }
+
         private List<OrderDetailsModel> ordersList { get; set; } = new();
+
+        private bool _isAdminUser { get; set; } = false;
 
         protected override async Task OnInitializedAsync()
         {
+            var authState = await _authStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            _isAdminUser = user.IsInRole("Admin");
+
             var token = await _tokenProvider.GetToken();
 
             var httpClient = _httpClientFactory.CreateClient();
@@ -35,11 +46,23 @@ namespace OnlineStore.Components.Pages
 
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var ordersDTO = await httpClient.GetFromJsonAsync<List<OrderDetailsDTO>>("api/order/get/list");
-
-            if (ordersDTO != null)
+            if (_isAdminUser)
             {
-                ordersList = _mapper.Map<List<OrderDetailsModel>>(ordersDTO);
+                var ordersDTO = await httpClient.GetFromJsonAsync<List<OrderDetailsDTO>>("api/order/get/list");
+
+                if (ordersDTO != null)
+                {
+                    ordersList = _mapper.Map<List<OrderDetailsModel>>(ordersDTO);
+                }
+            }
+            else
+            {
+                var ordersDTO = await httpClient.GetFromJsonAsync<List<OrderDetailsDTO>>("api/order/get/list/customer");
+
+                if (ordersDTO != null)
+                {
+                    ordersList = _mapper.Map<List<OrderDetailsModel>>(ordersDTO);
+                }
             }
         }
 

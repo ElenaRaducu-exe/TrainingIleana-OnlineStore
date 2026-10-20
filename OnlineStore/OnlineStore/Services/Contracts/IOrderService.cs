@@ -9,6 +9,8 @@ namespace OnlineStore.Services.Contracts
 
         Task<List<OrderDetailsDTO>?> GetOrdersDTO();
 
+        Task<List<OrderDetailsDTO>?> GetOrdersDTOsCustomer(int customerId);
+
         Task<Order?> GetOrderById(int orderId);
 
         Task<List<OrderItemDetailsDTO>?> GetOrderItemsDTOListById(int orderId);

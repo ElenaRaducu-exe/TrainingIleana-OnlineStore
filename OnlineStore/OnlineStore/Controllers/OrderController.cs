@@ -43,6 +43,30 @@ namespace OnlineStore.Controllers
             return Ok(result);
         }
 
+        // api/order/get/list/customer
+        [HttpGet("get/list/customer")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> GetOrdersDTOCustomer()
+        {
+            var userIdClaim = User.FindFirst("UserId");
+
+            if (userIdClaim == null)
+            {
+                return BadRequest("User not found!");
+            }
+
+            int userId = int.Parse(userIdClaim.Value);
+
+            var result = await _orderService.GetOrdersDTOsCustomer(userId);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
         //api/get/{orderId:int}
         [HttpGet("get/{orderId:int}")]
         [Authorize(Roles = "Admin")]    

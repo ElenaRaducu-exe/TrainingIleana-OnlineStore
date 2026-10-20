@@ -2,9 +2,6 @@
 
 @using OnlineStore.Models.FrontendModels
 @using OnlineStore.Components.ReusableComponnets
-@using Microsoft.AspNetCore.Authorization
-
-@attribute [Authorize(Roles = "Admin")]
 
 @if(ordersList != null)
 {
@@ -26,9 +23,13 @@
             <MudTh>Products Number</MudTh>
             <MudTh>Total Quantity Items</MudTh>
             <MudTh>TotalPrice</MudTh>
-            <MudTh>Username</MudTh>
-            <MudTh>FullName</MudTh>
-            <MudTh>Email</MudTh>
+
+            @if (_isAdminUser)
+            {
+                <MudTh>Username</MudTh>
+                <MudTh>FullName</MudTh>
+                <MudTh>Email</MudTh>
+            }
         </HeaderContent>
 
         <RowTemplate>
