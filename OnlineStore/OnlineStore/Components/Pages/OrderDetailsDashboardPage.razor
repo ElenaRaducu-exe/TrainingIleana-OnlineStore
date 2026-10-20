@@ -129,7 +129,9 @@
                     <MudTooltip Text="@OrderStatusExtension.GetDescription(_orderDetailsPageModel.OrderDetails.StatusEnum)">
                         <MudChip T="string"
                                  Variant="Variant.Filled"
-                                 Style="@( $"background-color: {OrderStatusExtension.GetColor(_orderDetailsPageModel.OrderDetails.StatusEnum)}; color: white")">
+                                 Class="order-status-label"
+                                 Style="@( $"--status-color: {OrderStatusExtension.GetColor(_orderDetailsPageModel.OrderDetails.StatusEnum)}")">
+                            <span class="order-label-dot"></span>
                             @OrderStatusExtension.GetLabel(_orderDetailsPageModel.OrderDetails.StatusEnum)
                         </MudChip>
                     </MudTooltip>
@@ -377,5 +379,20 @@
 
     .order-items-table tbody tr:hover {
         background-color: #D7E1EE;
+    }
+
+    .order-status-label {
+        background-color: color-mix(in srgb, var(--status-color) 15%, white);
+        color: var(--status-color);
+        border-radius: 10px;
+    }
+
+    .order-label-dot {
+        border-radius: 50%;
+        background-color: var(--status-color);
+        width: 8px;
+        height: 8px;
+        margin-right: 5px;
+        display: inline-block;
     }
 </style>

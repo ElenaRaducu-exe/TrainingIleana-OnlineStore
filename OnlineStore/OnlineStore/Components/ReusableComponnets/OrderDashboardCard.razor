@@ -5,8 +5,11 @@
     <MudTd>
         <MudTooltip Text="@OrderStatusExtension.GetDescription(OrderModel.StatusEnum)">
             <MudChip T="string"
+                     Class="order-status-label"
+                     Size="Size.Small"
                      Variant="Variant.Filled"
-                     Style="@( $"background-color: {OrderStatusExtension.GetColor(OrderModel.StatusEnum)}; color: white")">
+                     Style="@( $"--status-color: {OrderStatusExtension.GetColor(OrderModel.StatusEnum)}")">
+                <span class="order-label-dot"></span>
                 @OrderStatusExtension.GetLabel(OrderModel.StatusEnum) 
             </MudChip>
         </MudTooltip>
@@ -60,3 +63,20 @@
         </MudText>
     </MudTd>
 }
+
+<style>
+    .order-status-label {
+        background-color: color-mix(in srgb, var(--status-color) 15%, white); 
+        color: var(--status-color);
+        border-radius: 10px; 
+    }
+
+    .order-label-dot{
+        border-radius: 50%;
+        background-color: var(--status-color);
+        width: 8px;
+        height: 8px;
+        margin-right: 5px;
+        display: inline-block;
+    }
+</style>
