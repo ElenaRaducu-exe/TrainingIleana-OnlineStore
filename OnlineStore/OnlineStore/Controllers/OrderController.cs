@@ -122,5 +122,20 @@ namespace OnlineStore.Controllers
 
             return Ok();
         }
+
+        // api/order/update/stock/cancelled-order/{orderId:int}
+        [HttpPut("update/stock/cancelled-order/{orderId:int}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateProductsStockAfterCancelledOrder([FromRoute] int orderId)
+        {
+            var result = await _orderService.UpdateProductsStockAfterCancelledOrder(orderId);
+
+            if (result == false)
+            {
+                return NotFound();
+            } 
+
+            return Ok();
+        }
     }
 }

@@ -76,12 +76,26 @@ namespace OnlineStore.Components.Pages
 
             var responseChangeStatus = await httpClient.PutAsJsonAsync($"api/order/update/status/{orderId}/{newStatusId}", _orderDetailsPageModel);
 
-            if (responseChangeStatus.IsSuccessStatusCode)
+            if(_orderDetailsPageModel != null && _orderDetailsPageModel.OrderDetails != null)
             {
-                _orderDetailsPageModel.OrderDetails.StatusEnum = (OrderStatusEnum)newStatusId;
-                _orderDetailsPageModel.OrderDetails.Status = _orderDetailsPageModel.OrderDetails.StatusEnum.ToString();
+                if (responseChangeStatus.IsSuccessStatusCode)
+                {
+                    if (newStatusId == (int)OrderStatusEnum.Cancelled)
+                    {
+                        var responseRestockProducts = await httpClient.PutAsJsonAsync($"api/order/update/stock/cancelled-order/{orderId}", _orderDetailsPageModel);
 
-                StateHasChanged();
+                        if (responseRestockProducts.IsSuccessStatusCode)
+                        {
+                            _orderDetailsPageModel.OrderDetails.StatusEnum = (OrderStatusEnum)newStatusId;
+                            _orderDetailsPageModel.OrderDetails.Status = _orderDetailsPageModel.OrderDetails.StatusEnum.ToString();
+                        }
+                    }
+
+                    _orderDetailsPageModel.OrderDetails.StatusEnum = (OrderStatusEnum)newStatusId;
+                    _orderDetailsPageModel.OrderDetails.Status = _orderDetailsPageModel.OrderDetails.StatusEnum.ToString();
+
+                    StateHasChanged();
+                }
             }
         }
     }

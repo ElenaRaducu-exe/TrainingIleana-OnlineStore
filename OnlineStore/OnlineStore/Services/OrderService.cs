@@ -217,5 +217,29 @@ namespace OnlineStore.Services
 
             return false; 
         }
+
+        public async Task<bool> UpdateProductsStockAfterCancelledOrder(int orderId)
+        {
+            var orderItems = await _dbContext.OrderItems.Where(item => item.OrderId == orderId).ToListAsync();
+
+            if (orderItems == null || !orderItems.Any())
+            {
+                return false;
+            }
+
+            foreach (var orderItem in orderItems)
+            {
+                var product = await _dbContext.Products.FirstOrDefaultAsync(p => p.Id == orderItem.ProductId);
+
+                if (product != null)
+                {
+                    product.Stock += orderItem.Quantity;
+                }
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
     }
 }
