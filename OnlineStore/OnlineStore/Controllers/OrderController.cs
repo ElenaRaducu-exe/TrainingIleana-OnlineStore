@@ -114,7 +114,7 @@ namespace OnlineStore.Controllers
 
         // api/order/get/details-page/{orderId:int}
         [HttpGet("get/details-page/{orderId:int}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetOrderDetailsPage([FromRoute]int orderId)
         {
             var result = await _orderService.GetOrderDetailsPageDTO(orderId);
