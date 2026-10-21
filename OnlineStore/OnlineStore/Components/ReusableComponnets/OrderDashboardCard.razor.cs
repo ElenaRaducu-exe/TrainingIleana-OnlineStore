@@ -9,5 +9,8 @@ namespace OnlineStore.Components.ReusableComponnets
     {
         [Parameter]
         public OrderDetailsModel? OrderModel { get; set; }
+
+        [Parameter]
+        public bool ShowOrderColumnsAdmin { get; set; } = false;
     }
 }

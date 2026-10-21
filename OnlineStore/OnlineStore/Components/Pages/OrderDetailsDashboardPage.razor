@@ -1,5 +1,6 @@
 ﻿@page "/order-details-dashboard/{orderId:int}"
 
+@using Microsoft.AspNetCore.Components.Authorization
 @using OnlineStore.Models.FrontendModels
 @using OnlineStore.Components.ReusableComponnets
 @using OnlineStore.Models.Enums
@@ -137,27 +138,29 @@
                     </MudTooltip>
                 </div>
 
-                <div class="order-status-container-buttons">
-                    @if (String.IsNullOrEmpty(OrderActionButtonText) == false)
-                    {
-                        <MudButton Color="Color.Primary"
-                                   StartIcon="@Icons.Material.Filled.Check"
-                                   onclick="@(() => ChangeStatus(_orderDetailsPageModel.OrderDetails.OrderId, OrderNewStatusId))">
-                            @OrderActionButtonText
-                        </MudButton>
-                    }
+                <AuthorizeView Roles="Admin">
+                    <div class="order-status-container-buttons">
+                        @if (String.IsNullOrEmpty(OrderActionButtonText) == false)
+                        {
+                            <MudButton Color="Color.Primary"
+                                       StartIcon="@Icons.Material.Filled.Check"
+                                       onclick="@(() => ChangeStatus(_orderDetailsPageModel.OrderDetails.OrderId, OrderNewStatusId))">
+                                @OrderActionButtonText
+                            </MudButton>
+                        }
 
-                    @if (_orderDetailsPageModel.OrderDetails.StatusEnum == OrderStatusEnum.Pending
-                                                        || _orderDetailsPageModel.OrderDetails.StatusEnum == OrderStatusEnum.Confirmed
-                                                        || _orderDetailsPageModel.OrderDetails.StatusEnum == OrderStatusEnum.Processing)
-                    {
-                        <MudButton Color="Color.Error" 
-                                   StartIcon="@Icons.Material.Filled.Cancel"
-                                   onclick="@(() => ChangeStatus(_orderDetailsPageModel.OrderDetails.OrderId, (int)OrderStatusEnum.Cancelled))">
-                            @Res.Lang.Btn_CancelOrder
-                        </MudButton>
-                    }
-                </div>
+                        @if (_orderDetailsPageModel.OrderDetails.StatusEnum == OrderStatusEnum.Pending
+                                                            || _orderDetailsPageModel.OrderDetails.StatusEnum == OrderStatusEnum.Confirmed
+                                                            || _orderDetailsPageModel.OrderDetails.StatusEnum == OrderStatusEnum.Processing)
+                        {
+                            <MudButton Color="Color.Error"
+                                       StartIcon="@Icons.Material.Filled.Cancel"
+                                       onclick="@(() => ChangeStatus(_orderDetailsPageModel.OrderDetails.OrderId, (int)OrderStatusEnum.Cancelled))">
+                                @Res.Lang.Btn_CancelOrder
+                            </MudButton>
+                        }
+                    </div>
+                </AuthorizeView>
             </div>
         }
 

@@ -33,7 +33,8 @@
         </HeaderContent>
 
         <RowTemplate>
-            <OrderDashboardCard OrderModel="@context" />
+            <OrderDashboardCard OrderModel="@context" 
+                                ShowOrderColumnsAdmin="_isAdminUser" />
         </RowTemplate>
 
     </MudTable>
