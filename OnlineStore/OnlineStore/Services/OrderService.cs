@@ -181,12 +181,12 @@ namespace OnlineStore.Services
 
             if (order == null)
             {
-                return false; 
+                return null; 
             }
 
             if((await IsValidStatusTransiton(order.StatusId, newStatusId)) == false)
             {
-                return null;
+                return false;
             }
 
             order.StatusId = newStatusId;
@@ -197,32 +197,44 @@ namespace OnlineStore.Services
 
         public async Task<bool> IsValidStatusTransiton(int statusId, int newStatusId)
         {
-            if((statusId == 1 && newStatusId == 2) || (statusId == 1 && newStatusId == 6))
+            // 1 = Pending => 2 = Confirmed
+            if ((statusId == 1 && newStatusId == 2) || (statusId == 1 && newStatusId == 6))
             {
                 return true; 
             }
 
-            if((statusId == 2 && newStatusId == 3) || (statusId == 2 && newStatusId == 6))
+            // 2 = Confirmed => 3 = Processing
+            if ((statusId == 2 && newStatusId == 3) || (statusId == 2 && newStatusId == 6))
             {
                 return true; 
             }
 
-            if((statusId == 3 && newStatusId == 8) || (statusId == 3 && newStatusId == 6))
+            // 3 = Processing => 9 = Prepared
+            if ((statusId == 3 && newStatusId == 9) || (statusId == 3 && newStatusId == 6))
             {
                 return true; 
             }
 
-            if(statusId == 8 && newStatusId == 4)
+            // 9 = Prepared => 8 = PickedUp
+            if ((statusId == 9 && newStatusId == 8) || (statusId == 3 && newStatusId == 6))
+            {
+                return true; 
+            }
+
+            // 8 = PickedUp => 4 = Shipped
+            if (statusId == 8 && newStatusId == 4)
             {
                 return true;
             }
 
-            if(statusId == 4 && newStatusId == 5)
+            // 4 = Shipped => 5 = Delivered
+            if (statusId == 4 && newStatusId == 5)
             {
                 return true;
             }
 
-            if(statusId == 5 && newStatusId == 7)
+            // 5 = Delivered => 7 = Returned
+            if (statusId == 5 && newStatusId == 7)
             {
                 return true;
             }

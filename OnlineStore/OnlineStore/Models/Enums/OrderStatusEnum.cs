@@ -20,6 +20,11 @@ namespace OnlineStore.Models.Enums
         [Color("#FF5F15")]
         Processing = 3,
 
+        [Description("Order prepared, waiting for pickup")]
+        [Display(Name = nameof(Prepared))]
+        [Color("#0F52BA")]
+        Prepared = 9,
+
         [Description("Order picked up by courier")]
         [Display(Name = nameof(PickedUp))]
         [Color("#6495ED")]

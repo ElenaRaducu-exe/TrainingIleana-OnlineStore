@@ -134,12 +134,12 @@ namespace OnlineStore.Controllers
         {
             var result = await _orderService.UpdateOrderState(orderId, newStatusId);
 
-            if(result == false)
+            if(result == null)
             {
                 return NotFound();
             }
 
-            if(result == null)
+            if(result == false)
             {
                 return BadRequest();
             }

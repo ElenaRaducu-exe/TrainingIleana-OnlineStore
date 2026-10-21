@@ -151,7 +151,8 @@
 
                         @if (_orderDetailsPageModel.OrderDetails.StatusEnum == OrderStatusEnum.Pending
                                                             || _orderDetailsPageModel.OrderDetails.StatusEnum == OrderStatusEnum.Confirmed
-                                                            || _orderDetailsPageModel.OrderDetails.StatusEnum == OrderStatusEnum.Processing)
+                                                            || _orderDetailsPageModel.OrderDetails.StatusEnum == OrderStatusEnum.Processing
+                                                            || _orderDetailsPageModel.OrderDetails.StatusEnum == OrderStatusEnum.Prepared)
                         {
                             <MudButton Color="Color.Error"
                                        StartIcon="@Icons.Material.Filled.Cancel"

@@ -115,6 +115,15 @@ namespace Res {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Complete processing.
+        /// </summary>
+        public static string Btn_CompleteProcessing {
+            get {
+                return ResourceManager.GetString("Btn_CompleteProcessing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm Courier PickUp.
         /// </summary>
         public static string Btn_ConfirmCourierPickup {

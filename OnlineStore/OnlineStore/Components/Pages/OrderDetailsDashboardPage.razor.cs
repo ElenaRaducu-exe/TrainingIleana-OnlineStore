@@ -32,7 +32,8 @@ namespace OnlineStore.Components.Pages
         {
             OrderStatusEnum.Pending => Res.Lang.Btn_ConfirmOrder, 
             OrderStatusEnum.Confirmed => Res.Lang.Btn_StartProcessing,
-            OrderStatusEnum.Processing => Res.Lang.Btn_ConfirmCourierPickup,
+            OrderStatusEnum.Processing => Res.Lang.Btn_CompleteProcessing,
+            OrderStatusEnum.Prepared => Res.Lang.Btn_ConfirmCourierPickup,
             OrderStatusEnum.PickedUp => Res.Lang.Btn_ConfirmShipment,
             OrderStatusEnum.Shipped => Res.Lang.Btn_StartDelivering,
             _ => string.Empty
@@ -42,7 +43,8 @@ namespace OnlineStore.Components.Pages
         {
             OrderStatusEnum.Pending => (int)OrderStatusEnum.Confirmed,
             OrderStatusEnum.Confirmed => (int)OrderStatusEnum.Processing,
-            OrderStatusEnum.Processing => (int)OrderStatusEnum.PickedUp,
+            OrderStatusEnum.Processing => (int)OrderStatusEnum.Prepared,
+            OrderStatusEnum.Prepared => (int)OrderStatusEnum.PickedUp,
             OrderStatusEnum.PickedUp => (int)OrderStatusEnum.Shipped,
             OrderStatusEnum.Shipped => (int)OrderStatusEnum.Delivered,
             _ => 0
