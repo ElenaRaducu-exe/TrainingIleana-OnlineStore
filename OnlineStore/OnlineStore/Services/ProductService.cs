@@ -175,6 +175,7 @@ namespace OnlineStore.Services
             productToUpdate.CategoryId = productDetails.CategoryId;
             productToUpdate.ModifiedBy = productDetails.ModifiedBy;
             productToUpdate.ReservedStock = productDetails.ReservedStock;
+            productToUpdate.ModifiedAt = DateTime.UtcNow;
 
             await _dbContext.SaveChangesAsync();
 
