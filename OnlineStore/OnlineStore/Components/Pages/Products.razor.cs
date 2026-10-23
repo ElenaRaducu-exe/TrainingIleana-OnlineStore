@@ -8,19 +8,17 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.WebUtilities;
 using OnlineStore.Services.Contracts;
 using OnlineStore.DBModels;
+using OnlineStore.JWTAuthentication.Services.Contracts;
 
 namespace OnlineStore.Components.Pages
 {
     public partial class Products : ComponentBase
     {
         [Inject]
-        private IHttpClientFactory _httpClientFactory { get; set; }
+        private IApiClient _apiClient { get; set; }
 
         [Inject]
         private NavigationManager _navigation { get; set; }
-
-        [Inject]
-        private ITokenProvider _tokenProvider { get; set; }
 
         [Inject]
         private IMapper _mapper { get; set; }
@@ -51,10 +49,7 @@ namespace OnlineStore.Components.Pages
 
         protected async Task LoadProducts()
         {
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
-
-            //var productDTOs = await httpClient.GetFromJsonAsync<List<ProductDTO>>("api/admin/products");
+            var httpClient = await _apiClient.GetHttpClientAsync();
 
             var productDTOs = await httpClient.GetFromJsonAsync<List<ProductDTO>>
                         ($"api/admin/products/pagination?pageNumber={_pageNumber}&pageSize={_pageSize}");
@@ -70,11 +65,10 @@ namespace OnlineStore.Components.Pages
 
         protected async Task LoadFilteredProducts()
         {
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
-
             _filtersModel.PageNumber = _pageNumber;
             _filtersModel.PageSize = _pageSize;
+
+            var httpClient = await _apiClient.GetHttpClientAsync();
 
             var response = await httpClient.PostAsJsonAsync("api/admin/products/filtered", _filtersModel);
 
@@ -127,12 +121,7 @@ namespace OnlineStore.Components.Pages
 
         protected async Task DeleteProduct(int? productId)
         {
-            var token = await _tokenProvider.GetToken();
-
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
-
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var httpClient = await _apiClient.GetHttpClientAsync();
 
             if (productId != null)
             {
@@ -158,14 +147,10 @@ namespace OnlineStore.Components.Pages
 
         protected async Task ChangeActiveMode(ProductModel product)
         {
-            var token = await _tokenProvider.GetToken();
-
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
-
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
             var productDTO = _mapper.Map<ProductModel>(product);
+
+            var httpClient = await _apiClient.GetHttpClientAsync();
+
             var response = await httpClient.PutAsJsonAsync($"api/admin/products/update/product/active-status/{product.Id}", productDTO);
 
             if (response.IsSuccessStatusCode)
@@ -199,14 +184,9 @@ namespace OnlineStore.Components.Pages
 
         protected async Task AddToCart(ProductModel productModel)
         {
-            var token = await _tokenProvider.GetToken();
-
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
-
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
             var productDTO = _mapper.Map<ProductDTO>(productModel);
+
+            var httpClient = await _apiClient.GetHttpClientAsync();
 
             var result = await httpClient.PostAsJsonAsync($"api/cart/add/product/{productDTO.Id}", productDTO);
 

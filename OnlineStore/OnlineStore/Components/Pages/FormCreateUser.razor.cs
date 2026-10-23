@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Components;
+using OnlineStore.JWTAuthentication.Services.Contracts;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
 
@@ -8,13 +9,7 @@ namespace OnlineStore.Components.Pages
     public partial class FormCreateUser : ComponentBase
     {
         [Inject]
-        private HttpClient _httpClient { get; set; }
-
-        [Inject]
-        private IHttpClientFactory _httpClientFactory { get; set; }
-
-        [Inject]
-        private NavigationManager _navigation { get; set; }
+        private IApiClient _apiClient { get; set; }
 
         [Inject]
         private IMapper _mapper { get; set; }
@@ -35,15 +30,14 @@ namespace OnlineStore.Components.Pages
                 _passwordMatchError = true;
                 return;
             }
-            
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
 
-            var userDTO = _mapper.Map<UserDTO>(_newUser);
+            var userDTO = _mapper.Map<UserDTO>(_newUser); // serv front
+
+            var httpClient = await _apiClient.GetHttpClientAsync();
 
             var response = await httpClient.PostAsJsonAsync("api/users", userDTO);
 
-            _apiResponse = await response.Content.ReadAsStringAsync();
+            //_apiResponse = await response.Content.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)
             {
@@ -54,6 +48,7 @@ namespace OnlineStore.Components.Pages
             }
             else
             {
+                // Handle error response + messages on UI
                 _usernameExistingError = true;
             }
         }

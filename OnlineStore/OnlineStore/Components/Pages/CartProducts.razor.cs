@@ -1,26 +1,18 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Components;
-using OnlineStore.DBModels;
-using OnlineStore.JWTAuthentication.Providers.Contracts;
+using OnlineStore.JWTAuthentication.Services.Contracts;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
-using OnlineStore.Models.StoredProcedureModels;
-using OnlineStore.Services.Contracts;
-using System.Net.Http.Headers;
-using System.Numerics;
 
 namespace OnlineStore.Components.Pages
 {
     public partial class CartProducts : ComponentBase
     {
         [Inject]
-        private IHttpClientFactory _httpClientFactory { get; set; }
+        private IApiClient _apiClient { get; set; }
 
         [Inject]
         private NavigationManager _navigation { get; set; }
-
-        [Inject]
-        private ITokenProvider _tokenProvider { get; set; }
 
         [Inject]
         private IMapper _mapper { get; set; }
@@ -33,13 +25,7 @@ namespace OnlineStore.Components.Pages
 
         protected async Task IntializedPageLoadData()
         {
-            var token = await _tokenProvider.GetToken();
-
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
-
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
+            var httpClient = await _apiClient.GetHttpClientAsync();
             var cartItemDTO = await httpClient.GetFromJsonAsync<List<CartItemDTO>>("api/cart/items/user");
 
             if (cartItemDTO != null && cartItemDTO.Count() > 0)
@@ -78,16 +64,10 @@ namespace OnlineStore.Components.Pages
 
         protected async Task DeleteCartItem(int cartId, int cartItemId)
         {
-            var token = await _tokenProvider.GetToken();
-
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
-
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
             var cart = _cartItems.FirstOrDefault(cart => cart.CartId == cartId);
             var cartItem = _cartItems.FirstOrDefault(item => item.CartItemId == cartItemId);
 
+            var httpClient = await _apiClient.GetHttpClientAsync();
             var response = await httpClient.DeleteAsync($"api/cart/delete/{cartItemId}");
 
             if (response.IsSuccessStatusCode && cartItem != null)
@@ -126,13 +106,7 @@ namespace OnlineStore.Components.Pages
 
         public async Task AvailableAdresses()
         {
-            var token = await _tokenProvider.GetToken();
-
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
-
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
+            var httpClient = await _apiClient.GetHttpClientAsync();
             var addressDTO = await httpClient.GetFromJsonAsync<List<AddressDTO>>("api/address");
 
             if(addressDTO?.Any() == false)
@@ -147,9 +121,7 @@ namespace OnlineStore.Components.Pages
 
         public async Task DeleteCart()
         {
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
-            
+            var httpClient = await _apiClient.GetHttpClientAsync();
             var result = await httpClient.DeleteAsync($"api/cart/delete/cart/{_cartId}");
 
             if(result.IsSuccessStatusCode)

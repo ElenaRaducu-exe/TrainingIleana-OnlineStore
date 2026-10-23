@@ -1,11 +1,9 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Components;
-using OnlineStore.DBModels;
-using OnlineStore.JWTAuthentication.Providers.Contracts;
+using OnlineStore.JWTAuthentication.Services.Contracts;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.Enums;
 using OnlineStore.Models.FrontendModels;
-using System.Net.Http.Headers;
 
 namespace OnlineStore.Components.Pages
 {
@@ -15,13 +13,7 @@ namespace OnlineStore.Components.Pages
         public int OrderId { get; set; }
 
         [Inject]
-        private IHttpClientFactory _httpClientFactory { get; set; }
-
-        [Inject]
-        private NavigationManager _navigation { get; set; }
-
-        [Inject]
-        private ITokenProvider _tokenProvider { get; set; }
+        private IApiClient _apiClient { get; set; }
 
         [Inject]
         private IMapper _mapper { get; set; }
@@ -52,12 +44,7 @@ namespace OnlineStore.Components.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            var token = await _tokenProvider.GetToken();
-
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
-
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var httpClient = await _apiClient.GetHttpClientAsync();
 
             var orderDetailsPageDTO = await httpClient.GetFromJsonAsync<OrderDetailsPageDTO>($"api/order/get/details-page/{OrderId}"); 
 
@@ -69,12 +56,7 @@ namespace OnlineStore.Components.Pages
 
         public async Task ChangeStatus(int orderId, int newStatusId)
         {
-            var token = await _tokenProvider.GetToken();
-
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
-
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var httpClient = await _apiClient.GetHttpClientAsync();
 
             var responseChangeStatus = await httpClient.PutAsJsonAsync($"api/order/update/status/{orderId}/{newStatusId}", _orderDetailsPageModel);
 

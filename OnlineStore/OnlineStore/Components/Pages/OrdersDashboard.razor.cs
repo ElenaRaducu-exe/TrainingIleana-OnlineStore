@@ -2,25 +2,19 @@ using AutoMapper;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor;
-using OnlineStore.DBModels;
-using OnlineStore.JWTAuthentication.Providers.Contracts;
+using OnlineStore.JWTAuthentication.Services.Contracts;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
-using OnlineStore.Services.Contracts;
-using System.Net.Http.Headers;
 
 namespace OnlineStore.Components.Pages
 {
     public partial class OrdersDashboard : ComponentBase
     {
         [Inject]
-        private IHttpClientFactory _httpClientFactory { get; set; }
+        private IApiClient _apiClient { get; set; }
 
         [Inject]
         private NavigationManager _navigation { get; set; }
-
-        [Inject]
-        private ITokenProvider _tokenProvider { get; set; }
 
         [Inject]
         private IMapper _mapper { get; set; }
@@ -34,17 +28,12 @@ namespace OnlineStore.Components.Pages
 
         protected override async Task OnInitializedAsync()
         {
+            var httpClient = await _apiClient.GetHttpClientAsync();
+
             var authState = await _authStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
 
             _isAdminUser = user.IsInRole("Admin");
-
-            var token = await _tokenProvider.GetToken();
-
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
-
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             if (_isAdminUser)
             {

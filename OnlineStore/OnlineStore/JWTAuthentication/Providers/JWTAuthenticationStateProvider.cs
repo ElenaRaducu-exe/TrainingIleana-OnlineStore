@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using Microsoft.IdentityModel.Tokens;
 using OnlineStore.JWTAuthentication.Providers.Contracts;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -9,60 +10,49 @@ namespace OnlineStore.JWTAuthentication.Providers
     public class JWTAuthenticationStateProvider : AuthenticationStateProvider
     {
         private readonly ITokenProvider _tokenProvider;
+        private readonly IConfiguration _configuration;
 
-        private string? _token {  get; set; }
-
-        public JWTAuthenticationStateProvider(ITokenProvider tokenProvider)
+        public JWTAuthenticationStateProvider(ITokenProvider tokenProvider, IConfiguration configuration)
         {
             _tokenProvider = tokenProvider;
-        }
-
-        public string? GetToken()
-        {
-            return _token;
+            _configuration = configuration;
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            var user = new ClaimsPrincipal(new ClaimsIdentity());
+            var anonymousUser = new ClaimsPrincipal(new ClaimsIdentity());
+
+            var token = await _tokenProvider.GetToken();
+
+            if (string.IsNullOrEmpty(token))
+            {
+                return new AuthenticationState(anonymousUser);
+            }
 
             try
             {
-                var token = await _tokenProvider.GetToken();
-
-                if (string.IsNullOrEmpty(token))
-                {
-                    return new AuthenticationState(user);
-                }
-
                 var tokenHandler = new JwtSecurityTokenHandler();
+                var validationParameters = JwtTokenValidationOptionsFactory.CreateTokenValidationParameters(_configuration);
 
-                var jwtToken = tokenHandler.ReadJwtToken(token);
+                var principal = tokenHandler.ValidateToken(token, validationParameters, out _); 
 
-                var identity = new ClaimsIdentity(jwtToken.Claims, "jwt");
-
-                var autheticatedUser = new ClaimsPrincipal(identity);
-
-                return new AuthenticationState(autheticatedUser);
+                return new AuthenticationState(principal);
             }
-            catch
+            catch(SecurityTokenException)
             {
-                return new AuthenticationState(user);
+                await _tokenProvider.ClearToken();
+                return new AuthenticationState(anonymousUser);
             }
         }
 
         public async Task LoginAsync(string token)
         {
-            _token = token;
-
             await _tokenProvider.SetToken(token);
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }
 
         public async Task LogoutAsync()
         {
-            _token = null;
-
             await _tokenProvider.ClearToken();
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
         }

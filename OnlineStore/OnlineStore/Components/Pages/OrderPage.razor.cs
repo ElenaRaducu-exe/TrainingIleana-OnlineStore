@@ -1,25 +1,18 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Components;
-using MudBlazor;
-using OnlineStore.Data;
-using OnlineStore.DBModels;
-using OnlineStore.JWTAuthentication.Providers.Contracts;
+using OnlineStore.JWTAuthentication.Services.Contracts;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
-using System.Net.Http.Headers;
 
 namespace OnlineStore.Components.Pages
 {
     public partial class OrderPage : ComponentBase
     {
         [Inject]
-        private IHttpClientFactory _httpClientFactory { get; set; }
+        private IApiClient _apiClient { get; set; }
 
         [Inject]
         private NavigationManager _navigation { get; set; }
-
-        [Inject]
-        private ITokenProvider _tokenProvider { get; set; }
 
         [Inject]
         private IMapper _mapper { get; set; }
@@ -35,12 +28,7 @@ namespace OnlineStore.Components.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            var token = await _tokenProvider.GetToken();
-
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
-
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var httpClient = await _apiClient.GetHttpClientAsync();
 
             var addressDTOList = await httpClient.GetFromJsonAsync<List<AddressDTO>>("api/address");
 
@@ -86,16 +74,15 @@ namespace OnlineStore.Components.Pages
         {
             if (_createOrderRequestDTO.AddressId != null)
             {
-                var httpClient = _httpClientFactory.CreateClient();
-                httpClient.BaseAddress = new Uri(_navigation.BaseUri);
-
                 CreateOrderRequestDTO createOrderRequestDTO = new CreateOrderRequestDTO()
                 {
                     AddressId = _createOrderRequestDTO.AddressId,
                     UserId = _createOrderRequestDTO.UserId,
                     CartId = _createOrderRequestDTO.CartId
                 };
-            
+
+                var httpClient = await _apiClient.GetHttpClientAsync();
+
                 var result = await httpClient.PostAsJsonAsync($"api/order/create", createOrderRequestDTO);
 
                 _cartItemsList.Clear();

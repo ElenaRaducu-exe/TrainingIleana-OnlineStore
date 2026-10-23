@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using OnlineStore.Data;
 using OnlineStore.DBModels;
 using OnlineStore.JWTAuthentication.Providers.Contracts;
+using OnlineStore.JWTAuthentication.Services.Contracts;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
 using OnlineStore.Services.Contracts;
@@ -31,13 +32,10 @@ namespace OnlineStore.Components.ReusableComponnets
         public decimal TotalPrice { get; set; }
 
         [Inject]
-        private IHttpClientFactory _httpClientFactory { get; set; }
-
-        [Inject]
         private NavigationManager _navigation { get; set; }
 
         [Inject]
-        private ITokenProvider _tokenProvider { get; set; }
+        private IApiClient _apiClient { get; set; }
 
         private ProductDTO _productDTO { get; set; } = new ProductDTO();
 
@@ -48,8 +46,7 @@ namespace OnlineStore.Components.ReusableComponnets
             TotalPrice = CartItemModel.Price * CartItemModel.Quantity;
             _quantity = CartItemModel.Quantity;
 
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
+            var httpClient = await _apiClient.GetHttpClientAsync();
 
             var resultProduct = httpClient.GetFromJsonAsync<ProductDTO>($"api/admin/products/get/product/{CartItemModel.ProductId}").Result;
 
@@ -74,12 +71,7 @@ namespace OnlineStore.Components.ReusableComponnets
                 return;
             }
 
-            var token = await _tokenProvider.GetToken();
-
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
-
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var httpClient = await _apiClient.GetHttpClientAsync();
 
             var responseCart = await httpClient.PutAsJsonAsync($"api/cart/update/quantity/{CartItemModel.CartItemId}", increasedQuantity);
 
@@ -114,12 +106,7 @@ namespace OnlineStore.Components.ReusableComponnets
                 return;
             }
 
-            var token = await _tokenProvider.GetToken();
-
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
-
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var httpClient = await _apiClient.GetHttpClientAsync();
 
             var responseCart = await httpClient.PutAsJsonAsync($"api/cart/update/quantity/{CartItemModel.CartItemId}", decreasedQuantity);
 

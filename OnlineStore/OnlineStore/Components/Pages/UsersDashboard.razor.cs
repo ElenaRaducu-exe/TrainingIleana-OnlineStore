@@ -2,19 +2,14 @@ using Microsoft.AspNetCore.Components;
 using System.Net.Http.Headers;
 using OnlineStore.DBModels;
 using OnlineStore.JWTAuthentication.Providers.Contracts;
+using OnlineStore.JWTAuthentication.Services.Contracts;
 
 namespace OnlineStore.Components.Pages
 {
     public partial class UsersDashboard : ComponentBase
     {
         [Inject]
-        private IHttpClientFactory _httpClientFactory { get; set; }
-
-        [Inject]
-        private NavigationManager _navigation { get; set; }
-
-        [Inject]
-        private  ITokenProvider _tokenProvider { get; set; }
+        private IApiClient _apiClient { get; set; }
 
         public List<User> UsersList = new();
 
@@ -29,18 +24,10 @@ namespace OnlineStore.Components.Pages
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
+            var httpClient = await _apiClient.GetHttpClientAsync();
+
             if (firstRender)
             {
-                var token = await _tokenProvider.GetToken(); 
-
-                var httpClient = _httpClientFactory.CreateClient("AuthenticatedUser");
-                httpClient.BaseAddress = new Uri(_navigation.BaseUri);
-
-                if (!string.IsNullOrEmpty(token))
-                {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                }
-
                 UsersList = await httpClient.GetFromJsonAsync<List<User>>("api/users/dashboard");
 
                 StateHasChanged(); 
@@ -49,15 +36,7 @@ namespace OnlineStore.Components.Pages
 
         private async Task UpdateActiveMode(int id)
         {
-            var token = await _tokenProvider.GetToken();
-
-            var httpClient = _httpClientFactory.CreateClient("AuthenticatedUser");
-            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
-
-            if (!string.IsNullOrEmpty(token))
-            {
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
+            var httpClient = await _apiClient.GetHttpClientAsync();
 
             var user = await httpClient.GetFromJsonAsync<User>($"api/users/dashboard/{id}");
 

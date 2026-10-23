@@ -23,7 +23,7 @@ namespace OnlineStore.JWTAuthentication.Services
             {
                 new Claim("UserId", user.Id.ToString()), 
                 new Claim(ClaimTypes.Name, user.Username), 
-                new Claim(ClaimTypes.Role, user.RoleId == 1 ? "Customer" : "Admin")
+                new Claim(ClaimTypes.Role, user.Role.Status)
             };
 
             var secretKey = _configuration["Jwt:Key"];

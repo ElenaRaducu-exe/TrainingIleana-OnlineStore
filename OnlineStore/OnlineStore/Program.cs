@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using OnlineStore.Components;
 using OnlineStore.Components.Pages;
 using OnlineStore.Data;
 using OnlineStore.DBModels;
+using OnlineStore.JWTAuthentication;
 using OnlineStore.JWTAuthentication.Handlers;
 using OnlineStore.JWTAuthentication.Providers;
 using OnlineStore.JWTAuthentication.Providers.Contracts;
@@ -42,20 +44,7 @@ builder.Services.AddAuthentication(options =>
         options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     }).AddJwtBearer(options =>
         {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-
-                ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                ValidAudience = builder.Configuration["Jwt:Audience"],
-
-                IssuerSigningKey = new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)
-                )
-            };
+            options.TokenValidationParameters = JwtTokenValidationOptionsFactory.CreateTokenValidationParameters(builder.Configuration);
         });
 builder.Services.AddAuthorization(); 
 builder.Services.AddCascadingAuthenticationState();
@@ -63,13 +52,15 @@ builder.Services.AddScoped<JWTAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(provider =>
             provider.GetRequiredService<JWTAuthenticationStateProvider>());
 
-builder.Services.AddScoped<JWTAuthorizationHandler>();
-builder.Services.AddHttpClient("AuthenticatedUser").AddHttpMessageHandler<JWTAuthorizationHandler>();
+//builder.Services.AddScoped<JWTAuthorizationHandler>();
+//builder.Services.AddHttpClient("AuthenticatedUser").AddHttpMessageHandler<JWTAuthorizationHandler>();
+//builder.Services.AddScoped<ITokenProvider, TokenProvider>();
 
 builder.Services.AddScoped<ITokenProvider, TokenProvider>();
+builder.Services.AddHttpClient<IApiClient, ApiClient>("AuthenticatedUser");
 
 //Controllers
-builder.Services.AddControllers(); 
+builder.Services.AddControllers();  
 
 // Services
 builder.Services.AddHttpContextAccessor();

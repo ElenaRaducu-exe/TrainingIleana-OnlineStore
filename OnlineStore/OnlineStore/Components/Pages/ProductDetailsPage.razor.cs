@@ -1,21 +1,16 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Components;
-using OnlineStore.DBModels;
-using OnlineStore.JWTAuthentication.Providers.Contracts;
+using OnlineStore.JWTAuthentication.Services.Contracts;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
 using OnlineStore.Services.Contracts;
-using System.Net.Http.Headers;
 
 namespace OnlineStore.Components.Pages
 {
     public partial class ProductDetailsPage : ComponentBase
     {
         [Inject]
-        private ITokenProvider _tokenProvider { get; set; }
-
-        [Inject]
-        private IHttpClientFactory _httpClientFactory { get; set; }
+        private IApiClient _apiClient { get; set; }
 
         [Inject]
         private NavigationManager _navigation { get; set; }
@@ -39,8 +34,7 @@ namespace OnlineStore.Components.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
+            var httpClient = await _apiClient.GetHttpClientAsync();
 
             var productDTO = await httpClient.GetFromJsonAsync<ProductDTO>($"api/admin/products/get/product/{Id}");
 
@@ -55,14 +49,14 @@ namespace OnlineStore.Components.Pages
 
         protected async Task DeleteProduct(int productId)
         {
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
+            var httpClient = await _apiClient.GetHttpClientAsync();
 
             var ProductsList = await httpClient.GetFromJsonAsync<List<ProductDTO>>("api/admin/products");
 
             if(ProductsList != null)
             {
                 var product = ProductsList.FirstOrDefault(p => p.Id == productId);
+
                 var response = await httpClient.DeleteAsync($"api/admin/products/delete/product/{productId}");
 
                 if (response.IsSuccessStatusCode && product != null)
@@ -81,12 +75,7 @@ namespace OnlineStore.Components.Pages
 
         protected async Task AddToCart(ProductModel productModel)
         {
-            var token = await _tokenProvider.GetToken();
-
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
-
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var httpClient = await _apiClient.GetHttpClientAsync();
 
             var productDTO = _mapper.Map<ProductDTO>(productModel);
 

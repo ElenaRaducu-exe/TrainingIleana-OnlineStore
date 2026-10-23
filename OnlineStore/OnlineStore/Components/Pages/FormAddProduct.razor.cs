@@ -1,18 +1,17 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Components;
 using OnlineStore.DBModels;
-using OnlineStore.JWTAuthentication.Providers.Contracts;
+using OnlineStore.JWTAuthentication.Services.Contracts;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
 using OnlineStore.Services.Contracts;
-using System.Net.Http.Headers;
 
 namespace OnlineStore.Components.Pages
 {
     public partial class FormAddProduct : ComponentBase
     {
         [Inject]
-        private IHttpClientFactory _httpClientFactory { get; set; }
+        private IApiClient _apiClient { get; set; }
 
         [Inject]
         private NavigationManager _navigation { get; set; }
@@ -21,16 +20,7 @@ namespace OnlineStore.Components.Pages
         private IProductService _productService { get; set; }
 
         [Inject]
-        private IBrandsService _brandService { get; set; }
-
-        [Inject]
-        private ICategoriesService _categoryService { get; set; }
-
-        [Inject]
         private IMapper _mapper { get; set; }
-
-        [Inject]
-        private ITokenProvider _tokenProvider { get; set; }
 
         private ProductModel _productModel = new();
 
@@ -48,8 +38,7 @@ namespace OnlineStore.Components.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
+            var httpClient = await _apiClient.GetHttpClientAsync();
 
             _brands = await httpClient.GetFromJsonAsync<List<Brand>>("api/brands");
             _categories = await httpClient.GetFromJsonAsync<List<Category>>("api/categories");
@@ -79,14 +68,9 @@ namespace OnlineStore.Components.Pages
                 _priceErrorMessage = "Price can not be 0 or negative!";
             }
 
-            var token = await _tokenProvider.GetToken();
-
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
-
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
             var productDTO = _mapper.Map<ProductModel>(_productModel);
+
+            var httpClient = await _apiClient.GetHttpClientAsync();
 
             var response = await httpClient.PostAsJsonAsync("api/admin/products/add/product", productDTO);
 
@@ -111,14 +95,10 @@ namespace OnlineStore.Components.Pages
 
         protected async Task EditProduct(ProductModel productModel)
         {
-            var token = await _tokenProvider.GetToken();
-
-            var httpClient = _httpClientFactory.CreateClient();
-            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
-
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
             var productDTO = _mapper.Map<ProductDTO>(_productModel);
+
+            var httpClient = await _apiClient.GetHttpClientAsync();
+
             var response = await httpClient.PutAsJsonAsync($"api/admin/products/update/product/{productDTO.Id}", productDTO);
 
             if (response.IsSuccessStatusCode)

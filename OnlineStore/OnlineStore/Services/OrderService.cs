@@ -132,11 +132,11 @@ namespace OnlineStore.Services
 
         public async Task<OrderDetailsDTO?> GetOrderDetailsById(int orderId)
         {
-            var orders = await _dbContext.Database.SqlQuery<OrderDetailsSP>($"exec dbo.GetOrders").ToListAsync();
+            var orders = await _dbContext.Database.SqlQuery<OrderDetailsSP>($"exec dbo.GetOrders").ToListAsync(); // GetOrdersDetails
 
             if (orders != null)
             {
-                var orderById = orders.FirstOrDefault(o => o.OrderId == orderId);
+                var orderById = orders.FirstOrDefault(o => o.OrderId == orderId); // nu e ok sa iei toate comenzile ca apoi sa patrezi doar una! 
 
                 return _mapper.Map<OrderDetailsDTO>(orderById);
             }

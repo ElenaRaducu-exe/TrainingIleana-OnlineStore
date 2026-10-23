@@ -24,7 +24,9 @@ namespace OnlineStore.JWTAuthentication.Services
 
         public async Task<LoginResponseDTO?> LoginAsync(LoginRequestDTO loginRequest)
         {
-            var currentUser = await _dbContext.Users.FirstOrDefaultAsync(user => user.Username == loginRequest.Username);
+            var currentUser = await _dbContext.Users
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(user => user.Username == loginRequest.Username);
 
             if(currentUser == null || !currentUser.IsActive)
             {
@@ -47,7 +49,7 @@ namespace OnlineStore.JWTAuthentication.Services
             {
                 TokenJWT = token,
                 Username = loginRequest.Username,
-                Role = currentUser.RoleId == 1 ? "Customer" : "Admin"
+                Role = currentUser.Role.Status
             };  
         }
     }
