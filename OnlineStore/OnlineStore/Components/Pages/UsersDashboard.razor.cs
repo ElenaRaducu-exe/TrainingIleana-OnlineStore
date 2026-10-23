@@ -24,11 +24,9 @@ namespace OnlineStore.Components.Pages
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            var httpClient = await _apiClient.GetHttpClientAsync();
-
             if (firstRender)
             {
-                UsersList = await httpClient.GetFromJsonAsync<List<User>>("api/users/dashboard");
+                UsersList = await _apiClient.GetAsync<List<User>>("api/users/dashboard");
 
                 StateHasChanged(); 
             }
