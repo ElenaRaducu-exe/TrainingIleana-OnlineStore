@@ -17,6 +17,10 @@ public partial class Order
 
     public int? UserId { get; set; }
 
+    public int? ModifiedBy { get; set; }
+
+    public DateTime? ModifiedAt { get; set; }
+
     public virtual Address? Address { get; set; }
 
     public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();

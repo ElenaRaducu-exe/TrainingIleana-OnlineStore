@@ -183,6 +183,11 @@ public partial class OnlineStoreContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.AddressId).HasColumnName("addressId");
+            entity.Property(e => e.ModifiedAt)
+                .HasPrecision(3)
+                .HasDefaultValueSql("(getutcdate())")
+                .HasColumnName("modifiedAt");
+            entity.Property(e => e.ModifiedBy).HasColumnName("modifiedBy");
             entity.Property(e => e.OrderDate)
                 .HasPrecision(3)
                 .HasDefaultValueSql("(getutcdate())")
