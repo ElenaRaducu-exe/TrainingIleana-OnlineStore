@@ -48,6 +48,56 @@ namespace OnlineStore.Models.Enums
         [Description("Order returned")]
         [Display(Name = nameof(Returned))]
         [Color("#818589")]
-        Returned = 7
+        Returned = 7,
+
+        [Description("Return requested")]
+        [Display(Name = nameof(ReturnedRequested))]
+        [Color("#818589")]
+        ReturnedRequested = 10,
+
+        [Description("Return picked up by courier")]
+        [Display(Name = nameof(ReturnPickedUp))]
+        [Color("#818589")]
+        ReturnPickedUp = 11,
+
+        [Description("Return is in transit")]
+        [Display(Name = nameof(ReturnInTransit))]
+        [Color("#818589")]
+        ReturnInTransit = 12,
+
+        [Description("Returned products under inspection")]
+        [Display(Name = nameof(ReturnUnderInspection))]
+        [Color("#818589")]
+        ReturnUnderInspection = 13,
+
+        [Description("Return approved")]
+        [Display(Name = nameof(ReturnApproved))]
+        [Color("#818589")]
+        ReturnApproved = 14,
+
+        [Description("Return is being processed")]
+        [Display(Name = nameof(ReturnProcessing))]
+        [Color("#818589")]
+        ReturnProcessing = 15,
+
+        [Description("Return rejected")]
+        [Display(Name = nameof(ReturnRejected))]
+        [Color("#818589")]
+        ReturnRejected = 16,
+
+        [Description("Products shipped back to customer")]
+        [Display(Name = nameof(ReturnShippingBack))]
+        [Color("#818589")]
+        ReturnShippingBack = 17,
+
+        [Description("Products delivered back to customer")]
+        [Display(Name = nameof(ReturnDelivered))]
+        [Color("#818589")]
+        ReturnDelivered = 18,
+
+        [Description("Return process closed")]
+        [Display(Name = nameof(ReturnClosed))]
+        [Color("#818589")]
+        ReturnClosed = 19
     }
 }

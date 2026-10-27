@@ -138,14 +138,38 @@
                     </MudTooltip>
                 </div>
 
+                <AuthorizeView Roles="Customer">
+                    <div class="order-status-container-buttons">
+                        @if (String.IsNullOrEmpty(_orderActionButtonTextRequestedReturn) == false)
+                        {
+                            // buton to request the return - CUSTOMER only 
+                            <MudButton Color="Color.Primary"
+                                       StartIcon="@Icons.Material.Filled.Check"
+                                       onclick="@(() => ChangeStatus(_orderDetailsPageModel.OrderDetails.OrderId, _orderNewStatusIdRequestedReturn))">
+                                @_orderActionButtonTextRequestedReturn
+                            </MudButton>
+                        }
+                    </div>
+                </AuthorizeView>
+
                 <AuthorizeView Roles="Admin">
                     <div class="order-status-container-buttons">
-                        @if (String.IsNullOrEmpty(OrderActionButtonText) == false)
+                        @if (String.IsNullOrEmpty(_orderActionButtonText) == false)
                         {
                             <MudButton Color="Color.Primary"
                                        StartIcon="@Icons.Material.Filled.Check"
-                                       onclick="@(() => ChangeStatus(_orderDetailsPageModel.OrderDetails.OrderId, OrderNewStatusId))">
-                                @OrderActionButtonText
+                                       onclick="@(() => ChangeStatus(_orderDetailsPageModel.OrderDetails.OrderId, _orderNewStatusId))">
+                                @_orderActionButtonText
+                            </MudButton>
+                        }
+
+                        @if (_orderDetailsPageModel.OrderDetails.StatusEnum == OrderStatusEnum.ReturnUnderInspection)
+                        {
+                            // button to reject the return after inspection - ADMIN only
+                            <MudButton Color="Color.Error"
+                                       StartIcon="@Icons.Material.Filled.Cancel"
+                                       onclick="@(() => ChangeStatus(_orderDetailsPageModel.OrderDetails.OrderId, (int)OrderStatusEnum.ReturnRejected))">
+                                @Res.Lang.Btn_ReturnRejected
                             </MudButton>
                         }
 
@@ -154,6 +178,7 @@
                                                             || _orderDetailsPageModel.OrderDetails.StatusEnum == OrderStatusEnum.Processing
                                                             || _orderDetailsPageModel.OrderDetails.StatusEnum == OrderStatusEnum.Prepared)
                         {
+                            // CANCEL button 
                             <MudButton Color="Color.Error"
                                        StartIcon="@Icons.Material.Filled.Cancel"
                                        onclick="@(() => ChangeStatus(_orderDetailsPageModel.OrderDetails.OrderId, (int)OrderStatusEnum.Cancelled))">

@@ -19,7 +19,7 @@ namespace OnlineStore.Services.Contracts
 
         Task<OrderDetailsPageDTO?> GetOrderDetailsPageDTO(int orderId);
 
-        Task<bool?> UpdateOrderState(int orderId, int newStatusId);
+        Task<bool?> UpdateOrderStatus(int orderId, int newStatusId, int userId);
 
         Task<bool> UpdateProductsStockAfterCancelledOrder(int orderId); 
     }

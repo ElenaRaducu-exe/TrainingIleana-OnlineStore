@@ -168,6 +168,36 @@
   <data name="Btn_ResetFilters" xml:space="preserve">
     <value>Reset Filters</value>
   </data>
+  <data name="Btn_ReturnApproved" xml:space="preserve">
+    <value>Approve return</value>
+  </data>
+  <data name="Btn_ReturnClose" xml:space="preserve">
+    <value>Close Return</value>
+  </data>
+  <data name="Btn_ReturnDelivered" xml:space="preserve">
+    <value>Confirm return delivery</value>
+  </data>
+  <data name="Btn_Returned" xml:space="preserve">
+    <value>Complete Return</value>
+  </data>
+  <data name="Btn_ReturnInTransit" xml:space="preserve">
+    <value>Start return shipment</value>
+  </data>
+  <data name="Btn_ReturnProcessing" xml:space="preserve">
+    <value>Process return</value>
+  </data>
+  <data name="Btn_ReturnRejected" xml:space="preserve">
+    <value>Decline return</value>
+  </data>
+  <data name="Btn_ReturnRequest" xml:space="preserve">
+    <value>Request to return the order</value>
+  </data>
+  <data name="Btn_ReturnShippingBack" xml:space="preserve">
+    <value>Ship products back</value>
+  </data>
+  <data name="Btn_ReturnUnderInspection" xml:space="preserve">
+    <value>Start inspection</value>
+  </data>
   <data name="Btn_Save" xml:space="preserve">
     <value>Save</value>
   </data>

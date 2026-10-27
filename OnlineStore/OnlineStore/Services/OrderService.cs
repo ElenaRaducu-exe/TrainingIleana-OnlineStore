@@ -175,7 +175,7 @@ namespace OnlineStore.Services
             };
         }
 
-        public async Task<bool?> UpdateOrderState(int orderId, int newStatusId)
+        public async Task<bool?> UpdateOrderStatus(int orderId, int newStatusId, int userId)
         {
             var order = await _dbContext.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
 
@@ -190,6 +190,10 @@ namespace OnlineStore.Services
             }
 
             order.StatusId = newStatusId;
+
+            order.ModifiedAt = DateTime.UtcNow;
+            order.ModifiedBy = userId; 
+
             await _dbContext.SaveChangesAsync();
 
             return true;
@@ -233,8 +237,62 @@ namespace OnlineStore.Services
                 return true;
             }
 
-            // 5 = Delivered => 7 = Returned
-            if (statusId == 5 && newStatusId == 7)
+            // 5 = Delivered => 7 = Returned, 10 = ReturnedRequested
+            if ((statusId == 5 && newStatusId == 7) || (statusId == 5 && newStatusId == 10))
+            {
+                return true;
+            }
+
+            // 10 = ReturnedRequested => 11 = ReturnPickedUp
+            if (statusId == 10 && newStatusId == 11)
+            {
+                return true;
+            }
+
+            // 11 = ReturnPickedUp => 12 = ReturnInTransit
+            if (statusId == 11 && newStatusId == 12)
+            {
+                return true;
+            }
+
+            // 12 = ReturnInTransit => 13 = ReturnUnderInspection
+            if (statusId == 12 && newStatusId == 13)
+            {
+                return true;
+            }
+
+            // 13 = ReturnUnderInspection => 14 = ReturnApproved, 16 = ReturnRejected
+            if ((statusId == 13 && newStatusId == 14) || (statusId == 13 && newStatusId == 16))
+            {
+                return true;
+            }
+
+            // 14 = ReturnApproved => 15 = ReturnProcessing
+            if (statusId == 14 && newStatusId == 15)
+            {
+                return true;
+            }
+
+            // 15 = ReturnProcessing => 7 = Returned
+            if (statusId == 15 && newStatusId == 7)
+            {
+                return true;
+            }
+
+            // 16 = ReturnRejected => 17 = ReturnShippingBack
+            if (statusId == 16 && newStatusId == 17)
+            {
+                return true;
+            }
+
+            // 17 = ReturnShippingBack => 18 = ReturnDelivered
+            if (statusId == 17 && newStatusId == 18)
+            {
+                return true;
+            }
+
+            // 18 = ReturnDelivered => 19 = ReturnClosed
+            if (statusId == 18 && newStatusId == 19)
             {
                 return true;
             }

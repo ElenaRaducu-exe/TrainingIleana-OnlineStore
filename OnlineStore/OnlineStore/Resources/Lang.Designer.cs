@@ -214,6 +214,96 @@ namespace Res {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Approve return.
+        /// </summary>
+        public static string Btn_ReturnApproved {
+            get {
+                return ResourceManager.GetString("Btn_ReturnApproved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Close Return.
+        /// </summary>
+        public static string Btn_ReturnClose {
+            get {
+                return ResourceManager.GetString("Btn_ReturnClose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm return delivery.
+        /// </summary>
+        public static string Btn_ReturnDelivered {
+            get {
+                return ResourceManager.GetString("Btn_ReturnDelivered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Complete Return.
+        /// </summary>
+        public static string Btn_Returned {
+            get {
+                return ResourceManager.GetString("Btn_Returned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start return shipment.
+        /// </summary>
+        public static string Btn_ReturnInTransit {
+            get {
+                return ResourceManager.GetString("Btn_ReturnInTransit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Process return.
+        /// </summary>
+        public static string Btn_ReturnProcessing {
+            get {
+                return ResourceManager.GetString("Btn_ReturnProcessing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Decline return.
+        /// </summary>
+        public static string Btn_ReturnRejected {
+            get {
+                return ResourceManager.GetString("Btn_ReturnRejected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Request to return the order.
+        /// </summary>
+        public static string Btn_ReturnRequest {
+            get {
+                return ResourceManager.GetString("Btn_ReturnRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ship products back.
+        /// </summary>
+        public static string Btn_ReturnShippingBack {
+            get {
+                return ResourceManager.GetString("Btn_ReturnShippingBack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start inspection.
+        /// </summary>
+        public static string Btn_ReturnUnderInspection {
+            get {
+                return ResourceManager.GetString("Btn_ReturnUnderInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
         public static string Btn_Save {

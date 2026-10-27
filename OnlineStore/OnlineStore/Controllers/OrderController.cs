@@ -129,10 +129,19 @@ namespace OnlineStore.Controllers
 
         // api/order/update/status/{orderId:int}/{newStatusId:int}
         [HttpPut("update/status/{orderId:int}/{newStatusId:int}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateOrderStatus([FromRoute] int orderId, [FromRoute] int newStatusId)
         {
-            var result = await _orderService.UpdateOrderState(orderId, newStatusId);
+            var userIdClaim = User.FindFirst("UserId");
+
+            if (userIdClaim == null)
+            {
+                return NotFound("User not found!");
+            }
+
+            int userId = int.Parse(userIdClaim.Value);
+
+            var result = await _orderService.UpdateOrderStatus(orderId, newStatusId, userId);
 
             if(result == null)
             {
