@@ -20,9 +20,6 @@ namespace OnlineStore.Components.Pages
 
         private OrderDetailsPageModel? _orderDetailsPageModel { get; set; } = new();
 
-        private bool _customerReturnRequestButton = false;
-        private bool _ShowRejectedReturnButton = false;
-
         private string _orderActionButtonText => _orderDetailsPageModel?.OrderDetails?.StatusEnum switch
         {
             OrderStatusEnum.Pending => Res.Lang.Btn_ConfirmOrder, 
@@ -79,6 +76,9 @@ namespace OnlineStore.Components.Pages
             _ => 0
         };
 
+        private bool _disableReturnRequestButtonAfterDeliverDate = false;
+        private DateTime? _expirationDateReturnRequest = null; 
+
         protected override async Task OnInitializedAsync()
         {
             var httpClient = await _apiClient.GetHttpClientAsync();
@@ -89,13 +89,17 @@ namespace OnlineStore.Components.Pages
             {
                 _orderDetailsPageModel = _mapper.Map<OrderDetailsPageModel>(orderDetailsPageDTO); 
             }
+
+            _expirationDateReturnRequest = _orderDetailsPageModel?.OrderDetails?.ModifiedAt.AddDays(14);
+            if (DateTime.UtcNow > _expirationDateReturnRequest)
+            {
+                _disableReturnRequestButtonAfterDeliverDate = true;
+            }
         }
 
         public async Task ChangeStatus(int orderId, int newStatusId)
         {
             var httpClient = await _apiClient.GetHttpClientAsync();
-
-            // date !!!!! -- orderDetailsPageDTO.OrderDetails.modifiedAt trebuie modificat => in service, nu aici 
 
             var responseChangeStatus = await httpClient.PutAsJsonAsync($"api/order/update/status/{orderId}/{newStatusId}", _orderDetailsPageModel);
 
@@ -116,6 +120,10 @@ namespace OnlineStore.Components.Pages
 
                     _orderDetailsPageModel.OrderDetails.StatusEnum = (OrderStatusEnum)newStatusId;
                     _orderDetailsPageModel.OrderDetails.Status = _orderDetailsPageModel.OrderDetails.StatusEnum.ToString();
+
+                    _orderDetailsPageModel.OrderDetails.ModifiedAt = DateTime.UtcNow;
+
+                    _disableReturnRequestButtonAfterDeliverDate = false;
 
                     StateHasChanged();
                 }

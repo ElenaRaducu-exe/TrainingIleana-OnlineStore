@@ -142,12 +142,16 @@
                     <div class="order-status-container-buttons">
                         @if (String.IsNullOrEmpty(_orderActionButtonTextRequestedReturn) == false)
                         {
-                            // buton to request the return - CUSTOMER only 
-                            <MudButton Color="Color.Primary"
-                                       StartIcon="@Icons.Material.Filled.Check"
-                                       onclick="@(() => ChangeStatus(_orderDetailsPageModel.OrderDetails.OrderId, _orderNewStatusIdRequestedReturn))">
-                                @_orderActionButtonTextRequestedReturn
-                            </MudButton>
+                            // button to request the return - CUSTOMER only 
+                            <MudTooltip Text=@($"Last day for a request return was: {_expirationDateReturnRequest?.ToString("dd-MMMM-yyyy")}")
+                                        Disabled="@(!_disableReturnRequestButtonAfterDeliverDate)">
+                                <MudButton Color="Color.Primary"
+                                           StartIcon="@Icons.Material.Filled.Check"
+                                           onclick="@(() => ChangeStatus(_orderDetailsPageModel.OrderDetails.OrderId, _orderNewStatusIdRequestedReturn))"
+                                           Disabled="@(_disableReturnRequestButtonAfterDeliverDate)">
+                                    @_orderActionButtonTextRequestedReturn
+                                </MudButton>
+                            </MudTooltip>
                         }
                     </div>
                 </AuthorizeView>
