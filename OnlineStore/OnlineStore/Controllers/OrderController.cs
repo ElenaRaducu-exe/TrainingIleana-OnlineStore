@@ -33,7 +33,9 @@ namespace OnlineStore.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetOrdersDTO()
         {
-            var result = await _orderService.GetOrdersDTO();
+            int? userId = null;
+
+            var result = await _orderService.GetOrderDetailsDtos(userId);
 
             if (result == null)
             {
@@ -57,7 +59,7 @@ namespace OnlineStore.Controllers
 
             int userId = int.Parse(userIdClaim.Value);
 
-            var result = await _orderService.GetOrdersDTOsCustomer(userId);
+            var result = await _orderService.GetOrderDetailsDtos(userId);
 
             if (result == null)
             {

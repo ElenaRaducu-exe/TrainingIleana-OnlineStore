@@ -90,28 +90,62 @@ namespace OnlineStore.Services
             return false;
         }
 
-        public async Task<List<OrderDetailsDTO>?> GetOrdersDTO()
+        public async Task<List<OrderDetailsDTO>?> GetOrderDetailsDtos(int? customerId)
         {
-            var orders = await _dbContext.Database.SqlQuery<OrderDetailsSP>($"exec dbo.GetOrders").ToListAsync();
-
-            if (orders != null)
+            try
             {
-                return _mapper.Map<List<OrderDetailsDTO>>(orders);
+                var resultStoredProcedure = new List<OrderDetailsSP>();
+
+                DataSet ds = new DataSet();
+
+                using (SqlConnection connection = new SqlConnection(_dbConfiguration.OnlineStoreDb))
+                {
+                    connection.Open();
+
+                    using (SqlCommand cmd = new SqlCommand("dbo.spGetOrders", connection) { CommandType = CommandType.StoredProcedure })
+                    {
+                        if (customerId != null)
+                        {
+                            cmd.Parameters.AddWithValue("@CustomerId", customerId);
+                        }
+
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                        {
+                            adapter.Fill(ds);
+                        }
+
+                        foreach (DataRow row in ds.Tables[0].Rows)
+                        {
+                            var order = new OrderDetailsSP()
+                            {
+                                OrderId = (int)row["OrderId"],
+                                StatusId = (int)row["StatusId"],
+                                UserId = (int)row["UserId"],
+                                AddressId = (int)row["AddressId"],
+                                OrderNumber = row["OrderNumber"].ToString() ?? "-",
+                                OrderDate = (DateTime)row["OrderDate"],
+                                ProductsNumber = (int)row["ProductsNumber"],
+                                TotalQuantityItems = (int)row["TotalQuantityItems"],
+                                TotalPrice = (decimal)row["TotalPrice"],
+                                Username = row["Username"].ToString() ?? "-",
+                                FullName = row["FullName"].ToString() ?? "-",
+                                Email = row["Email"].ToString() ?? "-",
+                                ModifiedAt = (DateTime)row["ModifiedAt"]
+                            };
+
+                            resultStoredProcedure.Add(order);
+                        }
+
+                        return _mapper.Map<List<OrderDetailsDTO>>(resultStoredProcedure);
+                    }
+                }
+
             }
-
-            return null;
-        }
-
-        public async Task<List<OrderDetailsDTO>?> GetOrdersDTOsCustomer(int customerId)
-        {
-            var customerOrders = await _dbContext.Database.SqlQuery<OrderDetailsSP>($"exec dbo.GetOrdersCustomer @CustomerId = {customerId}").ToListAsync();
-
-            if (customerOrders != null)
+            catch (Exception ex)
             {
-                return _mapper.Map<List<OrderDetailsDTO>>(customerOrders);
+                Console.WriteLine($"Error in spGetOrderSummaryRaport: {ex.Message}");
+                return null;
             }
-
-            return null;
         }
 
         public async Task<Order?> GetOrderById(int orderId)

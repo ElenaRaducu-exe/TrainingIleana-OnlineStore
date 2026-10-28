@@ -8,10 +8,6 @@ namespace OnlineStore.Services.Contracts
     {
         Task<bool> PlaceOrder(CreateOrderRequestDTO createOrderRequestDTO);
 
-        Task<List<OrderDetailsDTO>?> GetOrdersDTO();
-
-        Task<List<OrderDetailsDTO>?> GetOrdersDTOsCustomer(int customerId);
-
         Task<Order?> GetOrderById(int orderId);
 
         Task<List<OrderItemDetailsDTO>?> GetOrderItemsDTOListById(int orderId);
@@ -25,5 +21,7 @@ namespace OnlineStore.Services.Contracts
         Task<bool> UpdateProductsStockAfterCancelledOrder(int orderId);
 
         Task<OrderDetailsPageDTO?> GetOrderSummaryRaport(int orderId);
+
+        Task<List<OrderDetailsDTO>?> GetOrderDetailsDtos(int? customerId);
     }
 }
