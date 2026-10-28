@@ -1,13 +1,17 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using OnlineStore.Components.Pages;
 using OnlineStore.Data;
 using OnlineStore.DBModels;
 using OnlineStore.JWTAuthentication.Providers.Contracts;
+using OnlineStore.Models.Configuration;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
 using OnlineStore.Models.StoredProcedureModels;
 using OnlineStore.Services.Contracts;
+using System.Data;
 using System.Net.Http.Headers;
 
 namespace OnlineStore.Services
@@ -18,13 +22,17 @@ namespace OnlineStore.Services
         private readonly IAddressService _addressService;
         private readonly IMapper _mapper;
 
+        private readonly DbConfiguration _dbConfiguration;
+
         public OrderService(OnlineStoreContext dbContext,
                             IAddressService addressService,
-                            IMapper mapper)
+                            IMapper mapper,
+                            DbConfiguration dbConfiguration)
         {
             _dbContext = dbContext;
             _addressService = addressService;
             _mapper = mapper;
+            _dbConfiguration = dbConfiguration;
         }
 
         public async Task<bool> PlaceOrder(CreateOrderRequestDTO createOrderRequestDTO)
@@ -132,18 +140,17 @@ namespace OnlineStore.Services
 
         public async Task<OrderDetailsDTO?> GetOrderDetailsById(int orderId)
         {
-            var orders = await _dbContext.Database.SqlQuery<OrderDetailsSP>($"exec dbo.GetOrders").ToListAsync(); // GetOrdersDetails
+            var orderDetailsSPById = await _dbContext.Database.SqlQuery<OrderDetailsSP>($"exec dbo.spGetOrderDetailsbyId @OrderId = {orderId}").FirstAsync(); 
 
-            if (orders != null)
+            if (orderDetailsSPById != null)
             {
-                var orderById = orders.FirstOrDefault(o => o.OrderId == orderId); // nu e ok sa iei toate comenzile ca apoi sa patrezi doar una! 
-
-                return _mapper.Map<OrderDetailsDTO>(orderById);
+                return _mapper.Map<OrderDetailsDTO>(orderDetailsSPById);
             }
 
             return null;
         }
 
+        /*
         public async Task<OrderDetailsPageDTO?> GetOrderDetailsPageDTO(int orderId)
         {
             var orderDetails = await GetOrderDetailsById(orderId);
@@ -174,6 +181,7 @@ namespace OnlineStore.Services
                 OrderItems = orderItems
             };
         }
+        */
 
         public async Task<bool?> UpdateOrderStatus(int orderId, int newStatusId, int userId)
         {
@@ -181,10 +189,10 @@ namespace OnlineStore.Services
 
             if (order == null)
             {
-                return null; 
+                return null;
             }
 
-            if((await IsValidStatusTransiton(order.StatusId, newStatusId)) == false)
+            if ((await IsValidStatusTransiton(order.StatusId, newStatusId)) == false)
             {
                 return false;
             }
@@ -192,7 +200,7 @@ namespace OnlineStore.Services
             order.StatusId = newStatusId;
 
             order.ModifiedAt = DateTime.UtcNow;
-            order.ModifiedBy = userId; 
+            order.ModifiedBy = userId;
 
             await _dbContext.SaveChangesAsync();
 
@@ -204,25 +212,25 @@ namespace OnlineStore.Services
             // 1 = Pending => 2 = Confirmed
             if ((statusId == 1 && newStatusId == 2) || (statusId == 1 && newStatusId == 6))
             {
-                return true; 
+                return true;
             }
 
             // 2 = Confirmed => 3 = Processing
             if ((statusId == 2 && newStatusId == 3) || (statusId == 2 && newStatusId == 6))
             {
-                return true; 
+                return true;
             }
 
             // 3 = Processing => 9 = Prepared
             if ((statusId == 3 && newStatusId == 9) || (statusId == 3 && newStatusId == 6))
             {
-                return true; 
+                return true;
             }
 
             // 9 = Prepared => 8 = PickedUp
             if ((statusId == 9 && newStatusId == 8) || (statusId == 3 && newStatusId == 6))
             {
-                return true; 
+                return true;
             }
 
             // 8 = PickedUp => 4 = Shipped
@@ -297,7 +305,7 @@ namespace OnlineStore.Services
                 return true;
             }
 
-            return false; 
+            return false;
         }
 
         public async Task<bool> UpdateProductsStockAfterCancelledOrder(int orderId)
@@ -322,6 +330,110 @@ namespace OnlineStore.Services
             await _dbContext.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<OrderDetailsPageDTO?> GetOrderSummaryRaport(int orderId)
+        {
+            try
+            {
+                var resultStoredProcedure = new OrderSummaryRaportSP();
+
+                DataSet ds = new DataSet();
+
+                using (SqlConnection connection = new SqlConnection(_dbConfiguration.OnlineStoreDb))
+                {
+                    connection.Open();
+
+                    using (SqlCommand cmd = new SqlCommand("spGetOrderSummaryRaport", connection) { CommandType = CommandType.StoredProcedure })
+                    {
+                        cmd.Parameters.AddWithValue("@OrderId", orderId);
+
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                        {
+                            adapter.Fill(ds);
+                        }
+
+                        // order summary
+                        foreach (DataRow row in ds.Tables[0].Rows)
+                        {
+                            // order information
+                            resultStoredProcedure.AddressId = (int)row["AddressId"];
+                            resultStoredProcedure.UserId = (int)row["UserId"];
+                            resultStoredProcedure.OrderId = (int)row["OrderId"];
+                            resultStoredProcedure.OrderNumber = row["OrderNumber"].ToString() ?? "-";
+                            resultStoredProcedure.OrderDate = (DateTime)row["OrderDate"];
+                            resultStoredProcedure.ProductsNumber = (int)row["ProductsNumber"];
+                            resultStoredProcedure.TotalQuantityItems = (int)row["TotalQuantityItems"];
+                            resultStoredProcedure.TotalPrice = (decimal)row["TotalPrice"];
+                            resultStoredProcedure.StatusId = (int)row["StatusId"];
+                            resultStoredProcedure.Username = row["Username"].ToString() ?? "-";
+                            resultStoredProcedure.FullName = row["FullName"].ToString() ?? "-";
+                            resultStoredProcedure.Email = row["Email"].ToString() ?? "-";
+                            resultStoredProcedure.ModifiedAt = (DateTime)row["ModifiedAt"];
+
+                            // address information
+                            resultStoredProcedure.FirstNameAddress = row["FirstNameAddress"].ToString() ?? "-";
+                            resultStoredProcedure.LastNameAddress = row["LastNameAddress"].ToString() ?? "-";
+                            resultStoredProcedure.Phone = row["Phone"].ToString() ?? "-";
+                            resultStoredProcedure.Street = row["Street"].ToString() ?? "-";
+                            resultStoredProcedure.StreetNumber = row["StreetNumber"].ToString() ?? "-";
+                            resultStoredProcedure.City = row["City"].ToString() ?? "-";
+                            resultStoredProcedure.ZipCode = row["ZipCode"].ToString() ?? "-";
+                            resultStoredProcedure.BuildingName = row["BuildingName"].ToString() ?? "-";
+                            resultStoredProcedure.Entrance = row["Entrance"].ToString() ?? "-";
+                            resultStoredProcedure.FloorNumber = (int)row["FloorNumber"];
+                            resultStoredProcedure.Apartment = (int)row["Apartment"];
+                        }
+
+                        // order items list
+                        foreach (DataRow row in ds.Tables[1].Rows)
+                        {
+                            var orderItem = new OrderItemDetailsSP()
+                            {
+                                OrderItemId = (int)row["OrderItemId"],
+                                ProductId = (int)row["ProductId"],
+                                Quantity = (int)row["Quantity"],
+                                UnitPrice = (decimal)row["UnitPrice"],
+                                ProductName = row["ProductName"].ToString() ?? "-",
+                                ProductDescription = row["ProductDescription"].ToString() ?? "-",
+                                BrandName = row["BrandName"].ToString() ?? "-",
+                                CategoryName = row["CategoryName"].ToString() ?? "-",
+                                TotalPrice = (decimal)row["TotalPrice"]
+                            };
+
+                            resultStoredProcedure.OrderItems.Add(orderItem);
+                        }
+                    }
+                }
+
+                try
+                {
+                    var orderDetails = _mapper.Map<OrderDetailsDTO>(resultStoredProcedure);
+                    var orderAddress = _mapper.Map<AddressDTO>(resultStoredProcedure);
+                    var orderItems = _mapper.Map<List<OrderItemDetailsDTO>>(resultStoredProcedure.OrderItems);
+
+                    var orderDetailsPageDTO = new OrderDetailsPageDTO()
+                    {
+                        OrderDetails = orderDetails,
+                        Address = orderAddress,
+                        OrderItems = orderItems
+                    };
+
+                    return orderDetailsPageDTO;
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"----------------------------------------------------------Error with mapping in service: {ex.Message}");
+                    return null;
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in spGetOrderSummaryRaport: {ex.Message}");
+                return null;
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ using OnlineStore.JWTAuthentication.Services.Contracts;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.Enums;
 using OnlineStore.Models.FrontendModels;
+using OnlineStore.Models.StoredProcedureModels;
 
 namespace OnlineStore.Components.Pages
 {
@@ -83,11 +84,28 @@ namespace OnlineStore.Components.Pages
         {
             var httpClient = await _apiClient.GetHttpClientAsync();
 
+            /*
             var orderDetailsPageDTO = await httpClient.GetFromJsonAsync<OrderDetailsPageDTO>($"api/order/get/details-page/{OrderId}"); 
 
             if(orderDetailsPageDTO != null)
             {
                 _orderDetailsPageModel = _mapper.Map<OrderDetailsPageModel>(orderDetailsPageDTO); 
+            }
+            */
+
+            var orderSummaryRaport = await httpClient.GetFromJsonAsync<OrderDetailsPageDTO>($"api/order/get/details-page/summary-raport/{OrderId}");
+
+            if (orderSummaryRaport != null)
+            {
+                try
+                {
+                    _orderDetailsPageModel = _mapper.Map<OrderDetailsPageModel>(orderSummaryRaport);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"----------------------------------------------------------Error with mapping in razor component: {ex.Message}");
+                }
+                
             }
 
             _expirationDateReturnRequest = _orderDetailsPageModel?.OrderDetails?.ModifiedAt.AddDays(14);

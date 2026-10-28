@@ -1,5 +1,6 @@
 ﻿using OnlineStore.DBModels;
 using OnlineStore.Models.DTOs;
+using OnlineStore.Models.StoredProcedureModels;
 
 namespace OnlineStore.Services.Contracts
 {
@@ -17,10 +18,12 @@ namespace OnlineStore.Services.Contracts
 
         Task<OrderDetailsDTO?> GetOrderDetailsById(int orderId);
 
-        Task<OrderDetailsPageDTO?> GetOrderDetailsPageDTO(int orderId);
+        //Task<OrderDetailsPageDTO?> GetOrderDetailsPageDTO(int orderId);
 
         Task<bool?> UpdateOrderStatus(int orderId, int newStatusId, int userId);
 
-        Task<bool> UpdateProductsStockAfterCancelledOrder(int orderId); 
+        Task<bool> UpdateProductsStockAfterCancelledOrder(int orderId);
+
+        Task<OrderDetailsPageDTO?> GetOrderSummaryRaport(int orderId);
     }
 }

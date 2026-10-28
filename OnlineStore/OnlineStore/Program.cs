@@ -16,6 +16,7 @@ using OnlineStore.JWTAuthentication.Providers;
 using OnlineStore.JWTAuthentication.Providers.Contracts;
 using OnlineStore.JWTAuthentication.Services;
 using OnlineStore.JWTAuthentication.Services.Contracts;
+using OnlineStore.Models.Configuration;
 using OnlineStore.Services;
 using OnlineStore.Services.Contracts;
 using System.Text;
@@ -31,6 +32,12 @@ builder.Services.AddHttpClient();
 // Database
 builder.Services.AddDbContext<OnlineStoreContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Database configuration
+builder.Services.AddScoped((x) => new DbConfiguration
+{
+    OnlineStoreDb = builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty
+});
 
 // MudBlazor
 builder.Services.AddMudServices();
