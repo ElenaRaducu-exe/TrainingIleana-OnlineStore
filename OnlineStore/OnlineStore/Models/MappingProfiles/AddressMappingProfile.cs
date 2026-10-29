@@ -1,4 +1,4 @@
-﻿using AutoMapper; 
+﻿using AutoMapper;
 using OnlineStore.DBModels;
 using OnlineStore.Models.FrontendModels;
 using OnlineStore.Models.DTOs;

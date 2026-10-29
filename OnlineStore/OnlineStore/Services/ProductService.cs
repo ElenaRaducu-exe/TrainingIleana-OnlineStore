@@ -1,12 +1,16 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using OnlineStore.Data;
 using OnlineStore.DBModels;
+using OnlineStore.Models.Configuration;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
 using OnlineStore.Services.Contracts;
+using System.Data;
+using static MudBlazor.Icons.Custom;
 
 namespace OnlineStore.Services
 {
@@ -16,65 +20,165 @@ namespace OnlineStore.Services
         private readonly IBrandsService _brandsService;
         private readonly ICategoriesService _categoriesService;
         private readonly IMapper _mapper;
+        private readonly DbConfiguration _dbConfiguration; 
 
         public ProductService(OnlineStoreContext onlineStoreContext, 
                                 IBrandsService brandsService, 
                                 ICategoriesService categoriesService,
-                                IMapper mapper)
+                                IMapper mapper,
+                                DbConfiguration dbConfiguration)
         {
             _dbContext = onlineStoreContext;
             _brandsService = brandsService;
             _categoriesService = categoriesService;
             _mapper = mapper;
+            _dbConfiguration = dbConfiguration;
         }
 
-        public async Task<List<ProductDTO>?> GetProductDTOListAsync()
+        public async Task<List<ProductDTO>> GetProductDTOListAsync()
         {
-            return await _dbContext.Database.SqlQuery<ProductDTO>($"exec dbo.spGetProducts").ToListAsync();
-            //List<Product> productDTOs = _dbContext.Products.ToList();
-            //return _mapper.Map<List<ProductDTO>>(productDTOs);
+            try
+            {
+                var resultListProducts = new List<ProductDTO>();
+
+                DataSet dataSet = new DataSet();
+
+                using(SqlConnection connection = new SqlConnection(_dbConfiguration.OnlineStoreDb))
+                {
+                    connection.Open();
+
+                    using(SqlCommand sqlCommand = new SqlCommand("dbo.spGetProducts", connection) { CommandType = CommandType.StoredProcedure })
+                    {
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(sqlCommand))
+                        {
+                            adapter.Fill(dataSet);
+                        }
+
+                        foreach(DataRow row in dataSet.Tables[0].Rows)
+                        {
+                            var produtDto = new ProductDTO()
+                            {
+                                Id = (int)row["Id"],
+                                Name = row["Name"].ToString() ?? "-",
+                                Description = row["Description"].ToString() ?? "-",
+                                Price = (decimal)row["Price"], 
+                                Stock = (int)row["Stock"],
+                                ImageUrl = row["ImageUrl"].ToString() ?? "-",
+                                IsActive = (bool)row["IsActive"],
+                                CategoryId = (int)row["CategoryId"],
+                                BrandId = (int)row["BrandId"],
+                                CreatedBy = (int)row["CreatedBy"],
+                                ModifiedBy = (int)row["ModifiedBy"],
+                                ReservedStock = (int)row["ReservedStock"]
+                            };
+
+                            resultListProducts.Add(produtDto);
+                        }
+
+                        return resultListProducts;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in dbo.spGetProducts: {ex.Message}");
+                return new List<ProductDTO>();
+            }
         }
 
-        public async Task<List<ProductDTO>?> GetProductDTOListPagination(int pageNumber, int pageSize)
+        public async Task<ProductListSummaryDTO?> GetProductList(ProductFiltersModel productFilters)
         {
-            return await _dbContext.Database.SqlQuery<ProductDTO>($"spGetProductsPagination @PageNumber={pageNumber}, @PageSize={pageSize}").ToListAsync();
-        }
+            try
+            {
+                var resultStoredProcedure = new ProductListSummaryDTO();
 
-        public async Task<List<ProductDTO>?> GetFilteredSortedProductDTOs(ProductFiltersModel productFilters)
-        {
-            return await _dbContext.Database.SqlQuery<ProductDTO>(
-                $"""
-                exec spGetFilteredSortedProducts 
-                    @Name = {productFilters.Name}, 
-                    @BrandId = {productFilters.BrandId}, 
-                    @CategoryId = {productFilters.CategoryId}, 
-                    @PriceFrom = {productFilters.PriceFrom}, 
-                    @PriceTo = {productFilters.PriceTo}, 
-                    @AvailableStock={productFilters.AvailableStock},
-                    @ActiveProduct={productFilters.ActiveProduct},
-                    @SortBy={productFilters.SortBy}, 
-                    @SortDirection={productFilters.SortDirection}, 
-                    @PageNumber={productFilters.PageNumber}, 
-                    @PageSize={productFilters.PageSize}
-                """
-                ).ToListAsync();
-        }
+                DataSet dataSet = new DataSet();
 
-        public async Task<int> GetFilteredSortedProductsCount(ProductFiltersModel productFilters)
-        {
-            var result = await _dbContext.Database.SqlQuery<int>(
-                $"""
-                exec spGetFilteredSortedProductsCount 
-                    @Name = {productFilters.Name}, 
-                    @BrandId = {productFilters.BrandId}, 
-                    @CategoryId = {productFilters.CategoryId}, 
-                    @PriceFrom = {productFilters.PriceFrom}, 
-                    @PriceTo = {productFilters.PriceTo}, 
-                    @AvailableStock={productFilters.AvailableStock}, 
-                    @ActiveProduct={productFilters.ActiveProduct}
-                """
-                ).ToListAsync();
-            return result.First(); 
+                using (SqlConnection connection = new SqlConnection(_dbConfiguration.OnlineStoreDb))
+                {
+                    connection.Open();
+
+                    using (SqlCommand sqlCommand = new SqlCommand("spGetFilteredSortedProducts", connection) { CommandType = CommandType.StoredProcedure })
+                    {
+                        sqlCommand.Parameters.AddWithValue("@PageNumber", productFilters.PageNumber); 
+                        sqlCommand.Parameters.AddWithValue("@PageSize", productFilters.PageSize);
+
+                        if (productFilters.Name != null) {
+                            sqlCommand.Parameters.AddWithValue("@Name", productFilters.Name);
+                        }
+
+                        if (productFilters.BrandId != null) {
+                            sqlCommand.Parameters.AddWithValue("@BrandId", productFilters.BrandId);
+                        }
+
+                        if (productFilters.CategoryId != null) {
+                            sqlCommand.Parameters.AddWithValue("@CategoryId", productFilters.CategoryId);
+                        }
+
+                        if (productFilters.PriceFrom != null) {
+                            sqlCommand.Parameters.AddWithValue("@PriceFrom", productFilters.PriceFrom);
+                        }
+
+                        if (productFilters.PriceTo != null) {
+                            sqlCommand.Parameters.AddWithValue("@PriceTo", productFilters.PriceTo);
+                        }
+
+                        if (productFilters.AvailableStock != null) {
+                            sqlCommand.Parameters.AddWithValue("@AvailableStock", productFilters.AvailableStock);
+                        }
+
+                        if (productFilters.ActiveProduct != null) {
+                            sqlCommand.Parameters.AddWithValue("@ActiveProduct", productFilters.ActiveProduct);
+                        }
+
+                        if (productFilters.SortBy != null) {
+                            sqlCommand.Parameters.AddWithValue("@SortBy", productFilters.SortBy);
+                        }
+
+                        if (productFilters.SortDirection != null) {
+                            sqlCommand.Parameters.AddWithValue("@SortDirection", productFilters.SortDirection);
+                        }
+
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(sqlCommand))
+                        {
+                            adapter.Fill(dataSet);
+                        }
+
+                        foreach(DataRow row in dataSet.Tables[0].Rows)
+                        {
+                            resultStoredProcedure.TotalCount = (int)row["TotalCount"];
+                        }
+
+                        foreach(DataRow row in dataSet.Tables[1].Rows)
+                        {
+                            var productDto = new ProductDTO()
+                            {
+                                Id = (int)row["Id"],
+                                Name = row["Name"].ToString() ?? "-",
+                                Description = row["Description"].ToString() ?? "-",
+                                Price = (decimal)row["Price"],
+                                Stock = (int)row["Stock"],
+                                ImageUrl = row["ImageUrl"].ToString() ?? "-",
+                                IsActive = (bool)row["IsActive"],
+                                CategoryId = (int)row["CategoryId"],
+                                BrandId = (int)row["BrandId"],
+                                CreatedBy = (int)row["CreatedBy"],
+                                ModifiedBy = (int)row["ModifiedBy"],
+                                ReservedStock = (int)row["ReservedStock"]
+                            };
+
+                            resultStoredProcedure.productDTOs.Add(productDto);
+                        }
+
+                        return resultStoredProcedure; 
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in spGetOrderSummaryRaport: {ex.Message}");
+                return null; 
+            }
         }
 
         public async Task<bool> AddProductAsync(ProductDTO productDTO)
@@ -203,25 +307,68 @@ namespace OnlineStore.Services
         }
 
         public async Task<int> GetAvailableStock(int productId)
-        {
+        { 
             var productIdParameter = new SqlParameter()
             {
                 ParameterName = "@ProductId",
-                SqlDbType = System.Data.SqlDbType.Int,
-                Direction = System.Data.ParameterDirection.Input
+                SqlDbType = SqlDbType.Int,
+                Direction = ParameterDirection.Input
             };
 
             var availableStockParameter = new SqlParameter()
             {
                 ParameterName = "@AvailableStock",
-                SqlDbType = System.Data.SqlDbType.Int,
-                Direction = System.Data.ParameterDirection.Output
+                SqlDbType = SqlDbType.Int,
+                Direction = ParameterDirection.Output
             }; 
 
             await _dbContext.Database.ExecuteSqlRawAsync($"exec [dbo].[GetAvailableStock] @ProductId, @AvailableStock output", 
                         productIdParameter, availableStockParameter);
 
             return (int)availableStockParameter.Value; 
+
+            /*
+            try
+            {
+                DataSet dataSet = new DataSet();
+
+                using (SqlConnection connection = new SqlConnection(_dbConfiguration.OnlineStoreDb))
+                {
+                    connection.Open();
+
+                    using (SqlCommand sqlCommand = new SqlCommand("dbo.GetAvailableStock", connection) { CommandType = CommandType.StoredProcedure })
+                    {
+                        sqlCommand.Parameters.AddWithValue("@ProductId", productId);
+
+                        var availableStockParameter = new SqlParameter()
+                        {
+                            ParameterName = "@AvailableStock",
+                            SqlDbType = SqlDbType.Int,
+                            Direction = ParameterDirection.ReturnValue
+                        };
+
+                        sqlCommand.Parameters.Add(availableStockParameter);
+
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(sqlCommand))
+                        {
+                            adapter.Fill(dataSet);
+                        }
+
+                        
+                        foreach (DataRow row in dataSet.Tables[0].Rows)
+                        {
+                            resultStoredProcedure = (int)row[0];
+                        }
+                        
+                        resultStoredProcedure = (int)dataSet.Tables[0].Rows[0][0];
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in dbo.GetAvailableStock: {ex.Message}");
+                return 0;
+            }*/
         }
 
     }

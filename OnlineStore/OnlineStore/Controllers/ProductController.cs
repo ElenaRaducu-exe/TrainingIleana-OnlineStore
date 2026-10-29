@@ -68,45 +68,6 @@ namespace OnlineStore.Controllers
             return Ok(result); 
         }
 
-        [HttpGet("pagination")]
-        public async Task<IActionResult> GetProductDTOsPagination([FromQuery]int pageNumber, [FromQuery] int pageSize)
-        {
-            var result = await _productService.GetProductDTOListPagination(pageNumber, pageSize);
-
-            if(result == null)
-            {
-                return BadRequest();
-            }
-
-            return Ok(result);
-        }
-
-        [HttpPost("filtered")] 
-        public async Task<IActionResult> GetFilteredSortedProductDTOs([FromBody]ProductFiltersModel productFilters)
-        {
-            if(productFilters.PageNumber < 1 || productFilters.PageSize < 1)
-            {
-                return BadRequest("Invalid pagination parameters");
-            }
-
-            var result = await _productService.GetFilteredSortedProductDTOs(productFilters);
-
-            if(result == null)
-            {
-                return BadRequest("Not found!");
-            }
-
-            return Ok(result);
-        }
-
-        [HttpPost("filtered/count")]
-        public async Task<IActionResult> GetFilteredSortedProductsCount([FromBody]ProductFiltersModel productFilters)
-        {
-            var result = await _productService.GetFilteredSortedProductsCount(productFilters);
-
-            return Ok(result);
-        }
-
         [HttpGet("count")]
         public async Task<IActionResult> GetProductsCount()
         {
@@ -207,6 +168,20 @@ namespace OnlineStore.Controllers
         public async Task<IActionResult> GetAvailableStock([FromRoute] int productId)
         {
             var result = _productService.GetAvailableStock(productId); 
+
+            if(result == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(result);
+        }
+
+        // api/admin/products/list-after-rules
+        [HttpPost("list-after-rules")]
+        public async Task<IActionResult> GetProductList([FromBody] ProductFiltersModel productFilters)
+        {
+            var result = await _productService.GetProductList(productFilters); 
 
             if(result == null)
             {

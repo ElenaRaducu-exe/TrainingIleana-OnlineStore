@@ -11,22 +11,18 @@ namespace OnlineStore.Services.Contracts
 
         Task<List<ProductDTO>> GetProductDTOListAsync(); 
 
-        Task<List<ProductDTO>?> GetFilteredSortedProductDTOs(ProductFiltersModel productFilters); 
-
         Task<bool?> DeleteProduct(int id);
 
-        Task<ProductDTO> ChangeActiveMode(int id, int userId);
+        Task<ProductDTO?> ChangeActiveMode(int id, int userId);
 
         Task<bool> UpdateProduct(ProductDTO productDetails);
 
         Task<ProductDTO?> GetProductDTOById(int productId);
 
-        Task<List<ProductDTO>?> GetProductDTOListPagination(int pageNumber, int pageSize);
-
         Task<int?> GetProductsCount();
 
-        Task<int> GetFilteredSortedProductsCount(ProductFiltersModel productFilters);
-
         Task<int> GetAvailableStock(int productId);
+
+        Task<ProductListSummaryDTO?> GetProductList(ProductFiltersModel productFilters);
     }
 }

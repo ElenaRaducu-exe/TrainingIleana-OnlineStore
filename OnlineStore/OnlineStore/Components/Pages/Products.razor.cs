@@ -41,7 +41,6 @@ namespace OnlineStore.Components.Pages
         private int _totalProducts = 0;
         private int _totalPages = 0;
         private ProductFiltersModel _filtersModel = new();
-        private bool _isFiltered = false;
         private bool _isProductListEmpty = false;
         private string? _sortFilter { get; set; }
         private string? _brandNameFilter { get; set; }
@@ -49,41 +48,20 @@ namespace OnlineStore.Components.Pages
 
         protected async Task LoadProducts()
         {
-            var httpClient = await _apiClient.GetHttpClientAsync();
-
-            var productDTOs = await httpClient.GetFromJsonAsync<List<ProductDTO>>
-                        ($"api/admin/products/pagination?pageNumber={_pageNumber}&pageSize={_pageSize}");
-
-            ProductsList = _mapper.Map<List<ProductModel>>(productDTOs);
-
-            _totalProducts = await httpClient.GetFromJsonAsync<int>("api/admin/products/count");
-            _totalPages = (int)Math.Ceiling((double)_totalProducts / _pageSize);
-
-            BrandList = await _brandService.GetBrandsListAsync();
-            CategoryList = await _categoryService.GetCategoriesAsync();
-        }
-
-        protected async Task LoadFilteredProducts()
-        {
             _filtersModel.PageNumber = _pageNumber;
             _filtersModel.PageSize = _pageSize;
 
             var httpClient = await _apiClient.GetHttpClientAsync();
 
-            var response = await httpClient.PostAsJsonAsync("api/admin/products/filtered", _filtersModel);
+            var response = await httpClient.PostAsJsonAsync("api/admin/products/list-after-rules", _filtersModel);
 
             if (response.IsSuccessStatusCode)
             {
-                var productDTOs = await response.Content.ReadFromJsonAsync<List<ProductDTO>>();
+                var result = await response.Content.ReadFromJsonAsync<ProductListSummaryDTO>();
 
-                ProductsList = _mapper.Map<List<ProductModel>>(productDTOs);
-            }
+                ProductsList = _mapper.Map<List<ProductModel>>(result?.productDTOs);
 
-            var responseCountProducts = await httpClient.PostAsJsonAsync("api/admin/products/filtered/count", _filtersModel);
-
-            if (responseCountProducts.IsSuccessStatusCode)
-            {
-                _totalProducts = await responseCountProducts.Content.ReadFromJsonAsync<int>();
+                _totalProducts = result?.TotalCount ?? 0; 
                 _totalPages = (int)Math.Ceiling((double)_totalProducts / _pageSize);
             }
         }
@@ -92,6 +70,22 @@ namespace OnlineStore.Components.Pages
         {
             await LoadProducts();
 
+            var httpClient = await _apiClient.GetHttpClientAsync();
+
+            var responseBrands = await httpClient.GetFromJsonAsync<List<Brand>>("api/brands"); 
+
+            if(responseBrands != null)
+            {
+                BrandList = responseBrands;
+            }
+
+            var responseCategories = await httpClient.GetFromJsonAsync<List<Category>>("api/categories");
+
+            if(responseCategories != null)
+            {
+                CategoryList = responseCategories;
+            }
+
             _resultAddProductToCart = false;
         }
 
@@ -99,14 +93,7 @@ namespace OnlineStore.Components.Pages
         {
             _pageNumber = page;
 
-            if (_isFiltered)
-            {
-                await LoadFilteredProducts();
-            }
-            else
-            {
-                await LoadProducts();
-            }
+            await LoadProducts();
         }
 
         private async Task OnSortSelected(string sortValue)
@@ -205,10 +192,9 @@ namespace OnlineStore.Components.Pages
 
         public async Task ApplyFilters()
         {
-            _isFiltered = true;
             _pageNumber = 1;
 
-            await LoadFilteredProducts();
+            await LoadProducts();
 
             if (_totalProducts == 0)
             {
@@ -221,7 +207,7 @@ namespace OnlineStore.Components.Pages
 
             if (_filtersModel.BrandId != null)
             {
-                _brandNameFilter = BrandList.FirstOrDefault(brand => brand.Id == _filtersModel.BrandId).BrandName;
+                _brandNameFilter = BrandList?.FirstOrDefault(brand => brand.Id == _filtersModel.BrandId)?.BrandName;
             }
             else
             {
@@ -230,7 +216,7 @@ namespace OnlineStore.Components.Pages
 
             if (_filtersModel.CategoryId != null)
             {
-                _categoryNameFilter = CategoryList.FirstOrDefault(category => category.Id == _filtersModel.CategoryId).CategoryName;
+                _categoryNameFilter = CategoryList?.FirstOrDefault(category => category.Id == _filtersModel.CategoryId)?.CategoryName;
             }
             else
             {
@@ -240,7 +226,6 @@ namespace OnlineStore.Components.Pages
 
         public async Task ResetFilters()
         {
-            _isFiltered = false;
             _filtersModel = new ProductFiltersModel();
             _pageNumber = 1;
             _sortFilter = null;
