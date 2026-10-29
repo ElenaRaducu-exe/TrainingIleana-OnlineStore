@@ -21,7 +21,7 @@ namespace OnlineStore.Services.Contracts
 
         Task<int?> GetProductsCount();
 
-        Task<int> GetAvailableStock(int productId);
+        Task<int?> GetAvailableStock(int productId);
 
         Task<ProductListSummaryDTO?> GetProductList(ProductFiltersModel productFilters);
     }

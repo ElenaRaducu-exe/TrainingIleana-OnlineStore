@@ -17,20 +17,14 @@ namespace OnlineStore.Services
     public class ProductService : IProductService
     {
         private readonly OnlineStoreContext _dbContext;
-        private readonly IBrandsService _brandsService;
-        private readonly ICategoriesService _categoriesService;
         private readonly IMapper _mapper;
         private readonly DbConfiguration _dbConfiguration; 
 
         public ProductService(OnlineStoreContext onlineStoreContext, 
-                                IBrandsService brandsService, 
-                                ICategoriesService categoriesService,
                                 IMapper mapper,
                                 DbConfiguration dbConfiguration)
         {
             _dbContext = onlineStoreContext;
-            _brandsService = brandsService;
-            _categoriesService = categoriesService;
             _mapper = mapper;
             _dbConfiguration = dbConfiguration;
         }
@@ -306,8 +300,9 @@ namespace OnlineStore.Services
             return await _dbContext.Products.CountAsync();
         }
 
-        public async Task<int> GetAvailableStock(int productId)
+        public async Task<int?> GetAvailableStock(int productId)
         { 
+            /*
             var productIdParameter = new SqlParameter()
             {
                 ParameterName = "@ProductId",
@@ -326,11 +321,13 @@ namespace OnlineStore.Services
                         productIdParameter, availableStockParameter);
 
             return (int)availableStockParameter.Value; 
+            */
 
-            /*
             try
             {
                 DataSet dataSet = new DataSet();
+
+                int availableStock = 0;
 
                 using (SqlConnection connection = new SqlConnection(_dbConfiguration.OnlineStoreDb))
                 {
@@ -340,35 +337,24 @@ namespace OnlineStore.Services
                     {
                         sqlCommand.Parameters.AddWithValue("@ProductId", productId);
 
-                        var availableStockParameter = new SqlParameter()
-                        {
-                            ParameterName = "@AvailableStock",
-                            SqlDbType = SqlDbType.Int,
-                            Direction = ParameterDirection.ReturnValue
-                        };
-
-                        sqlCommand.Parameters.Add(availableStockParameter);
+                        sqlCommand.Parameters.Add("@AvailableStock", SqlDbType.Int).Direction = ParameterDirection.Output;
 
                         using (SqlDataAdapter adapter = new SqlDataAdapter(sqlCommand))
                         {
                             adapter.Fill(dataSet);
                         }
 
-                        
-                        foreach (DataRow row in dataSet.Tables[0].Rows)
-                        {
-                            resultStoredProcedure = (int)row[0];
-                        }
-                        
-                        resultStoredProcedure = (int)dataSet.Tables[0].Rows[0][0];
+                        availableStock = (int)sqlCommand.Parameters["@AvailableStock"].Value;
                     }
                 }
+
+                return availableStock;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error in dbo.GetAvailableStock: {ex.Message}");
-                return 0;
-            }*/
+                return null;
+            }
         }
 
     }

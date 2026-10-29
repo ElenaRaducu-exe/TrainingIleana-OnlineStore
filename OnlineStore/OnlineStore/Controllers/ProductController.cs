@@ -167,7 +167,7 @@ namespace OnlineStore.Controllers
         [HttpGet("available-stock/{productId:int}")]
         public async Task<IActionResult> GetAvailableStock([FromRoute] int productId)
         {
-            var result = _productService.GetAvailableStock(productId); 
+            var result = await _productService.GetAvailableStock(productId); 
 
             if(result == null)
             {
