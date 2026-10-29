@@ -25,7 +25,7 @@ namespace OnlineStore.Services
 
         public async Task<string?> GetBrandNameByIdAsync(int id)
         {
-            return _dbContext.Brands.FirstOrDefault(b => b.Id == id).BrandName; 
+            return _dbContext.Brands.FirstOrDefault(b => b.Id == id)?.BrandName; 
         }
 
         public async Task<int?> GetIdByBrandNameAsync(string BrandName)

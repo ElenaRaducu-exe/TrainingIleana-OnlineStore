@@ -25,20 +25,12 @@ namespace OnlineStore.Services
 
         public async Task<string?> GetCategoryNameByIdAsync(int id)
         {
-            return _dbContext.Categories.FirstOrDefault(c => c.Id == id).CategoryName;
+            return _dbContext.Categories.FirstOrDefault(c => c.Id == id)?.CategoryName;
         }
 
         public async Task<int?> GetIdByCategoryNameAsync(string categoryName)
         {
-            /*
-             * Category category = _dbContext.Categories.FirstOrDefault(c => c.CategoryName == categoryName);
-            if(category == null)
-            {
-                return null; 
-            }
-            return category.Id;
-             */
-            return _dbContext.Categories.FirstOrDefault(c => c.CategoryName == categoryName).Id;
+            return _dbContext.Categories.FirstOrDefault(c => c.CategoryName == categoryName)?.Id;
         }
 
         public async Task<Category?> GetCategoryByName(string categoryName)
