@@ -84,15 +84,6 @@ namespace OnlineStore.Components.Pages
         {
             var httpClient = await _apiClient.GetHttpClientAsync();
 
-            /*
-            var orderDetailsPageDTO = await httpClient.GetFromJsonAsync<OrderDetailsPageDTO>($"api/order/get/details-page/{OrderId}"); 
-
-            if(orderDetailsPageDTO != null)
-            {
-                _orderDetailsPageModel = _mapper.Map<OrderDetailsPageModel>(orderDetailsPageDTO); 
-            }
-            */
-
             var orderSummaryRaport = await httpClient.GetFromJsonAsync<OrderDetailsPageDTO>($"api/order/get/details-page/summary-raport/{OrderId}");
 
             if (orderSummaryRaport != null)
@@ -103,7 +94,7 @@ namespace OnlineStore.Components.Pages
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"----------------------------------------------------------Error with mapping in razor component: {ex.Message}");
+                    Console.WriteLine($"---------------------------------------------------------- Error with mapping in razor component: {ex.Message}");
                 }
                 
             }
