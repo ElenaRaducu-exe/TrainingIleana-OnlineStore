@@ -13,24 +13,22 @@ using OnlineStore.Models.StoredProcedureModels;
 using OnlineStore.Services.Contracts;
 using System.Data;
 using System.Net.Http.Headers;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace OnlineStore.Services
 {
     public class OrderService : IOrderService
     {
         private readonly OnlineStoreContext _dbContext;
-        private readonly IAddressService _addressService;
         private readonly IMapper _mapper;
 
         private readonly DbConfiguration _dbConfiguration;
 
         public OrderService(OnlineStoreContext dbContext,
-                            IAddressService addressService,
                             IMapper mapper,
                             DbConfiguration dbConfiguration)
         {
             _dbContext = dbContext;
-            _addressService = addressService;
             _mapper = mapper;
             _dbConfiguration = dbConfiguration;
         }
@@ -162,26 +160,102 @@ namespace OnlineStore.Services
 
         public async Task<List<OrderItemDetailsDTO>?> GetOrderItemsDTOListById(int orderId)
         {
-            var orderItems = await _dbContext.Database.SqlQuery<OrderItemDetailsSP>($"exec dbo.GetOrderItemsDetails @OrderId={orderId}").ToListAsync();
+            try 
+            { 
+                var resultStoredProcedure = new List<OrderItemDetailsSP>();
 
-            if (orderItems != null)
-            {
-                return _mapper.Map<List<OrderItemDetailsDTO>>(orderItems);
+                DataSet dataSet = new DataSet();
+
+                using(SqlConnection connection = new SqlConnection(_dbConfiguration.OnlineStoreDb))
+                {
+                    connection.Open();
+
+                    using (SqlCommand sqlCommand = new SqlCommand("spGetOrderItemsDetails", connection) { CommandType = CommandType.StoredProcedure })
+                    {
+                        sqlCommand.Parameters.AddWithValue("@OrderId", orderId);
+
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(sqlCommand))
+                        {
+                            adapter.Fill(dataSet);
+                        }
+
+                        foreach (DataRow row in dataSet.Tables[0].Rows)
+                        {
+                            var orderItem = new OrderItemDetailsSP()
+                            {
+                                OrderItemId = (int)row["OrderItemId"],
+                                ProductId = (int)row["ProductId"],
+                                Quantity = (int)row["Quantity"],
+                                UnitPrice = (decimal)row["UnitPrice"],
+                                ProductName = row["ProductName"].ToString() ?? "-",
+                                ProductDescription = row["ProductDescription"].ToString() ?? "-",
+                                BrandName = row["BrandName"].ToString() ?? "-",
+                                CategoryName = row["CategoryName"].ToString() ?? "-",
+                                TotalPrice = (decimal)row["TotalPrice"]
+                            };
+
+                            resultStoredProcedure.Add(orderItem);
+                        }
+
+                        return _mapper.Map<List<OrderItemDetailsDTO>>(resultStoredProcedure);
+                    }
+                }
+                
             }
-
-            return null;
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in spGetOrderItemsDetails: {ex.Message}");
+                return null;
+            }
         }
 
         public async Task<OrderDetailsDTO?> GetOrderDetailsById(int orderId)
         {
-            var orderDetailsSPById = await _dbContext.Database.SqlQuery<OrderDetailsSP>($"exec dbo.spGetOrderDetailsbyId @OrderId = {orderId}").FirstAsync(); 
-
-            if (orderDetailsSPById != null)
+            try
             {
-                return _mapper.Map<OrderDetailsDTO>(orderDetailsSPById);
-            }
+                var resultStoredProcedure = new OrderDetailsSP();
 
-            return null;
+                DataSet dataSet = new DataSet();
+
+                using (SqlConnection connection = new SqlConnection(_dbConfiguration.OnlineStoreDb))
+                {
+                    connection.Open();
+
+                    using(SqlCommand sqlCommand = new SqlCommand("spGetOrderDetailsbyId", connection) { CommandType = CommandType.StoredProcedure })
+                    {
+                        sqlCommand.Parameters.AddWithValue("@OrderId", orderId);
+
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(sqlCommand))
+                        {
+                            adapter.Fill(dataSet);
+                        }
+
+                        foreach (DataRow row in dataSet.Tables[0].Rows)
+                        {
+                            resultStoredProcedure.OrderId = (int)row["OrderId"];
+                            resultStoredProcedure.StatusId = (int)row["StatusId"];
+                            resultStoredProcedure.UserId = (int)row["UserId"];
+                            resultStoredProcedure.AddressId = (int)row["AddressId"];
+                            resultStoredProcedure.OrderNumber = row["OrderNumber"].ToString() ?? "-";
+                            resultStoredProcedure.OrderDate = (DateTime)row["OrderDate"];
+                            resultStoredProcedure.ProductsNumber = (int)row["ProductsNumber"];
+                            resultStoredProcedure.TotalQuantityItems = (int)row["TotalQuantityItems"];
+                            resultStoredProcedure.TotalPrice = (decimal)row["TotalPrice"];
+                            resultStoredProcedure.Username = row["Username"].ToString() ?? "-";
+                            resultStoredProcedure.FullName = row["FullName"].ToString() ?? "-";
+                            resultStoredProcedure.Email = row["Email"].ToString() ?? "-";
+                            resultStoredProcedure.ModifiedAt = (DateTime)row["ModifiedAt"];
+                        }
+
+                        return _mapper.Map<OrderDetailsDTO>(resultStoredProcedure);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in dbo.spGetProducts: {ex.Message}");
+                return null;
+            }
         }
 
         /*

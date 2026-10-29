@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using OnlineStore.Components.Pages;
 using OnlineStore.Data;
 using OnlineStore.DBModels;
+using OnlineStore.Models.Configuration;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.StoredProcedureModels;
 using OnlineStore.Services.Contracts;
+using System.Data;
 
 namespace OnlineStore.Services
 {
@@ -14,25 +17,120 @@ namespace OnlineStore.Services
         private readonly OnlineStoreContext _dbContext;
         private readonly IMapper _mapper;
 
+        private readonly DbConfiguration _dbConfiguration; 
+
         public CartProductsService(OnlineStoreContext onlineStoreContext, 
-                                   IMapper mapper)
+                                   IMapper mapper,
+                                   DbConfiguration dbConfiguration)
         {
             _dbContext = onlineStoreContext;
             _mapper = mapper;
+            _dbConfiguration = dbConfiguration;
         }
 
         public async Task<List<CartItemSummaries>?> GetCartItems()
         {
-            return await _dbContext.Database.SqlQuery<CartItemSummaries>($"exec dbo.spGetCartItemsDetails").ToListAsync();
+            try
+            {
+                var resultStoredProcedure = new List<CartItemSummaries>(); 
+
+                DataSet dataSet = new DataSet();
+
+                using(SqlConnection connection = new SqlConnection(_dbConfiguration.OnlineStoreDb))
+                {
+                    connection.Open();
+
+                    using(SqlCommand sqlCommand = new SqlCommand("dbo.spGetCartItemsDetails", connection) { CommandType = CommandType.StoredProcedure })
+                    {
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(sqlCommand))
+                        {
+                            adapter.Fill(dataSet);
+                        }
+
+                        foreach(DataRow row in dataSet.Tables[0].Rows)
+                        {
+                            var cartItemSummary = new CartItemSummaries
+                            {
+                                CartId = Convert.ToInt32(row["CartId"]),
+                                UserId = Convert.ToInt32(row["UserId"]),
+                                CartItemId = Convert.ToInt32(row["CartItemId"]),
+                                Quantity = Convert.ToInt32(row["Quantity"]),
+                                ProductId = Convert.ToInt32(row["ProductId"]),
+                                Username = row["Username"].ToString() ?? "-",
+                                ProductName = row["ProductName"].ToString() ?? "-",
+                                Description = row["Description"].ToString() ?? "-",
+                                Price = Convert.ToDecimal(row["Price"]),
+                                ImageUrl = row["ImageUrl"].ToString() ?? "-",
+                                CategoryName = row["CategoryName"].ToString() ?? "-",
+                                BrandName = row["BrandName"].ToString() ?? "-"
+                            };
+
+                            resultStoredProcedure.Add(cartItemSummary);
+                        }
+
+                        return resultStoredProcedure;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in dbo.spGetCartItemsDetails: {ex.Message}");
+                return null;
+            }
         }
 
         public async Task<List<CartItemDTO>?> GetCartItemsByUser(int userId)
         {
-            var cartItemSummaries = await _dbContext.Database.SqlQuery<CartItemSummaries>($"exec dbo.spGetCartItemsDetailsUser @UserId={userId}").ToListAsync();
+            try
+            {
+                var resultStoredProcedure = new List<CartItemSummaries>();
 
-            var cartItemDTOs = _mapper.Map<List<CartItemDTO>>(cartItemSummaries);
+                DataSet dataSet = new DataSet();
 
-            return cartItemDTOs;
+                using (SqlConnection connection = new SqlConnection(_dbConfiguration.OnlineStoreDb))
+                {
+                    connection.Open();
+
+                    using (SqlCommand sqlCommand = new SqlCommand("dbo.spGetCartItemsDetailsUser", connection) { CommandType = CommandType.StoredProcedure })
+                    {
+
+                        sqlCommand.Parameters.AddWithValue("@UserId", userId);
+
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(sqlCommand))
+                        {
+                            adapter.Fill(dataSet);
+                        }
+
+                        foreach (DataRow row in dataSet.Tables[0].Rows)
+                        {
+                            var cartItemSummary = new CartItemSummaries
+                            {
+                                CartId = Convert.ToInt32(row["CartId"]),
+                                UserId = Convert.ToInt32(row["UserId"]),
+                                CartItemId = Convert.ToInt32(row["CartItemId"]),
+                                Quantity = Convert.ToInt32(row["Quantity"]),
+                                ProductId = Convert.ToInt32(row["ProductId"]),
+                                Username = row["Username"].ToString() ?? "-",
+                                ProductName = row["ProductName"].ToString() ?? "-",
+                                Description = row["Description"].ToString() ?? "-",
+                                Price = Convert.ToDecimal(row["Price"]),
+                                ImageUrl = row["ImageUrl"].ToString() ?? "-",
+                                CategoryName = row["CategoryName"].ToString() ?? "-",
+                                BrandName = row["BrandName"].ToString() ?? "-"
+                            };
+
+                            resultStoredProcedure.Add(cartItemSummary);
+                        }
+
+                        return _mapper.Map<List<CartItemDTO>>(resultStoredProcedure);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in dbo.spGetCartItemsDetails: {ex.Message}");
+                return null;
+            }
         }
 
         public async Task<bool> AddProductToCart(int productId, int userId)
