@@ -1,19 +1,17 @@
 using Microsoft.AspNetCore.Components;
 using OnlineStore.DBModels;
-using OnlineStore.Models;
 using OnlineStore.Models.FrontendModels;
-using OnlineStore.Services.Contracts;
-using System.ComponentModel.DataAnnotations;
+using OnlineStore.Services.Frontend.Contracts;
 
 namespace OnlineStore.Components.ReusableComponnets
 {
     public partial class ProductCard : ComponentBase
     {
         [Inject]
-        private IBrandsService _brandsService {  get; set; }
+        private IBrandFrontendService _brandFrontendService { get; set; }
 
         [Inject]
-        private ICategoriesService _categoriesService { get; set; }
+        private ICategoryFrontendService _categoryFrontendService { get; set; }
 
         [Parameter]
         public ProductModel ProductModel { get; set; }
@@ -34,8 +32,8 @@ namespace OnlineStore.Components.ReusableComponnets
 
         protected override async Task OnInitializedAsync()
         {
-            _brand = await _brandsService.GetBrandByIdAsync(ProductModel.BrandId);
-            _category = await _categoriesService.GetCategoryByIdAsync(ProductModel.CategoryId);
+            _brand = await _brandFrontendService.GetBrandByIdAsync(ProductModel.BrandId);
+            _category = await _categoryFrontendService.GetCategoryByIdAsync(ProductModel.CategoryId);
         }
     }
 }

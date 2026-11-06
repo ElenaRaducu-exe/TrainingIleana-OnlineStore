@@ -1,22 +1,15 @@
 using Microsoft.AspNetCore.Components;
-using OnlineStore.JWTAuthentication.Providers.Contracts;
-using System.Net.Http.Headers;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
 using AutoMapper;
-using System.Diagnostics.CodeAnalysis;
-using Microsoft.AspNetCore.WebUtilities;
-using OnlineStore.Services.Contracts;
 using OnlineStore.DBModels;
 using OnlineStore.JWTAuthentication.Services.Contracts;
+using OnlineStore.Services.Frontend.Contracts;
 
 namespace OnlineStore.Components.Pages
 {
     public partial class Products : ComponentBase
     {
-        [Inject]
-        private IApiClient _apiClient { get; set; }
-
         [Inject]
         private NavigationManager _navigation { get; set; }
 
@@ -24,10 +17,16 @@ namespace OnlineStore.Components.Pages
         private IMapper _mapper { get; set; }
 
         [Inject]
-        private IBrandsService _brandService { get; set; }
+        private IBrandFrontendService _brandFrontendService { get; set; }
 
         [Inject]
-        private ICategoriesService _categoryService { get; set; }
+        private ICategoryFrontendService _categoryFrontendService { get; set; }
+
+        [Inject]
+        private ICartFrontendService _cartFrontendService { get; set; }
+
+        [Inject]
+        private IProductFrontendService _productFrontendService { get; set; }
 
         public List<ProductModel> ProductsList = new();
         public List<Brand> BrandList = new();
@@ -51,17 +50,13 @@ namespace OnlineStore.Components.Pages
             _filtersModel.PageNumber = _pageNumber;
             _filtersModel.PageSize = _pageSize;
 
-            var httpClient = await _apiClient.GetHttpClientAsync();
+            var resultProductList = await _productFrontendService.GetProductModelList(_filtersModel);
 
-            var response = await httpClient.PostAsJsonAsync("api/admin/products/list-after-rules", _filtersModel);
-
-            if (response.IsSuccessStatusCode)
+            if (resultProductList != null)
             {
-                var result = await response.Content.ReadFromJsonAsync<ProductListSummaryDTO>();
+                ProductsList = _mapper.Map<List<ProductModel>>(resultProductList?.productDTOs);
 
-                ProductsList = _mapper.Map<List<ProductModel>>(result?.productDTOs);
-
-                _totalProducts = result?.TotalCount ?? 0; 
+                _totalProducts = resultProductList?.TotalCount ?? 0; 
                 _totalPages = (int)Math.Ceiling((double)_totalProducts / _pageSize);
             }
         }
@@ -70,18 +65,16 @@ namespace OnlineStore.Components.Pages
         {
             await LoadProducts();
 
-            var httpClient = await _apiClient.GetHttpClientAsync();
+            var responseBrands = await _brandFrontendService.GetBrandsListAsync();
 
-            var responseBrands = await httpClient.GetFromJsonAsync<List<Brand>>("api/brands"); 
-
-            if(responseBrands != null)
+            if (responseBrands != null)
             {
                 BrandList = responseBrands;
             }
 
-            var responseCategories = await httpClient.GetFromJsonAsync<List<Category>>("api/categories");
+            var responseCategories = await _categoryFrontendService.GetCategoriesListAsync();
 
-            if(responseCategories != null)
+            if (responseCategories != null)
             {
                 CategoryList = responseCategories;
             }
@@ -106,55 +99,40 @@ namespace OnlineStore.Components.Pages
             _filtersModel.SortDirection = sortValues[1];
         }
 
-        protected async Task DeleteProduct(int? productId)
+        protected async Task DeleteProduct(ProductModel? productToDelete)
         {
-            var httpClient = await _apiClient.GetHttpClientAsync();
-
-            if (productId != null)
+            if (productToDelete != null)
             {
-                var product = ProductsList.FirstOrDefault(p => p.Id == productId);
-                var response = await httpClient.DeleteAsync($"api/admin/products/delete/product/{productId}");
+                var resultDeletingProduct = await _productFrontendService.DeteleProduct(productToDelete);
 
-                if(product != null)
+                if(resultDeletingProduct == productToDelete)
                 {
-                    if (response.IsSuccessStatusCode)
-                    {
-                        ProductsList.Remove(product);
-                    }
-
-                    if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
-                    {
-                        product.IsActive = false;
-                    }
-
-                    StateHasChanged();
+                    ProductsList.Remove(productToDelete);
                 }
+
+                if(resultDeletingProduct?.IsActive == false)
+                {
+                    productToDelete.IsActive = false;   
+                }
+
+                StateHasChanged();
             }
         }
 
         protected async Task ChangeActiveMode(ProductModel product)
         {
-            var productDTO = _mapper.Map<ProductModel>(product);
+            var response = await _productFrontendService.UpdateActiveStatusProduct(product);
 
-            var httpClient = await _apiClient.GetHttpClientAsync();
-
-            var response = await httpClient.PutAsJsonAsync($"api/admin/products/update/product/active-status/{product.Id}", productDTO);
-
-            if (response.IsSuccessStatusCode)
+            if (response != null)
             {
-                var updatedProduct = await response.Content.ReadFromJsonAsync<ProductDTO>();
+                var productList = ProductsList.FirstOrDefault(p => p.Id == response.Id);
 
-                if (updatedProduct != null)
+                if (productList != null)
                 {
-                    var productList = ProductsList.FirstOrDefault(p => p.Id == product.Id);
-
-                    if (productList != null)
-                    {
-                        productList.IsActive = updatedProduct.IsActive;
-                    }
-
-                    StateHasChanged();
+                    productList.IsActive = response.IsActive;
                 }
+
+                StateHasChanged();
             }
         }
 
@@ -171,17 +149,10 @@ namespace OnlineStore.Components.Pages
 
         protected async Task AddToCart(ProductModel productModel)
         {
-            var productDTO = _mapper.Map<ProductDTO>(productModel);
+            var addedProduct = await _cartFrontendService.AddProductToCart(productModel);
 
-            var httpClient = await _apiClient.GetHttpClientAsync();
-
-            var result = await httpClient.PostAsJsonAsync($"api/cart/add/product/{productDTO.Id}", productDTO);
-
-            if (result.IsSuccessStatusCode)
+            if (addedProduct != null)
             {
-                productModel.ReservedStock++; 
-                productModel.IsActive = productModel.ReservedStock < productModel.Stock; 
-
                 _resultAddProductToCart = true;
             }
             else
@@ -196,14 +167,7 @@ namespace OnlineStore.Components.Pages
 
             await LoadProducts();
 
-            if (_totalProducts == 0)
-            {
-                _isProductListEmpty = true;
-            }
-            else
-            {
-                _isProductListEmpty = false;
-            }
+            _isProductListEmpty = ProductsList.Count == 0 ? true : false;
 
             if (_filtersModel.BrandId != null)
             {

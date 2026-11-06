@@ -53,7 +53,8 @@
                        Label=@Res.Lang.Label_Brand>
                 @foreach (var brand in BrandList)
                 {
-                    <MudSelectItem value="@((int?)brand.Id)">
+                    <MudSelectItem T="int?" 
+                                   Value="@((int?)brand.Id)">
                         @brand.BrandName
                     </MudSelectItem>
                 }
@@ -64,7 +65,8 @@
                        Label=@Res.Lang.Label_Category>
                 @foreach (var category in CategoryList)
                 {
-                    <MudSelectItem value="@((int?)category.Id)">
+                    <MudSelectItem T="int?" 
+                                   Value="@((int?)category.Id)">
                         @category.CategoryName
                     </MudSelectItem>
                 }
@@ -162,14 +164,14 @@
 
             @foreach (var product in ProductsList)
             {
-                <MudItem xs="12" sm="6" md="4" lg="4">
+                <MudItem xs="12" sm="6" md="4" lg="4" @key="product.Id">
                     <ProductCard ProductModel="@product"
                                  OnSelectedId="@RedirectToProductDetailsPage">
 
                         <AuthorizeView Roles="Admin">
                             <MudButton Variant="Variant.Filled"
                                        Style="background-color: #C998ED; margin-top: 15px;"
-                                       OnClick="@(() => DeleteProduct(product.Id))">
+                                       OnClick="@(() => DeleteProduct(product))">
                                 @Res.Lang.Btn_Delete
                             </MudButton>
 

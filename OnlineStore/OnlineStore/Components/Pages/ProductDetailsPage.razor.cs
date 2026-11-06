@@ -1,28 +1,27 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Components;
 using OnlineStore.JWTAuthentication.Services.Contracts;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
-using OnlineStore.Services.Contracts;
+using OnlineStore.Services.Frontend.Contracts;
 
 namespace OnlineStore.Components.Pages
 {
     public partial class ProductDetailsPage : ComponentBase
     {
         [Inject]
-        private IApiClient _apiClient { get; set; }
-
-        [Inject]
         private NavigationManager _navigation { get; set; }
 
         [Inject]
-        private IBrandsService _brandService { get; set; }
+        private IBrandFrontendService _brandFrontendService { get; set; }
 
         [Inject]
-        private ICategoriesService _categoryService { get; set; }
+        private ICategoryFrontendService _categoryFrontendService { get; set; }
 
         [Inject]
-        private IMapper _mapper { get; set; }
+        private ICartFrontendService _cartFrontendService { get; set; }
+
+        [Inject]
+        private IProductFrontendService _productFrontendService { get; set; }
 
         [Parameter]
         public int? Id { get; set; }
@@ -31,40 +30,41 @@ namespace OnlineStore.Components.Pages
         private string _category { get; set; }
 
         protected ProductModel productModel { get; set; } = new();
+        private bool _resultAddProductToCart { get; set; } = false;
+        private bool _resultAddProductToCartUnsuccefully { get; set; } = false;
 
         protected override async Task OnInitializedAsync()
         {
-            var httpClient = await _apiClient.GetHttpClientAsync();
+            productModel = await _productFrontendService.GetProductModelById(Id.Value); 
 
-            var productDTO = await httpClient.GetFromJsonAsync<ProductDTO>($"api/admin/products/get/product/{Id}");
-
-            if (productDTO != null)
+            if (productModel != null)
             {
-                _brand = await _brandService.GetBrandNameByIdAsync(productDTO.BrandId);
-                _category = await _categoryService.GetCategoryNameByIdAsync(productDTO.CategoryId);
+                _brand = await _brandFrontendService.GetBrandNameByIdAsync(productModel.BrandId);
+
+                _category = await _categoryFrontendService.GetCategoryNameByIdAsync(productModel.CategoryId);
             }
 
-            productModel = _mapper.Map<ProductModel>(productDTO);
+            _resultAddProductToCart = false;
+            _resultAddProductToCartUnsuccefully = false;
         }
 
-        protected async Task DeleteProduct(int productId)
+        protected async Task DeleteProduct(ProductModel? productToDelete)
         {
-            var httpClient = await _apiClient.GetHttpClientAsync();
-
-            var ProductsList = await httpClient.GetFromJsonAsync<List<ProductDTO>>("api/admin/products");
-
-            if(ProductsList != null)
+            if (productToDelete != null)
             {
-                var product = ProductsList.FirstOrDefault(p => p.Id == productId);
+                var resultDeletingProduct = await _productFrontendService.DeteleProduct(productToDelete);
 
-                var response = await httpClient.DeleteAsync($"api/admin/products/delete/product/{productId}");
-
-                if (response.IsSuccessStatusCode && product != null)
+                if (resultDeletingProduct == productToDelete)
                 {
-                    ProductsList.Remove(product);
-                    StateHasChanged();
                     _navigation.NavigateTo("/dashboard/products");
                 }
+
+                if (resultDeletingProduct?.IsActive == false)
+                {
+                    productToDelete.IsActive = false;
+                }
+
+                StateHasChanged();
             }
         }
 
@@ -75,11 +75,16 @@ namespace OnlineStore.Components.Pages
 
         protected async Task AddToCart(ProductModel productModel)
         {
-            var httpClient = await _apiClient.GetHttpClientAsync();
+            var addedProduct = await _cartFrontendService.AddProductToCart(productModel);
 
-            var productDTO = _mapper.Map<ProductDTO>(productModel);
-
-            var result = await httpClient.PostAsJsonAsync($"api/cart/add/product/{productDTO.Id}", productDTO);
+            if (addedProduct != null)
+            {
+                _resultAddProductToCart = true;
+            }
+            else
+            {
+                _resultAddProductToCartUnsuccefully = true;
+            }
         }
     }
 }

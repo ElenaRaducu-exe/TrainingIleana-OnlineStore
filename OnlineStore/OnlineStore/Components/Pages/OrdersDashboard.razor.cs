@@ -1,26 +1,21 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor;
-using OnlineStore.JWTAuthentication.Services.Contracts;
-using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
+using OnlineStore.Services.Frontend.Contracts;
 
 namespace OnlineStore.Components.Pages
 {
     public partial class OrdersDashboard : ComponentBase
     {
         [Inject]
-        private IApiClient _apiClient { get; set; }
-
-        [Inject]
         private NavigationManager _navigation { get; set; }
 
         [Inject]
-        private IMapper _mapper { get; set; }
+        private AuthenticationStateProvider _authStateProvider { get; set; }
 
         [Inject]
-        private AuthenticationStateProvider _authStateProvider { get; set; }
+        private IOrderFrontendService _orderFrontendService { get; set; }
 
         private List<OrderDetailsModel> ordersList { get; set; } = new();
 
@@ -28,31 +23,12 @@ namespace OnlineStore.Components.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            var httpClient = await _apiClient.GetHttpClientAsync();
-
             var authState = await _authStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
 
             _isAdminUser = user.IsInRole("Admin");
 
-            if (_isAdminUser)
-            {
-                var ordersDTO = await httpClient.GetFromJsonAsync<List<OrderDetailsDTO>>("api/order/get/list");
-
-                if (ordersDTO != null)
-                {
-                    ordersList = _mapper.Map<List<OrderDetailsModel>>(ordersDTO);
-                }
-            }
-            else
-            {
-                var ordersDTO = await httpClient.GetFromJsonAsync<List<OrderDetailsDTO>>("api/order/get/list/customer");
-
-                if (ordersDTO != null)
-                {
-                    ordersList = _mapper.Map<List<OrderDetailsModel>>(ordersDTO);
-                }
-            }
+            ordersList = await _orderFrontendService.GetOrderDetailsModelList(_isAdminUser);
         }
 
         private void OrderRowClicked(TableRowClickEventArgs<OrderDetailsModel> orderClicked)

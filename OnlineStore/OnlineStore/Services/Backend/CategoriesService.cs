@@ -1,8 +1,8 @@
 ﻿using OnlineStore.Data;
 using OnlineStore.DBModels;
-using OnlineStore.Services.Contracts;
+using OnlineStore.Services.Backend.Contracts;
 
-namespace OnlineStore.Services
+namespace OnlineStore.Services.Backend
 {
     public class CategoriesService : ICategoriesService
     {

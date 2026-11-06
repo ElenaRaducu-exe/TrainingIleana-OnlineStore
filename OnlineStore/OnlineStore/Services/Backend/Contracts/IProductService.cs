@@ -1,7 +1,7 @@
 ﻿using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
 
-namespace OnlineStore.Services.Contracts
+namespace OnlineStore.Services.Backend.Contracts
 {
     public interface IProductService
     {

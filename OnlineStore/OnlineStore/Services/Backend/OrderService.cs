@@ -1,21 +1,15 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Components;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using OnlineStore.Components.Pages;
 using OnlineStore.Data;
 using OnlineStore.DBModels;
-using OnlineStore.JWTAuthentication.Providers.Contracts;
 using OnlineStore.Models.Configuration;
 using OnlineStore.Models.DTOs;
-using OnlineStore.Models.FrontendModels;
 using OnlineStore.Models.StoredProcedureModels;
-using OnlineStore.Services.Contracts;
+using OnlineStore.Services.Backend.Contracts;
 using System.Data;
-using System.Net.Http.Headers;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
-namespace OnlineStore.Services
+namespace OnlineStore.Services.Backend
 {
     public class OrderService : IOrderService
     {
@@ -83,6 +77,8 @@ namespace OnlineStore.Services
                 _dbContext.Carts.Remove(cart);
 
                 await _dbContext.SaveChangesAsync();
+
+                return true;
             }
 
             return false;

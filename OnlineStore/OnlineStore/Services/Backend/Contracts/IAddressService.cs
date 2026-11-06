@@ -1,6 +1,6 @@
 ﻿using OnlineStore.Models.DTOs;
 
-namespace OnlineStore.Services.Contracts
+namespace OnlineStore.Services.Backend.Contracts
 {
     public interface IAddressService
     {

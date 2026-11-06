@@ -7,10 +7,10 @@ using OnlineStore.JWTAuthentication.Providers;
 using OnlineStore.JWTAuthentication.Providers.Contracts;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.Enums;
-using OnlineStore.Services.Contracts;
+using OnlineStore.Services.Backend.Contracts;
 using System.Security.Claims;
 
-namespace OnlineStore.Services
+namespace OnlineStore.Services.Backend
 {
     public class UsersService : IUsersService
     {
@@ -40,8 +40,10 @@ namespace OnlineStore.Services
             return await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
         }
 
-        public async Task<User> UpdateUserActiveMode(User user)
+        public async Task<User?> UpdateUserActiveMode(int userId)
         {
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
             if (user == null)
             {
                 return null;

@@ -1,10 +1,7 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Components;
-using OnlineStore.JWTAuthentication.Services.Contracts;
-using OnlineStore.Models.DTOs;
 using OnlineStore.Models.Enums;
 using OnlineStore.Models.FrontendModels;
-using OnlineStore.Models.StoredProcedureModels;
+using OnlineStore.Services.Frontend.Contracts;
 
 namespace OnlineStore.Components.Pages
 {
@@ -14,10 +11,7 @@ namespace OnlineStore.Components.Pages
         public int OrderId { get; set; }
 
         [Inject]
-        private IApiClient _apiClient { get; set; }
-
-        [Inject]
-        private IMapper _mapper { get; set; }
+        private IOrderFrontendService _orderFrontendService { get; set; }
 
         private OrderDetailsPageModel? _orderDetailsPageModel { get; set; } = new();
 
@@ -82,22 +76,7 @@ namespace OnlineStore.Components.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            var httpClient = await _apiClient.GetHttpClientAsync();
-
-            var orderSummaryRaport = await httpClient.GetFromJsonAsync<OrderDetailsPageDTO>($"api/order/get/details-page/summary-raport/{OrderId}");
-
-            if (orderSummaryRaport != null)
-            {
-                try
-                {
-                    _orderDetailsPageModel = _mapper.Map<OrderDetailsPageModel>(orderSummaryRaport);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"---------------------------------------------------------- Error with mapping in razor component: {ex.Message}");
-                }
-                
-            }
+            _orderDetailsPageModel = await _orderFrontendService.GetOrderDetailsPageModel(OrderId);
 
             _expirationDateReturnRequest = _orderDetailsPageModel?.OrderDetails?.ModifiedAt.AddDays(14);
             if (DateTime.UtcNow > _expirationDateReturnRequest)
@@ -108,34 +87,13 @@ namespace OnlineStore.Components.Pages
 
         public async Task ChangeStatus(int orderId, int newStatusId)
         {
-            var httpClient = await _apiClient.GetHttpClientAsync();
-
-            var responseChangeStatus = await httpClient.PutAsJsonAsync($"api/order/update/status/{orderId}/{newStatusId}", _orderDetailsPageModel);
-
-            if(_orderDetailsPageModel != null && _orderDetailsPageModel.OrderDetails != null)
+            if(_orderDetailsPageModel != null)
             {
-                if (responseChangeStatus.IsSuccessStatusCode)
-                {
-                    if (newStatusId == (int)OrderStatusEnum.Cancelled)
-                    {
-                        var responseRestockProducts = await httpClient.PutAsJsonAsync($"api/order/update/stock/cancelled-order/{orderId}", _orderDetailsPageModel);
+                _orderDetailsPageModel = await _orderFrontendService.UpdateOrderStatus(orderId, newStatusId, _orderDetailsPageModel);
 
-                        if (responseRestockProducts.IsSuccessStatusCode)
-                        {
-                            _orderDetailsPageModel.OrderDetails.StatusEnum = (OrderStatusEnum)newStatusId;
-                            _orderDetailsPageModel.OrderDetails.Status = _orderDetailsPageModel.OrderDetails.StatusEnum.ToString();
-                        }
-                    }
+                _disableReturnRequestButtonAfterDeliverDate = false;
 
-                    _orderDetailsPageModel.OrderDetails.StatusEnum = (OrderStatusEnum)newStatusId;
-                    _orderDetailsPageModel.OrderDetails.Status = _orderDetailsPageModel.OrderDetails.StatusEnum.ToString();
-
-                    _orderDetailsPageModel.OrderDetails.ModifiedAt = DateTime.UtcNow;
-
-                    _disableReturnRequestButtonAfterDeliverDate = false;
-
-                    StateHasChanged();
-                }
+                StateHasChanged();
             }
         }
     }

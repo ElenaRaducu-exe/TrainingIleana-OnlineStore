@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineStore.Models.DTOs;
-using OnlineStore.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
+using OnlineStore.Services.Backend.Contracts;
 
 namespace OnlineStore.Controllers
 {
@@ -16,6 +16,7 @@ namespace OnlineStore.Controllers
             _orderService = orderService;
         }
 
+        // api/order/create
         [HttpPost("create")]
         public async Task<IActionResult> PlaceOrder([FromBody] CreateOrderRequestDTO createOrderRequestDTO) 
         {
@@ -29,6 +30,7 @@ namespace OnlineStore.Controllers
             return Ok(); 
         }
 
+        // api/order/get/list
         [HttpGet("get/list")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetOrdersDTO()

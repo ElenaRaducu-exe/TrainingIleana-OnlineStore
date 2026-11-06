@@ -1,18 +1,13 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Components;
-using OnlineStore.JWTAuthentication.Services.Contracts;
-using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
+using OnlineStore.Services.Frontend.Contracts;
 
 namespace OnlineStore.Components.Pages
 {
     public partial class FormCreateUser : ComponentBase
     {
         [Inject]
-        private IApiClient _apiClient { get; set; }
-
-        [Inject]
-        private IMapper _mapper { get; set; }
+        private IUserFrontendService _userFrontendService { get; set; }
 
         private UserModel _newUser = new();
         private string _repetedPassword = string.Empty;
@@ -31,15 +26,9 @@ namespace OnlineStore.Components.Pages
                 return;
             }
 
-            var userDTO = _mapper.Map<UserDTO>(_newUser); // serv front
+            var responseAddingUser = await _userFrontendService.CreateUser(_newUser);
 
-            var httpClient = await _apiClient.GetHttpClientAsync();
-
-            var response = await httpClient.PostAsJsonAsync("api/users", userDTO);
-
-            //_apiResponse = await response.Content.ReadAsStringAsync();
-
-            if (response.IsSuccessStatusCode)
+            if (responseAddingUser)
             {
                 _newUser = new UserModel();
 
@@ -48,7 +37,6 @@ namespace OnlineStore.Components.Pages
             }
             else
             {
-                // Handle error response + messages on UI
                 _usernameExistingError = true;
             }
         }

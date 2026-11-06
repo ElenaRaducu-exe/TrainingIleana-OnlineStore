@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineStore.Models.DTOs;
-using OnlineStore.Services.Contracts;
+using OnlineStore.Services.Backend.Contracts;
 
 namespace OnlineStore.Controllers
 {

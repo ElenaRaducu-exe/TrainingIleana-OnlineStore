@@ -1,6 +1,6 @@
 ﻿using OnlineStore.DBModels;
 
-namespace OnlineStore.Services.Contracts
+namespace OnlineStore.Services.Backend.Contracts
 {
     public interface IBrandsService
     {

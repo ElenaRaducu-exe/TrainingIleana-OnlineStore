@@ -24,7 +24,7 @@
         <MudCardActions>
             <MudButton Variant="Variant.Filled"
                        Style="background-color: #C998ED;"
-                       OnClick="@(() => DeleteProduct(productModel.Id))">
+                       OnClick="@(() => DeleteProduct(productModel))">
                 @Res.Lang.Btn_Delete
             </MudButton>
 
@@ -46,3 +46,21 @@
     </AuthorizeView>
 
 </MudCard>
+
+@if (_resultAddProductToCart)
+{
+    <MudAlert Severity="Severity.Success"
+              Dense="true"
+              Class="my-2">
+        @Res.Lang.Alert_AddProductCartSuccessfully
+    </MudAlert>
+}
+
+@if (_resultAddProductToCartUnsuccefully)
+{
+    <MudAlert Severity="Severity.Error"
+              Dense="true"
+              Class="my-2">
+        Add Product Cart Unsuccessfully
+    </MudAlert>
+}

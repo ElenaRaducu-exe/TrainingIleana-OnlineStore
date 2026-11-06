@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using OnlineStore.Services.Contracts;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using OnlineStore.DBModels;
 using OnlineStore.Models.DTOs;
+using OnlineStore.Services.Backend;
+using OnlineStore.Services.Backend.Contracts;
 
 namespace OnlineStore.Controllers
 {
@@ -17,7 +18,8 @@ namespace OnlineStore.Controllers
             _userService = userService;
         }
 
-        [HttpPost]
+        // POST: api/users/add
+        [HttpPost("add")]
         public async Task<IActionResult> CreateUser(UserDTO newUser)
         {
             var result = await _userService.CreateUserAsync(newUser);
@@ -35,6 +37,51 @@ namespace OnlineStore.Controllers
         public IActionResult TestAuthentication()
         {
             return Ok("You are authenticated!"); 
+        }
+
+        // GET: api/users/dashboard
+        [HttpGet("dashboard")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetUsers()
+        {
+            var result = await _userService.GetUsersAsync();
+
+            if (result == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("dashboard/{id:int}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetUserById([FromRoute] int id)
+        {
+            var user = await _userService.GetUserByIdAsync(id);
+
+            if (user == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(user);
+        }
+
+        // PUT: api/users/dashboard/update/active/{id:int}
+        [HttpPut("dashboard/update/active/{userId:int}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateUserActiveMode([FromRoute] int userId)
+        {
+            var responseUpdatingStatusUser = await _userService.UpdateUserActiveMode(userId);
+
+            if (responseUpdatingStatusUser == null)
+            {
+                return BadRequest("Change the active mode unsuccessful!");
+            }
+
+            return Ok();
         }
     }
 }

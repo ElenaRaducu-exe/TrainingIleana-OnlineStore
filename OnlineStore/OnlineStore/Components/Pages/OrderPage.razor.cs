@@ -3,43 +3,42 @@ using Microsoft.AspNetCore.Components;
 using OnlineStore.JWTAuthentication.Services.Contracts;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
+using OnlineStore.Services.Frontend.Contracts;
 
 namespace OnlineStore.Components.Pages
 {
     public partial class OrderPage : ComponentBase
     {
-        [Inject]
-        private IApiClient _apiClient { get; set; }
+        [Parameter] public int? UserId { get; set; }
 
         [Inject]
         private NavigationManager _navigation { get; set; }
 
         [Inject]
-        private IMapper _mapper { get; set; }
+        private IAddressFrontendService _addressFrontendService { get; set; }
 
-        private List<AddressModel> addressList { get; set; } = new();
+        [Inject]
+        private IOrderFrontendService  _orderFrontendService { get; set; }
+
+        [Inject]
+        private ICartFrontendService _cartFrontendService { get; set; }
+
+        private List<AddressModel>? addressList { get; set; } = new();
         private List<CartItemModel> _cartItemsList { get; set; } = new();
 
-        [Parameter]
-        public int? UserId { get; set; }
         private bool? _orderPlaceSuccess = false;
 
         private CreateOrderRequestDTO _createOrderRequestDTO { get; set; } = new CreateOrderRequestDTO();
 
         protected override async Task OnInitializedAsync()
         {
-            var httpClient = await _apiClient.GetHttpClientAsync();
+            addressList = await _addressFrontendService.GetAddressesByUser();
 
-            var addressDTOList = await httpClient.GetFromJsonAsync<List<AddressDTO>>("api/address");
+            _cartItemsList = await _cartFrontendService.GetCartItemsByUser();
 
-            addressList = _mapper.Map<List<AddressModel>>(addressDTOList);
-
-            var cartItemDTO = await httpClient.GetFromJsonAsync<List<CartItemDTO>>("api/cart/items/user");
-
-            if (cartItemDTO != null && cartItemDTO.Count() > 0)
+            if (_cartItemsList.Count() > 0)
             {
-                _createOrderRequestDTO.CartId = cartItemDTO.First().CartId;
-                _cartItemsList = _mapper.Map<List<CartItemModel>>(cartItemDTO);
+                _createOrderRequestDTO.CartId = _cartItemsList.First().CartId;
             }
 
             if (UserId != null)
@@ -72,24 +71,19 @@ namespace OnlineStore.Components.Pages
 
         public async Task PlaceOrder()
         {
-            if (_createOrderRequestDTO.AddressId != null)
+            var response = await _orderFrontendService.PlaceOrder(_createOrderRequestDTO);
+
+            if(response == true)
             {
-                CreateOrderRequestDTO createOrderRequestDTO = new CreateOrderRequestDTO()
-                {
-                    AddressId = _createOrderRequestDTO.AddressId,
-                    UserId = _createOrderRequestDTO.UserId,
-                    CartId = _createOrderRequestDTO.CartId
-                };
-
-                var httpClient = await _apiClient.GetHttpClientAsync();
-
-                var result = await httpClient.PostAsJsonAsync($"api/order/create", createOrderRequestDTO);
-
                 _cartItemsList.Clear();
 
                 StateHasChanged();
 
                 _orderPlaceSuccess = true;
+            }
+            else
+            {
+                _orderPlaceSuccess = false;
             }
         }
     }

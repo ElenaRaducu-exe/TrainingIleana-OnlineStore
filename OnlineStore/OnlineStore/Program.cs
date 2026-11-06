@@ -1,25 +1,23 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using MudBlazor.Services;
+
 using OnlineStore.Components;
-using OnlineStore.Components.Pages;
 using OnlineStore.Data;
 using OnlineStore.DBModels;
 using OnlineStore.JWTAuthentication;
-using OnlineStore.JWTAuthentication.Handlers;
 using OnlineStore.JWTAuthentication.Providers;
 using OnlineStore.JWTAuthentication.Providers.Contracts;
 using OnlineStore.JWTAuthentication.Services;
 using OnlineStore.JWTAuthentication.Services.Contracts;
 using OnlineStore.Models.Configuration;
-using OnlineStore.Services;
-using OnlineStore.Services.Contracts;
-using System.Text;
+using OnlineStore.Services.Backend;
+using OnlineStore.Services.Backend.Contracts;
+using OnlineStore.Services.Frontend;
+using OnlineStore.Services.Frontend.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,9 +65,24 @@ builder.Services.AddScoped<ITokenProvider, TokenProvider>();
 builder.Services.AddHttpClient<IApiClient, ApiClient>("AuthenticatedUser");
 
 //Controllers
-builder.Services.AddControllers();  
+//builder.Services.AddControllers();  
+builder.Services.AddControllers(options =>
+{
+    // Forces all string return values to be JSON-serialized
+    // instead of falling back to the plain text formatter.
 
-// Services
+    // the line removes the deafult plain-text output formatter 
+    // preventing the API from returning string responses as text/plain
+    // useful when all responses should be JSON-formatted, even for string return types 
+    // enforcing consistent types across the API
+    options.OutputFormatters.RemoveType<StringOutputFormatter>();
+
+    // the line is used to remove the built-in formatter that automatically returns HTTP 204 No content 
+    // when an action returns null or empty result instead of 200 OK with an exmpty body 
+    options.OutputFormatters.RemoveType<HttpNoContentOutputFormatter>();
+});
+
+// Services - Backend
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IUsersService, UsersService>();
@@ -80,6 +93,15 @@ builder.Services.AddScoped<ICartProductsService, CartProductsService>();
 builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<IOrderService,  OrderService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+
+// Services - Frontend
+builder.Services.AddScoped<IBrandFrontendService, BrandFrontendService>();
+builder.Services.AddScoped<ICategoryFrontendService, CategoryFrontendService>();
+builder.Services.AddScoped<IAddressFrontendService, AddressFrontendService>();
+builder.Services.AddScoped<IOrderFrontendService, OrderFrontendService>();
+builder.Services.AddScoped<ICartFrontendService, CartFrontendService>();
+builder.Services.AddScoped<IProductFrontendService, ProductFrontendService>();
+builder.Services.AddScoped<IUserFrontendService, UserFrontendService>();
 
 //AutoMapper
 /*builder.Services.AddScoped<ILoggerFactory, LoggerFactory>();

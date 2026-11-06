@@ -3,58 +3,32 @@ using System.Net.Http.Headers;
 using OnlineStore.DBModels;
 using OnlineStore.JWTAuthentication.Providers.Contracts;
 using OnlineStore.JWTAuthentication.Services.Contracts;
+using OnlineStore.Services.Frontend.Contracts;
 
 namespace OnlineStore.Components.Pages
 {
     public partial class UsersDashboard : ComponentBase
     {
         [Inject]
-        private IApiClient _apiClient { get; set; }
+        private IUserFrontendService _userFrontendService { get; set; }
 
         public List<User> UsersList = new();
 
-        /*
+        
         protected override async Task OnInitializedAsync()
         {
-            var httpClient = _httpClientFactory.CreateClient("AuthenticatedUser");
-            httpClient.BaseAddress = new Uri(_navigation.BaseUri);
-
-            UsersList = await httpClient.GetFromJsonAsync<List<User>>("api/users/dashboard");
-        }*/
-
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            if (firstRender)
-            {
-                UsersList = await _apiClient.GetAsync<List<User>>("api/users/dashboard");
-
-                StateHasChanged(); 
-            }
+            UsersList = await _userFrontendService.GetUsers();
         }
 
-        private async Task UpdateActiveMode(int id)
+        private async Task UpdateActiveMode(User user)
         {
-            var httpClient = await _apiClient.GetHttpClientAsync();
+            var responseUpdatingStatusUser = await _userFrontendService.UpdateUserActiveMode(user);
 
-            var user = await httpClient.GetFromJsonAsync<User>($"api/users/dashboard/{id}");
-
-            var response = await httpClient.PutAsJsonAsync($"api/users/dashboard/update/active/{id}", user);
-
-            if (response.IsSuccessStatusCode)
+            if (responseUpdatingStatusUser == true)
             {
-                var updatedUser = await response.Content.ReadFromJsonAsync<User>();
+                user.IsActive = !user.IsActive;
 
-                if (updatedUser != null)
-                {
-                    var userList = UsersList.FirstOrDefault(u => u.Id == id);
-
-                    if (userList != null)
-                    {
-                        userList.IsActive = updatedUser.IsActive;
-                    }
-
-                    StateHasChanged();
-                }
+                StateHasChanged();
             }
         }
     }

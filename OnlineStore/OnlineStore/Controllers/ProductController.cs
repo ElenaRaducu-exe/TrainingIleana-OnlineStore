@@ -2,9 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
-using OnlineStore.Services;
-using OnlineStore.Services.Contracts;
-using System.Security.Claims;
+using OnlineStore.Services.Backend.Contracts;
 
 namespace OnlineStore.Controllers
 {
@@ -43,6 +41,7 @@ namespace OnlineStore.Controllers
             return Ok("Product added successfully!");
         }
 
+        // api/admin/products/get/product/{id:int}
         [HttpGet("get/product/{id:int}")]
         public async Task<IActionResult> GetProduct(int id)
         {

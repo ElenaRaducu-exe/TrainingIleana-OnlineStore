@@ -4,9 +4,9 @@ using OnlineStore.Data;
 using OnlineStore.DBModels;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
-using OnlineStore.Services.Contracts;
+using OnlineStore.Services.Backend.Contracts;
 
-namespace OnlineStore.Services
+namespace OnlineStore.Services.Backend
 {
     public class AddressService : IAddressService
     {
@@ -28,7 +28,14 @@ namespace OnlineStore.Services
 
             await _dbContext.SaveChangesAsync();
 
-            return true;
+            var addressVerified = await _dbContext.Addresses.FirstOrDefaultAsync(a => a.Id == address.Id);
+
+            if (addressVerified != null)
+            {
+                return true;
+            }
+
+            return false; 
         }
 
         public async Task<List<AddressDTO>?> GetAddressesByUserId(int userId)

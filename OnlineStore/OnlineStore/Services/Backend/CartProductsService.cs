@@ -1,16 +1,15 @@
 ﻿using AutoMapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using OnlineStore.Components.Pages;
 using OnlineStore.Data;
 using OnlineStore.DBModels;
 using OnlineStore.Models.Configuration;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.StoredProcedureModels;
-using OnlineStore.Services.Contracts;
+using OnlineStore.Services.Backend.Contracts;
 using System.Data;
 
-namespace OnlineStore.Services
+namespace OnlineStore.Services.Backend
 {
     public class CartProductsService : ICartProductsService
     {
@@ -133,7 +132,7 @@ namespace OnlineStore.Services
             }
         }
 
-        public async Task<bool> AddProductToCart(int productId, int userId)
+        public async Task<bool?> AddProductToCart(int productId, int userId)
         {
             var product = await _dbContext.Products.FirstOrDefaultAsync(p => p.Id == productId);
 

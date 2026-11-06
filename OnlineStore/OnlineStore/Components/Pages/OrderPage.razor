@@ -5,13 +5,16 @@
 <h3>AddressPage</h3>
 
 <MudGrid Spacing="10">
-    @foreach (var address in addressList)
+    @if(addressList != null)
     {
-        <MudItem xs="6">
-            <AddressCard addressModel="@address"
-                         OnSelectedAddressId="@GetSelectedAddressId"
-                         SelectedAddressId ="@_createOrderRequestDTO.AddressId"/>
-        </MudItem>
+        @foreach (var address in addressList)
+        {
+            <MudItem xs="6">
+                <AddressCard addressModel="@address"
+                             OnSelectedAddressId="@GetSelectedAddressId"
+                             SelectedAddressId ="@_createOrderRequestDTO.AddressId"/>
+            </MudItem>
+        } 
     }
 </MudGrid>
 

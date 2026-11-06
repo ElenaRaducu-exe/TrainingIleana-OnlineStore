@@ -2,7 +2,7 @@
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.StoredProcedureModels;
 
-namespace OnlineStore.Services.Contracts
+namespace OnlineStore.Services.Backend.Contracts
 {
     public interface IOrderService
     {

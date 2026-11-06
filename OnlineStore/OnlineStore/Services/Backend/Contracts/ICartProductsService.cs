@@ -1,13 +1,13 @@
 ﻿using OnlineStore.Models.DTOs;
 using OnlineStore.Models.StoredProcedureModels;
 
-namespace OnlineStore.Services.Contracts
+namespace OnlineStore.Services.Backend.Contracts
 {
     public interface ICartProductsService
     {
         Task<List<CartItemSummaries>?> GetCartItems();
 
-        Task<bool> AddProductToCart(int productId, int userId);
+        Task<bool?> AddProductToCart(int productId, int userId);
 
         Task<List<CartItemDTO>?> GetCartItemsByUser(int userId);
 

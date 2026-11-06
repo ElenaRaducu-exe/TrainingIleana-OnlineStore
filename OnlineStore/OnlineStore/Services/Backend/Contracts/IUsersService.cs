@@ -1,7 +1,7 @@
 ﻿using OnlineStore.DBModels;
 using OnlineStore.Models.DTOs;
 
-namespace OnlineStore.Services.Contracts
+namespace OnlineStore.Services.Backend.Contracts
 {
     public interface IUsersService
     {
@@ -9,7 +9,7 @@ namespace OnlineStore.Services.Contracts
 
         Task<User?> GetUserByIdAsync(int id); 
 
-        Task<User> UpdateUserActiveMode(User user);
+        Task<User?> UpdateUserActiveMode(int userId);
 
         Task<bool> CreateUserAsync(UserDTO newUser); 
     }

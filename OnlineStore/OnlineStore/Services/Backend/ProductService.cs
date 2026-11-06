@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using OnlineStore.Data;
@@ -8,11 +6,10 @@ using OnlineStore.DBModels;
 using OnlineStore.Models.Configuration;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
-using OnlineStore.Services.Contracts;
+using OnlineStore.Services.Backend.Contracts;
 using System.Data;
-using static MudBlazor.Icons.Custom;
 
-namespace OnlineStore.Services
+namespace OnlineStore.Services.Backend
 {
     public class ProductService : IProductService
     {
@@ -157,7 +154,7 @@ namespace OnlineStore.Services
                                 CategoryId = (int)row["CategoryId"],
                                 BrandId = (int)row["BrandId"],
                                 CreatedBy = (int)row["CreatedBy"],
-                                ModifiedBy = (int)row["ModifiedBy"],
+                                ModifiedBy = row["ModifiedBy"] == DBNull.Value ? null : (int?)row["ModifiedBy"],
                                 ReservedStock = (int)row["ReservedStock"]
                             };
 
@@ -170,15 +167,14 @@ namespace OnlineStore.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in spGetOrderSummaryRaport: {ex.Message}");
+                Console.WriteLine($"Error in spGetFilteredSortedProducts: {ex.Message}");
                 return null; 
             }
         }
 
         public async Task<bool> AddProductAsync(ProductDTO productDTO)
         {
-            if(productDTO.Stock < 0 || productDTO.Price <= 0 || productDTO.Name == null 
-                || productDTO.BrandId == null || productDTO.CategoryId == null)
+            if(productDTO.Stock < 0 || productDTO.Price <= 0 || productDTO.Name == null)
             {
                 return false; 
             }
@@ -243,6 +239,7 @@ namespace OnlineStore.Services
 
             product.IsActive = !product.IsActive;
             product.ModifiedBy = userId;
+            product.ModifiedAt = DateTime.UtcNow;
 
             _dbContext.SaveChanges();
 

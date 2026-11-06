@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineStore.Services;
-using OnlineStore.Services.Contracts;
+using OnlineStore.Services.Backend.Contracts;
 
 namespace OnlineStore.Controllers
 {
@@ -28,5 +28,33 @@ namespace OnlineStore.Controllers
             return Ok(result);
         }
 
+        // api/brands/get/name/{brandId:int}
+        [HttpGet("get/name/{brandId:int}")]
+        public async Task<IActionResult> GetBrandName([FromRoute] int brandId)
+        {
+            var result = await _brandsService.GetBrandNameByIdAsync(brandId);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            //return new JsonResult(result);
+            return Ok(result);
+        }
+
+        // api/brands/get/{brandId:int}
+        [HttpGet("get/{brandId:int}")]
+        public async Task<IActionResult> GetBrandById([FromRoute] int brandId)
+        {
+            var result = await _brandsService.GetBrandByIdAsync(brandId);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
     }
 }

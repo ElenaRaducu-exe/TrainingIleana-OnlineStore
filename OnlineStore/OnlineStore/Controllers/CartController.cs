@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OnlineStore.Models.DTOs;
-using OnlineStore.Models.FrontendModels;
-using OnlineStore.Services.Contracts;
+using OnlineStore.Services.Backend.Contracts;
 
 namespace OnlineStore.Controllers
 {
@@ -10,15 +8,13 @@ namespace OnlineStore.Controllers
     public class CartController : ControllerBase
     {
         private readonly ICartProductsService _cartProductsService;
-        private readonly IProductService _productService;
 
-        public CartController(ICartProductsService cartProductsService,
-                              IProductService productService)
+        public CartController(ICartProductsService cartProductsService)
         {
             _cartProductsService = cartProductsService;
-            _productService = productService;
         }
 
+        // api/cart/items/user
         [HttpGet("items/user")]
         public async Task<IActionResult> GetCartItems()
         {
@@ -54,6 +50,7 @@ namespace OnlineStore.Controllers
             return Ok(result);
         }
 
+        // api/cart/add/product/{productId:int}
         [HttpPost("add/product/{productId:int}")]
         public async Task<IActionResult> AddProductToCart(int productId)
         {

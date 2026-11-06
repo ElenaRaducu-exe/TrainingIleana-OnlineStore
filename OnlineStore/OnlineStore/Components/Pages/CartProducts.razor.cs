@@ -1,23 +1,21 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Components;
-using OnlineStore.JWTAuthentication.Services.Contracts;
-using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
+using OnlineStore.Services.Frontend.Contracts;
 
 namespace OnlineStore.Components.Pages
 {
     public partial class CartProducts : ComponentBase
     {
         [Inject]
-        private IApiClient _apiClient { get; set; }
-
-        [Inject]
         private NavigationManager _navigation { get; set; }
 
         [Inject]
-        private IMapper _mapper { get; set; }
+        private IAddressFrontendService _addressFrontendService { get; set; }
 
-        private List<CartItemModel> _cartItems { get; set; }
+        [Inject]
+        private ICartFrontendService _cartFrontendService { get; set; }
+
+        private List<CartItemModel>? _cartItems { get; set; }
         private decimal _totalOrderPrice { get; set; }
         private int _totalCartItems { get; set; }
         private int _userID { get; set; }
@@ -25,16 +23,13 @@ namespace OnlineStore.Components.Pages
 
         protected async Task IntializedPageLoadData()
         {
-            var httpClient = await _apiClient.GetHttpClientAsync();
-            var cartItemDTO = await httpClient.GetFromJsonAsync<List<CartItemDTO>>("api/cart/items/user");
+            _cartItems = await _cartFrontendService.GetCartItemsByUser();
 
-            if (cartItemDTO != null && cartItemDTO.Count() > 0)
+            if (_cartItems != null && _cartItems.Count() > 0)
             {
-                _cartItems = _mapper.Map<List<CartItemModel>>(cartItemDTO);
+                _userID = _cartItems.First().UserId;
 
-                _userID = cartItemDTO.First().UserId;
-
-                _cartId = cartItemDTO.First().CartId;
+                _cartId = _cartItems.First().CartId;
 
                 _totalOrderPrice = _cartItems.Sum(item => item.Price * item.Quantity);
 
@@ -62,20 +57,21 @@ namespace OnlineStore.Components.Pages
             _navigation.NavigateTo("/dashboard/products");
         }
 
-        protected async Task DeleteCartItem(int cartId, int cartItemId)
+        protected async Task DeleteCartItem(int cartItemId)
         {
-            var cart = _cartItems.FirstOrDefault(cart => cart.CartId == cartId);
-            var cartItem = _cartItems.FirstOrDefault(item => item.CartItemId == cartItemId);
+            var response = await _cartFrontendService.DeleteCartItem(cartItemId);
 
-            var httpClient = await _apiClient.GetHttpClientAsync();
-            var response = await httpClient.DeleteAsync($"api/cart/delete/{cartItemId}");
-
-            if (response.IsSuccessStatusCode && cartItem != null)
+            if (response == true)
             {
-                _cartItems.Remove(cartItem);
-                _totalCartItems = _cartItems.Count();
+                var cartItem = _cartItems.FirstOrDefault(item => item.CartItemId == cartItemId);
 
-                StateHasChanged();
+                if (cartItem != null)
+                {
+                    _cartItems.Remove(cartItem);
+                    _totalCartItems = _cartItems.Count();
+
+                    StateHasChanged();
+                }
             }
         }
 
@@ -90,7 +86,7 @@ namespace OnlineStore.Components.Pages
 
             if (cartItem != null)
             {
-                await DeleteCartItem(cartItem.CartId, cartItemId);
+                await DeleteCartItem(cartItemId);
             }
         }
 
@@ -106,10 +102,9 @@ namespace OnlineStore.Components.Pages
 
         public async Task AvailableAdresses()
         {
-            var httpClient = await _apiClient.GetHttpClientAsync();
-            var addressDTO = await httpClient.GetFromJsonAsync<List<AddressDTO>>("api/address");
+            var addressList = await _addressFrontendService.GetAddressesByUser();
 
-            if(addressDTO?.Any() == false)
+            if (addressList?.Any() == false)
             {
                 RedirectToAddressForm();
             }
@@ -121,10 +116,9 @@ namespace OnlineStore.Components.Pages
 
         public async Task DeleteCart()
         {
-            var httpClient = await _apiClient.GetHttpClientAsync();
-            var result = await httpClient.DeleteAsync($"api/cart/delete/cart/{_cartId}");
+            var result = await _cartFrontendService.DeleteCart(_cartId);
 
-            if(result.IsSuccessStatusCode)
+            if (result == true)
             {
                 _cartItems.Clear();
                 _totalCartItems = 0;

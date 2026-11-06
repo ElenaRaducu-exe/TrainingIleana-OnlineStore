@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using OnlineStore.Services;
-using OnlineStore.Services.Contracts;
+using OnlineStore.Services.Backend.Contracts;
 
 namespace OnlineStore.Controllers
 {
@@ -28,5 +28,35 @@ namespace OnlineStore.Controllers
 
             return Ok(result);
         }
+
+        // api/categories/get/name/{categoryId:int}
+        [HttpGet("get/name/{categoryId:int}")]
+        public async Task<IActionResult> GetCategoryName([FromRoute] int categoryId)
+        {
+            var result = await _categoriesService.GetCategoryNameByIdAsync(categoryId);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            //return new JsonResult(result);
+            return Ok(result);
+        }
+
+        // api/categories/get/{categoryId:int}
+        [HttpGet("get/{categoryId:int}")]
+        public async Task<IActionResult> GetCategoryById([FromRoute] int categoryId)
+        {
+            var result = await _categoriesService.GetCategoryByIdAsync(categoryId);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
     }
 }

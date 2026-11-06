@@ -4,7 +4,8 @@ using OnlineStore.DBModels;
 using OnlineStore.JWTAuthentication.Services.Contracts;
 using OnlineStore.Models.DTOs;
 using OnlineStore.Models.FrontendModels;
-using OnlineStore.Services.Contracts;
+using OnlineStore.Services.Backend.Contracts;
+using OnlineStore.Services.Frontend.Contracts;
 
 namespace OnlineStore.Components.Pages
 {
@@ -17,15 +18,25 @@ namespace OnlineStore.Components.Pages
         private NavigationManager _navigation { get; set; }
 
         [Inject]
+        private IMapper _mapper { get; set; }
+
+        [Inject]
         private IProductService _productService { get; set; }
 
         [Inject]
-        private IMapper _mapper { get; set; }
+        private IBrandFrontendService _brandFrontendService { get; set; }
+
+        [Inject]
+        private ICategoryFrontendService _categoryFrontendService { get; set; }
+
+        [Inject]
+        private IProductFrontendService _productFrontendService { get; set; }
 
         private ProductModel _productModel = new();
 
         private List<Brand> _brands = new();
         private List<Category> _categories = new();
+
         private string _message = string.Empty;
 
         private bool _priceError = false;
@@ -38,19 +49,12 @@ namespace OnlineStore.Components.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            var httpClient = await _apiClient.GetHttpClientAsync();
+            _brands = await _brandFrontendService.GetBrandsListAsync();
+            _categories = await _categoryFrontendService.GetCategoriesListAsync();
 
-            _brands = await httpClient.GetFromJsonAsync<List<Brand>>("api/brands");
-            _categories = await httpClient.GetFromJsonAsync<List<Category>>("api/categories");
-
-            if(productId != null)
+            if (productId != null)
             {
-                var _productDTO = await _productService.GetProductDTOAsyncById(productId.Value);
-
-                if(_productDTO != null)
-                {
-                    _productModel = _mapper.Map<ProductModel>(_productDTO);
-                }
+                _productModel = await _productFrontendService.GetProductModelById(productId.Value); 
             }
         }
 
@@ -68,13 +72,9 @@ namespace OnlineStore.Components.Pages
                 _priceErrorMessage = "Price can not be 0 or negative!";
             }
 
-            var productDTO = _mapper.Map<ProductModel>(_productModel);
+            var resultProductAdded = await _productFrontendService.AddProduct(_productModel);
 
-            var httpClient = await _apiClient.GetHttpClientAsync();
-
-            var response = await httpClient.PostAsJsonAsync("api/admin/products/add/product", productDTO);
-
-            if (response.IsSuccessStatusCode)
+            if (resultProductAdded)
             {
                 _productModel = new ProductModel();
                 _message = "Product added successfully!";
@@ -84,7 +84,7 @@ namespace OnlineStore.Components.Pages
                 _priceError = false;
                 _priceErrorMessage = string.Empty;
 
-                await Task.Delay(2000);
+                await Task.Delay(3000);
                 _navigation.NavigateTo("/dashboard/products");
             }
             else
@@ -95,13 +95,9 @@ namespace OnlineStore.Components.Pages
 
         protected async Task EditProduct(ProductModel productModel)
         {
-            var productDTO = _mapper.Map<ProductDTO>(_productModel);
+            var response = await _productFrontendService.UpdateProduct(productModel);
 
-            var httpClient = await _apiClient.GetHttpClientAsync();
-
-            var response = await httpClient.PutAsJsonAsync($"api/admin/products/update/product/{productDTO.Id}", productDTO);
-
-            if (response.IsSuccessStatusCode)
+            if (response)
             {
                 _navigation.NavigateTo("/dashboard/products");
             }
