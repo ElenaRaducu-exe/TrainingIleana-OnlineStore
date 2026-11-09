@@ -31,5 +31,7 @@ namespace OnlineStore.Models.FrontendModels
         public int BrandId { get; set; }
 
         public int ReservedStock { get; set; }
+        public string? BrandName { get; set; }
+        public string? CategoryName { get; set; }
     }
 }

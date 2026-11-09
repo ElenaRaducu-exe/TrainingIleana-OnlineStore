@@ -97,7 +97,7 @@ namespace OnlineStore.Services.Backend
                         if (productFilters.Name != null) {
                             sqlCommand.Parameters.AddWithValue("@Name", productFilters.Name);
                         }
-
+                                       
                         if (productFilters.BrandId != null) {
                             sqlCommand.Parameters.AddWithValue("@BrandId", productFilters.BrandId);
                         }
@@ -155,7 +155,9 @@ namespace OnlineStore.Services.Backend
                                 BrandId = (int)row["BrandId"],
                                 CreatedBy = (int)row["CreatedBy"],
                                 ModifiedBy = row["ModifiedBy"] == DBNull.Value ? null : (int?)row["ModifiedBy"],
-                                ReservedStock = (int)row["ReservedStock"]
+                                ReservedStock = (int)row["ReservedStock"],
+                                BrandName = row["BrandName"].ToString() ?? "-",
+                                CategoryName = row["CategoryName"].ToString() ?? "-"
                             };
 
                             resultStoredProcedure.productDTOs.Add(productDto);
@@ -190,11 +192,17 @@ namespace OnlineStore.Services.Backend
 
         public async Task<ProductDTO?> GetProductDTOAsyncById(int id)
         {
-            var product = _dbContext.Products.AsNoTracking().FirstOrDefault(p =>  p.Id == id);
+            var product = _dbContext.Products.AsNoTracking()
+                .Include(p => p.Brand)
+                .Include(c => c.Category)
+                .FirstOrDefault(p =>  p.Id == id);
 
             ProductDTO productDTO = _mapper.Map<ProductDTO>(product);
 
-            if(productDTO == null)
+            productDTO.BrandName = product?.Brand?.BrandName;
+            productDTO.CategoryName = product?.Category?.CategoryName;
+
+            if (productDTO == null)
             {
                 return null; 
             }

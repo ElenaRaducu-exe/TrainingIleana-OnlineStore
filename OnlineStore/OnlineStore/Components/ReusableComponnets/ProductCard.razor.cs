@@ -7,12 +7,6 @@ namespace OnlineStore.Components.ReusableComponnets
 {
     public partial class ProductCard : ComponentBase
     {
-        [Inject]
-        private IBrandFrontendService _brandFrontendService { get; set; }
-
-        [Inject]
-        private ICategoryFrontendService _categoryFrontendService { get; set; }
-
         [Parameter]
         public ProductModel ProductModel { get; set; }
 
@@ -22,18 +16,9 @@ namespace OnlineStore.Components.ReusableComponnets
         [Parameter]
         public RenderFragment ChildContent { get; set; }
 
-        private Brand _brand { get; set; } = new();
-        private Category _category { get; set; } = new(); 
-
         private async Task ProductCardClicked(int ProductId)
         {
             await OnSelectedId.InvokeAsync(ProductId);
-        }
-
-        protected override async Task OnInitializedAsync()
-        {
-            _brand = await _brandFrontendService.GetBrandByIdAsync(ProductModel.BrandId);
-            _category = await _categoryFrontendService.GetCategoryByIdAsync(ProductModel.CategoryId);
         }
     }
 }

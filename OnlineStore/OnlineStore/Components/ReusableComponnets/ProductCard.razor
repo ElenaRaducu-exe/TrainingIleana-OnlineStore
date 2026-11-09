@@ -10,7 +10,7 @@
     <MudCardContent>
         <MudText Typo="Typo.h5">@ProductModel.Name</MudText>
         <MudText Typo="Typo.body1">@ProductModel.Description</MudText>
-        <MudText Typo="Typo.body2">@Res.Lang.Label_Category: @_category.CategoryName | @Res.Lang.Label_Brand: @_brand.BrandName</MudText>
+        <MudText Typo="Typo.body2">@Res.Lang.Label_Category: @ProductModel.CategoryName | @Res.Lang.Label_Brand: @ProductModel.BrandName</MudText>
         <MudText Typo="Typo.body2">@Res.Lang.Label_Stock: @ProductModel.Stock | @Res.Lang.Label_Price: @ProductModel.Price</MudText>
 
         <AuthorizeView Roles="Admin">

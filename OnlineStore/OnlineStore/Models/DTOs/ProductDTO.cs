@@ -12,7 +12,9 @@ namespace OnlineStore.Models.DTOs
         public string? ImageUrl { get; set; }
         public bool IsActive { get; set; }
         public int CategoryId {  get; set; }
+        public string? CategoryName { get; set; }
         public int BrandId {  get; set; }
+        public string? BrandName { get; set; }
         public int? CreatedBy { get; set; }
         public int? ModifiedBy { get; set; }
         public int ReservedStock { get; set; }

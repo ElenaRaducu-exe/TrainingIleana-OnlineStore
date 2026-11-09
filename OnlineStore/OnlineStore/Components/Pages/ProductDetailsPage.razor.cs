@@ -12,12 +12,6 @@ namespace OnlineStore.Components.Pages
         private NavigationManager _navigation { get; set; }
 
         [Inject]
-        private IBrandFrontendService _brandFrontendService { get; set; }
-
-        [Inject]
-        private ICategoryFrontendService _categoryFrontendService { get; set; }
-
-        [Inject]
         private ICartFrontendService _cartFrontendService { get; set; }
 
         [Inject]
@@ -26,9 +20,6 @@ namespace OnlineStore.Components.Pages
         [Parameter]
         public int? Id { get; set; }
 
-        private string _brand { get; set; }
-        private string _category { get; set; }
-
         protected ProductModel productModel { get; set; } = new();
         private bool _resultAddProductToCart { get; set; } = false;
         private bool _resultAddProductToCartUnsuccefully { get; set; } = false;
@@ -36,13 +27,6 @@ namespace OnlineStore.Components.Pages
         protected override async Task OnInitializedAsync()
         {
             productModel = await _productFrontendService.GetProductModelById(Id.Value); 
-
-            if (productModel != null)
-            {
-                _brand = await _brandFrontendService.GetBrandNameByIdAsync(productModel.BrandId);
-
-                _category = await _categoryFrontendService.GetCategoryNameByIdAsync(productModel.CategoryId);
-            }
 
             _resultAddProductToCart = false;
             _resultAddProductToCartUnsuccefully = false;
