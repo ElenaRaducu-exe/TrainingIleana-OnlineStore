@@ -27,7 +27,7 @@
 
 @if (_cartItemsList != null)
 {
-    @foreach (var item in _cartItemsList)
+    @foreach (var item in _cartItemsList.CartItems)
     {
         <CartItemCard CartItemModel="@item"
                       OnItemSelected="@RedirectToProductDetailsPage" />

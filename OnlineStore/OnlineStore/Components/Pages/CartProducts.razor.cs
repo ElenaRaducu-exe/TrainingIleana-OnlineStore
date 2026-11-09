@@ -15,26 +15,12 @@ namespace OnlineStore.Components.Pages
         [Inject]
         private ICartFrontendService _cartFrontendService { get; set; }
 
-        private List<CartItemModel>? _cartItems { get; set; }
-        private decimal _totalOrderPrice { get; set; }
-        private int _totalCartItems { get; set; }
-        private int _userID { get; set; }
-        private int _cartId { get; set; }
+        private CartSummaryPageModel? _cartItems { get; set; }
+
 
         protected async Task IntializedPageLoadData()
         {
             _cartItems = await _cartFrontendService.GetCartItemsByUser();
-
-            if (_cartItems != null && _cartItems.Count() > 0)
-            {
-                _userID = _cartItems.First().UserId;
-
-                _cartId = _cartItems.First().CartId;
-
-                _totalOrderPrice = _cartItems.Sum(item => item.Price * item.Quantity);
-
-                _totalCartItems = _cartItems.Count();
-            }
         }
 
         protected override async Task OnInitializedAsync()
@@ -44,7 +30,7 @@ namespace OnlineStore.Components.Pages
 
         public void RedirectToProductDetailsPage(int cartItemId)
         {
-            var item = _cartItems.FirstOrDefault(item => item.CartItemId == cartItemId);
+            var item = _cartItems?.CartItems.FirstOrDefault(item => item.CartItemId == cartItemId);
 
             if (item != null)
             {
@@ -63,12 +49,11 @@ namespace OnlineStore.Components.Pages
 
             if (response == true)
             {
-                var cartItem = _cartItems.FirstOrDefault(item => item.CartItemId == cartItemId);
+                var cartItem = _cartItems?.CartItems.FirstOrDefault(item => item.CartItemId == cartItemId);
 
                 if (cartItem != null)
                 {
-                    _cartItems.Remove(cartItem);
-                    _totalCartItems = _cartItems.Count();
+                    await IntializedPageLoadData();
 
                     StateHasChanged();
                 }
@@ -82,7 +67,7 @@ namespace OnlineStore.Components.Pages
 
         private async Task HandleItemDeleted(int cartItemId)
         {
-            var cartItem = _cartItems.FirstOrDefault(item => item.CartItemId == cartItemId);
+            var cartItem = _cartItems?.CartItems.FirstOrDefault(item => item.CartItemId == cartItemId);
 
             if (cartItem != null)
             {
@@ -92,12 +77,12 @@ namespace OnlineStore.Components.Pages
 
         public void RedirectToAddressForm()
         {
-            _navigation.NavigateTo($"place-order/AddressForm/{_userID}");
+            _navigation.NavigateTo($"place-order/AddressForm/{_cartItems?.UserId}");
         }
 
         public void RedirectToAddressesPage()
         {
-            _navigation.NavigateTo($"/place-order/{_userID}");
+            _navigation.NavigateTo($"/place-order/{_cartItems?.UserId}");
         }
 
         public async Task AvailableAdresses()
@@ -116,15 +101,19 @@ namespace OnlineStore.Components.Pages
 
         public async Task DeleteCart()
         {
-            var result = await _cartFrontendService.DeleteCart(_cartId);
-
-            if (result == true)
+            if(_cartItems != null)
             {
-                _cartItems.Clear();
-                _totalCartItems = 0;
-                _totalOrderPrice = 0;
+                var result = await _cartFrontendService.DeleteCart(_cartItems.CartId);
 
-                StateHasChanged();
+                if (result == true)
+                {
+                    _cartItems.CartItems.Clear();
+                    _cartItems.TotalCartItems = 0;
+                    _cartItems.TotalItemsQuantity = 0;
+                    _cartItems.TotalOrderPrice = 0;
+
+                    StateHasChanged();
+                }
             }
         }
     }

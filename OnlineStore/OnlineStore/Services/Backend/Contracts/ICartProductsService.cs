@@ -9,7 +9,7 @@ namespace OnlineStore.Services.Backend.Contracts
 
         Task<bool?> AddProductToCart(int productId, int userId);
 
-        Task<List<CartItemDTO>?> GetCartItemsByUser(int userId);
+        Task<CartSummaryPageModelDto?> GetCartItemsByUser(int userId);
 
         Task<bool> UpdateCartItemQuantity(int cartItem, int quantity);
 

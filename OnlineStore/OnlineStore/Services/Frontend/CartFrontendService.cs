@@ -60,17 +60,17 @@ namespace OnlineStore.Services.Frontend
             return false;
         }
 
-        public async Task<List<CartItemModel>> GetCartItemsByUser()
+        public async Task<CartSummaryPageModel?> GetCartItemsByUser()
         {
-            var result = await _apiClient.GetAsync<List<CartItemDTO>>("api/cart/items/user");
+            var result = await _apiClient.GetAsync<CartSummaryPageModelDto>("api/cart/items/user");
 
             if(result != null)
             {
-                var cartItems = _mapper.Map<List<CartItemModel>>(result);
+                var cartItems = _mapper.Map<CartSummaryPageModel>(result);
                 return cartItems;
             }
 
-            return new List<CartItemModel>();
+            return new CartSummaryPageModel();
         }
 
         public async Task<bool> UpdateCartItemQuantity(int cartItemId, int newQuantity)

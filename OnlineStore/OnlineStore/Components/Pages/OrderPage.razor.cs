@@ -24,7 +24,7 @@ namespace OnlineStore.Components.Pages
         private ICartFrontendService _cartFrontendService { get; set; }
 
         private List<AddressModel>? addressList { get; set; } = new();
-        private List<CartItemModel> _cartItemsList { get; set; } = new();
+        private CartSummaryPageModel? _cartItemsList { get; set; } = new();
 
         private bool? _orderPlaceSuccess = false;
 
@@ -36,9 +36,9 @@ namespace OnlineStore.Components.Pages
 
             _cartItemsList = await _cartFrontendService.GetCartItemsByUser();
 
-            if (_cartItemsList.Count() > 0)
+            if (_cartItemsList?.TotalCartItems > 0)
             {
-                _createOrderRequestDTO.CartId = _cartItemsList.First().CartId;
+                _createOrderRequestDTO.CartId = _cartItemsList.CartId;
             }
 
             if (UserId != null)
@@ -54,7 +54,7 @@ namespace OnlineStore.Components.Pages
 
         public void RedirectToProductDetailsPage(int cartItemId)
         {
-            var item = _cartItemsList.FirstOrDefault(item => item.CartItemId == cartItemId);
+            var item = _cartItemsList?.CartItems.FirstOrDefault(item => item.CartItemId == cartItemId);
 
             if (item != null)
             {
@@ -75,7 +75,7 @@ namespace OnlineStore.Components.Pages
 
             if(response == true)
             {
-                _cartItemsList.Clear();
+                _cartItemsList?.CartItems.Clear();
 
                 StateHasChanged();
 

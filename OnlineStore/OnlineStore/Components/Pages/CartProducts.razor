@@ -7,7 +7,7 @@
 
 <MudDivider/>
 
-@if(_cartItems == null || _cartItems.Count() == 0)
+@if (_cartItems == null || _cartItems.TotalCartItems == 0)
 {
     <MudText Typo="Typo.h5">
         @Res.Lang.Msg_EmptyCart
@@ -28,7 +28,7 @@ else
         <div>
             <table>
                 <tbody>
-                    @foreach (var item in _cartItems)
+                    @foreach (var item in _cartItems.CartItems)
                     {
                         <CartItemCard CartItemModel="@item"
                                       OnQuantityUpdated="@HandleQuantityUpdated"
@@ -52,11 +52,11 @@ else
 
             <MudDivider />
 
-            <MudText Typo="Typo.body1">Total: @_totalOrderPrice RON</MudText>
+            <MudText Typo="Typo.body1">Total: @_cartItems.TotalOrderPrice RON</MudText>
 
             <MudDivider />
 
-            <MudText Typo="Typo.body1">Number products: @_totalCartItems</MudText>
+            <MudText Typo="Typo.body1">Number products: @_cartItems.TotalCartItems</MudText>
 
             <MudButton Variant="Variant.Filled"
                        Style="background-color: #C998ED;"

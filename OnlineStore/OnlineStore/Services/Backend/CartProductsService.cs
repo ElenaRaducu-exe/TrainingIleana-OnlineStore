@@ -50,12 +50,9 @@ namespace OnlineStore.Services.Backend
                         {
                             var cartItemSummary = new CartItemSummaries
                             {
-                                CartId = Convert.ToInt32(row["CartId"]),
-                                UserId = Convert.ToInt32(row["UserId"]),
                                 CartItemId = Convert.ToInt32(row["CartItemId"]),
                                 Quantity = Convert.ToInt32(row["Quantity"]),
                                 ProductId = Convert.ToInt32(row["ProductId"]),
-                                Username = row["Username"].ToString() ?? "-",
                                 ProductName = row["ProductName"].ToString() ?? "-",
                                 Description = row["Description"].ToString() ?? "-",
                                 Price = Convert.ToDecimal(row["Price"]),
@@ -78,11 +75,11 @@ namespace OnlineStore.Services.Backend
             }
         }
 
-        public async Task<List<CartItemDTO>?> GetCartItemsByUser(int userId)
+        public async Task<CartSummaryPageModelDto?> GetCartItemsByUser(int userId)
         {
             try
             {
-                var resultStoredProcedure = new List<CartItemSummaries>();
+                var resultStoredProcedure = new CartSummaryPageModelSP();
 
                 DataSet dataSet = new DataSet();
 
@@ -100,16 +97,27 @@ namespace OnlineStore.Services.Backend
                             adapter.Fill(dataSet);
                         }
 
-                        foreach (DataRow row in dataSet.Tables[0].Rows)
+                        foreach(DataRow row in dataSet.Tables[0].Rows)
+                        {
+                            resultStoredProcedure.CartId = Convert.ToInt32(row["CartId"]);
+                            resultStoredProcedure.UserId = Convert.ToInt32(row["UserId"]);
+                            resultStoredProcedure.Username = row["Username"].ToString() ?? "-";
+                        }
+
+                        foreach(DataRow row in dataSet.Tables[1].Rows)
+                        {
+                            resultStoredProcedure.TotalOrderPrice = Convert.ToDecimal(row["TotalOrderPrice"]);
+                            resultStoredProcedure.TotalCartItems = Convert.ToInt32(row["TotalCartItems"]);
+                            resultStoredProcedure.TotalItemsQuantity = Convert.ToInt32(row["TotalItemsQuantity"]);
+                        }
+
+                        foreach (DataRow row in dataSet.Tables[2].Rows)
                         {
                             var cartItemSummary = new CartItemSummaries
                             {
-                                CartId = Convert.ToInt32(row["CartId"]),
-                                UserId = Convert.ToInt32(row["UserId"]),
                                 CartItemId = Convert.ToInt32(row["CartItemId"]),
                                 Quantity = Convert.ToInt32(row["Quantity"]),
                                 ProductId = Convert.ToInt32(row["ProductId"]),
-                                Username = row["Username"].ToString() ?? "-",
                                 ProductName = row["ProductName"].ToString() ?? "-",
                                 Description = row["Description"].ToString() ?? "-",
                                 Price = Convert.ToDecimal(row["Price"]),
@@ -118,10 +126,10 @@ namespace OnlineStore.Services.Backend
                                 BrandName = row["BrandName"].ToString() ?? "-"
                             };
 
-                            resultStoredProcedure.Add(cartItemSummary);
+                            resultStoredProcedure.CartItems.Add(cartItemSummary);
                         }
 
-                        return _mapper.Map<List<CartItemDTO>>(resultStoredProcedure);
+                        return _mapper.Map<CartSummaryPageModelDto>(resultStoredProcedure);
                     }
                 }
             }

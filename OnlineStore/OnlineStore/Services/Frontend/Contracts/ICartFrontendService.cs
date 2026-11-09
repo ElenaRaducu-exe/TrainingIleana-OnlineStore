@@ -7,7 +7,7 @@ namespace OnlineStore.Services.Frontend.Contracts
         Task<ProductModel?> AddProductToCart(ProductModel productModel);
         Task<bool> DeleteCartItem(int cartItemId);
         Task<bool> DeleteCart(int cartId);
-        Task<List<CartItemModel>> GetCartItemsByUser();
+        Task<CartSummaryPageModel?> GetCartItemsByUser();
         Task<bool> UpdateCartItemQuantity(int cartItemId, int newQuantity); 
     }
 }

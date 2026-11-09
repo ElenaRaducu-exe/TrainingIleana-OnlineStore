@@ -13,6 +13,10 @@ namespace OnlineStore.Models.MappingProfiles
             CreateMap<CartItemSummaries, CartItemDTO>().ReverseMap();
 
             CreateMap<CartItemDTO, CartItemModel>().ReverseMap();
+
+            CreateMap<CartSummaryPageModelSP, CartSummaryPageModelDto>().ReverseMap();
+
+            CreateMap<CartSummaryPageModelDto, CartSummaryPageModel>().ReverseMap();
         }
     }
 }
