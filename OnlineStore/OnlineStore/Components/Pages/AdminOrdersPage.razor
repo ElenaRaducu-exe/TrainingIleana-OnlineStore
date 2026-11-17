@@ -1,0 +1,69 @@
+@page "/admin/orders"
+
+@using OnlineStore.Models.FrontendModels
+@using OnlineStore.Models.Enums
+@using OnlineStore.Components.ReusableComponnets
+@using Microsoft.AspNetCore.Components.Authorization
+
+<AuthorizeView Roles="Admin">
+    <Authorized Context="authContext">
+        <MudText Typo="Typo.h6" Class="mb-4">Orders</MudText>
+
+        <MudDataGrid T="OrderSummaryModel"
+                     ServerData="@LoadServerData"
+                     @ref="_dataGrid"
+                     Hover="true"
+                     Striped="true">
+            <Columns>
+                <HierarchyColumn T="OrderSummaryModel" />
+
+                <TemplateColumn Title="Status">
+                    <CellTemplate>
+                        <MudTooltip Text="@OrderStatusExtension.GetDescription(context.Item.StatusEnum)">
+                            <MudChip T="string"
+                                     Class="order-status-label"
+                                     Size="Size.Small"
+                                     Variant="Variant.Filled"
+                                     Style="@($"--status-color: {OrderStatusExtension.GetColor(context.Item.StatusEnum)}")">
+                                <span class="order-label-dot"></span>
+                                @OrderStatusExtension.GetLabel(context.Item.StatusEnum)
+                            </MudChip>
+                        </MudTooltip>
+                    </CellTemplate>
+                </TemplateColumn>
+
+                <PropertyColumn Property="x => x.OrderNumber" Title="Order Number" />
+                <PropertyColumn Property="x => x.OrderDate" Title="Order Date" Format="dd/MM/yyyy" />
+                <PropertyColumn Property="x => x.Email" Title="Customer Email" />
+                <PropertyColumn Property="x => x.ProductsNumber" Title="Products Number" />
+                <PropertyColumn Property="x => x.TotalQuantityItems" Title="Total Quantity Items" />
+                <PropertyColumn Property="x => x.TotalPrice" Title="Total Price" />
+            </Columns>
+
+            <ChildRowContent>
+                <OrderProductsList OrderId="@context.Item.OrderId" />
+            </ChildRowContent>
+
+            <PagerContent>
+                <MudDataGridPager T="OrderSummaryModel" />
+            </PagerContent>
+        </MudDataGrid>
+    </Authorized>
+</AuthorizeView>
+
+<style>
+    .order-status-label {
+        background-color: color-mix(in srgb, var(--status-color) 15%, white);
+        color: var(--status-color);
+        border-radius: 10px;
+    }
+
+    .order-label-dot {
+        border-radius: 50%;
+        background-color: var(--status-color);
+        width: 8px;
+        height: 8px;
+        margin-right: 5px;
+        display: inline-block;
+    }
+</style>

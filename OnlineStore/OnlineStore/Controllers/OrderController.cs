@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineStore.Models.DTOs;
+using OnlineStore.Models.FrontendModels;
 using Microsoft.AspNetCore.Authorization;
 using OnlineStore.Services.Backend.Contracts;
 
@@ -188,6 +189,36 @@ namespace OnlineStore.Controllers
             } 
 
             return Ok();
+        }
+
+        // api/order/get/summary-paged
+        [HttpPost("get/summary-paged")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetOrdersPaged([FromBody] OrderFiltersModel orderFilters)
+        {
+            var result = await _orderService.GetOrdersPaged(orderFilters);
+
+            if (result == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(result);
+        }
+
+        // api/order/get/products/{orderId:int}
+        [HttpGet("get/products/{orderId:int}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetOrderProductsByOrderId([FromRoute] int orderId)
+        {
+            var result = await _orderService.GetOrderProductsByOrderId(orderId);
+
+            if (result == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(result);
         }
     }
 }

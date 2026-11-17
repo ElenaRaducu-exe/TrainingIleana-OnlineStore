@@ -1,0 +1,30 @@
+@using OnlineStore.Models.FrontendModels
+
+@if (_isLoading)
+{
+    <div class="d-flex align-center justify-center pa-4">
+        <MudProgressCircular Indeterminate="true" Size="Size.Small" />
+        <MudText Typo="Typo.body2" Class="ml-2">Loading products...</MudText>
+    </div>
+}
+else if (_items is null || _items.Count == 0)
+{
+    <MudAlert Severity="Severity.Info">No products found for this order.</MudAlert>
+}
+else
+{
+    <MudTable T="OrderProductModel" Items="@_items" Dense="true" Hover="true" Elevation="0">
+        <HeaderContent>
+            <MudTh>Product Name</MudTh>
+            <MudTh>Quantity</MudTh>
+            <MudTh>Unit Price</MudTh>
+            <MudTh>Total Price</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Product Name">@context.ProductName</MudTd>
+            <MudTd DataLabel="Quantity">@context.Quantity</MudTd>
+            <MudTd DataLabel="Unit Price">@context.UnitPrice</MudTd>
+            <MudTd DataLabel="Total Price">@context.TotalPrice</MudTd>
+        </RowTemplate>
+    </MudTable>
+}

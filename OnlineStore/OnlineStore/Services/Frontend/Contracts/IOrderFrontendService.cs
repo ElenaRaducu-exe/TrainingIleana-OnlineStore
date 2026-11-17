@@ -10,5 +10,7 @@ namespace OnlineStore.Services.Frontend.Contracts
         Task<OrderDetailsPageModel?> UpdateOrderStatus(int orderId, int newStatusId, OrderDetailsPageModel orderDetailsPageModel);
         Task<bool> PlaceOrder(CreateOrderRequestDTO createOrderRequestDTO);
         Task<List<OrderDetailsModel>> GetOrderDetailsModelList(bool isAdminUser); 
+        Task<OrderSummaryPagedResultModel> GetOrdersPaged(OrderFiltersModel orderFilters);
+        Task<List<OrderProductModel>> GetOrderProductsByOrderId(int orderId);
     }
 }

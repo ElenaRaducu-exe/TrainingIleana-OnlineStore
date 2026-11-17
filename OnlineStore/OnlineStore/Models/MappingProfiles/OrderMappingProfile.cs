@@ -53,6 +53,18 @@ namespace OnlineStore.Models.MappingProfiles
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(dest => dest.ModifiedAt, opt => opt.MapFrom(src => src.ModifiedAt))
                 .ReverseMap();
+
+            CreateMap<OrderSummarySP, OrderSummaryDTO>()
+                .ForMember(dest => dest.StatusEnum, opt => opt.MapFrom(src => (OrderStatusEnum)src.StatusId))
+                .ReverseMap();
+
+            CreateMap<OrderSummaryDTO, OrderSummaryModel>().ReverseMap();
+
+            CreateMap<OrderProductSP, OrderProductDTO>().ReverseMap();
+
+            CreateMap<OrderProductDTO, OrderProductModel>().ReverseMap();
+
+            CreateMap<OrderSummaryPagedResultDTO, OrderSummaryPagedResultModel>().ReverseMap();
         }   
     }
 }

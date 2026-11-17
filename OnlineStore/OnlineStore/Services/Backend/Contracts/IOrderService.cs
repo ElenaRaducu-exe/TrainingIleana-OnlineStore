@@ -1,5 +1,6 @@
 ﻿using OnlineStore.DBModels;
 using OnlineStore.Models.DTOs;
+using OnlineStore.Models.FrontendModels;
 using OnlineStore.Models.StoredProcedureModels;
 
 namespace OnlineStore.Services.Backend.Contracts
@@ -23,5 +24,9 @@ namespace OnlineStore.Services.Backend.Contracts
         Task<OrderDetailsPageDTO?> GetOrderSummaryRaport(int orderId);
 
         Task<List<OrderDetailsDTO>?> GetOrderDetailsDtos(int? customerId);
+
+        Task<OrderSummaryPagedResultDTO?> GetOrdersPaged(OrderFiltersModel orderFilters);
+
+        Task<List<OrderProductDTO>?> GetOrderProductsByOrderId(int orderId);
     }
 }

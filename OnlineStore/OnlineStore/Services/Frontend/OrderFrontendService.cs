@@ -121,5 +121,33 @@ namespace OnlineStore.Services.Frontend
 
             return new List<OrderDetailsModel>();
         }
+
+        public async Task<OrderSummaryPagedResultModel> GetOrdersPaged(OrderFiltersModel orderFilters)
+        {
+            var orderSummaryPagedResultDTO = await _apiClient.PostAsJsonAsync<OrderFiltersModel, OrderSummaryPagedResultDTO>("api/order/get/summary-paged", orderFilters);
+
+            if (orderSummaryPagedResultDTO != null)
+            {
+                return _mapper.Map<OrderSummaryPagedResultModel>(orderSummaryPagedResultDTO);
+            }
+
+            return new OrderSummaryPagedResultModel()
+            {
+                Items = new List<OrderSummaryModel>(),
+                TotalCount = 0
+            };
+        }
+
+        public async Task<List<OrderProductModel>> GetOrderProductsByOrderId(int orderId)
+        {
+            var orderProductsDTO = await _apiClient.GetAsync<List<OrderProductDTO>>($"api/order/get/products/{orderId}");
+
+            if (orderProductsDTO != null)
+            {
+                return _mapper.Map<List<OrderProductModel>>(orderProductsDTO);
+            }
+
+            return new List<OrderProductModel>();
+        }
     }
 }

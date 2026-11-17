@@ -5,6 +5,7 @@ using OnlineStore.Data;
 using OnlineStore.DBModels;
 using OnlineStore.Models.Configuration;
 using OnlineStore.Models.DTOs;
+using OnlineStore.Models.FrontendModels;
 using OnlineStore.Models.StoredProcedureModels;
 using OnlineStore.Services.Backend.Contracts;
 using System.Data;
@@ -536,6 +537,109 @@ namespace OnlineStore.Services.Backend
             catch (Exception ex)
             {
                 Console.WriteLine($"Error in spGetOrderSummaryRaport: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<OrderSummaryPagedResultDTO?> GetOrdersPaged(OrderFiltersModel orderFilters)
+        {
+            try
+            {
+                var resultStoredProcedure = new List<OrderSummarySP>();
+
+                DataSet dataSet = new DataSet();
+
+                using (SqlConnection connection = new SqlConnection(_dbConfiguration.OnlineStoreDb))
+                {
+                    connection.Open();
+
+                    using (SqlCommand sqlCommand = new SqlCommand("dbo.spGetOrdersPaged", connection) { CommandType = CommandType.StoredProcedure })
+                    {
+                        sqlCommand.Parameters.AddWithValue("@PageNumber", orderFilters.PageNumber);
+                        sqlCommand.Parameters.AddWithValue("@PageSize", orderFilters.PageSize);
+
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(sqlCommand))
+                        {
+                            adapter.Fill(dataSet);
+                        }
+
+                        foreach (DataRow row in dataSet.Tables[0].Rows)
+                        {
+                            var orderSummary = new OrderSummarySP()
+                            {
+                                OrderId = (int)row["OrderId"],
+                                OrderNumber = row["OrderNumber"].ToString() ?? "-",
+                                OrderDate = (DateTime)row["OrderDate"],
+                                StatusId = (int)row["StatusId"],
+                                Email = row["Email"].ToString() ?? "-",
+                                ProductsNumber = (int)row["ProductsNumber"],
+                                TotalQuantityItems = row["TotalQuantityItems"] is DBNull ? 0 : Convert.ToInt32(row["TotalQuantityItems"]),
+                                TotalPrice = row["TotalPrice"] is DBNull ? 0 : Convert.ToDecimal(row["TotalPrice"]),
+                                TotalCount = (int)row["TotalCount"]
+                            };
+
+                            resultStoredProcedure.Add(orderSummary);
+                        }
+                    }
+                }
+
+                var totalCount = resultStoredProcedure.Count > 0 ? resultStoredProcedure[0].TotalCount : 0;
+
+                return new OrderSummaryPagedResultDTO()
+                {
+                    Items = _mapper.Map<List<OrderSummaryDTO>>(resultStoredProcedure),
+                    TotalCount = totalCount
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in spGetOrdersPaged: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<List<OrderProductDTO>?> GetOrderProductsByOrderId(int orderId)
+        {
+            try
+            {
+                var resultStoredProcedure = new List<OrderProductSP>();
+
+                DataSet dataSet = new DataSet();
+
+                using (SqlConnection connection = new SqlConnection(_dbConfiguration.OnlineStoreDb))
+                {
+                    connection.Open();
+
+                    using (SqlCommand sqlCommand = new SqlCommand("dbo.spGetOrderProductsByOrderId", connection) { CommandType = CommandType.StoredProcedure })
+                    {
+                        sqlCommand.Parameters.AddWithValue("@OrderId", orderId);
+
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(sqlCommand))
+                        {
+                            adapter.Fill(dataSet);
+                        }
+
+                        foreach (DataRow row in dataSet.Tables[0].Rows)
+                        {
+                            var orderProduct = new OrderProductSP()
+                            {
+                                ProductId = (int)row["ProductId"],
+                                ProductName = row["ProductName"].ToString() ?? "-",
+                                Quantity = (int)row["Quantity"],
+                                UnitPrice = (decimal)row["UnitPrice"],
+                                TotalPrice = (decimal)row["TotalPrice"]
+                            };
+
+                            resultStoredProcedure.Add(orderProduct);
+                        }
+
+                        return _mapper.Map<List<OrderProductDTO>>(resultStoredProcedure);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in spGetOrderProductsByOrderId: {ex.Message}");
                 return null;
             }
         }
